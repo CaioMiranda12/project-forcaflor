@@ -13,7 +13,7 @@ export default function Footer() {
           {/* Logo e Descrição */}
           <div className="lg:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-linear-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center">
                 <Heart className="w-6 h-6 text-white" aria-hidden="true" />
               </div>
               <span className="text-xl font-bold">Força Flor</span>
@@ -97,14 +97,14 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4 text-white">Contato</h3>
             <ul className="space-y-3">
               <li className="flex items-start space-x-3">
-                <MapPin className="w-5 h-5 text-primary-400 mt-0.5 flex-shrink-0" aria-hidden="true" />
+                <MapPin className="w-5 h-5 text-primary-400 mt-0.5 shrink-0" aria-hidden="true" />
                 <span className="text-gray-300 text-base">
                   São Pedro, Paracuru - CE<br />
                   89km de Fortaleza
                 </span>
               </li>
               <li className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-primary-400 flex-shrink-0" aria-hidden="true" />
+                <Phone className="w-5 h-5 text-primary-400 shrink-0" aria-hidden="true" />
                 <a
                   href="tel:+5585999999999"
                   className="text-gray-300 hover:text-white active:text-gray-100 transition-colors duration-200 text-base focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-lg px-2 py-1"
@@ -113,7 +113,7 @@ export default function Footer() {
                 </a>
               </li>
               <li className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 text-primary-400 flex-shrink-0" aria-hidden="true" />
+                <Mail className="w-5 h-5 text-primary-400 shrink-0" aria-hidden="true" />
                 <a
                   href="mailto:contato@forcaflor.org"
                   className="text-gray-300 hover:text-white active:text-gray-100 transition-colors duration-200 text-base focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-lg px-2 py-1"
