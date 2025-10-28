@@ -70,7 +70,7 @@ export default function Home() {
     <main className="min-h-screen">
       {/* Hero Section */}
       <section
-        className="relative bg-gradient-to-br from-primary-600 via-primary-700 to-secondary-600 text-white overflow-hidden"
+        className="relative bg-linear-to-br from-primary-600 via-primary-700 to-secondary-600 text-white overflow-hidden"
         aria-labelledby="hero-title">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
@@ -118,7 +118,7 @@ export default function Home() {
               </div>
               <div className="absolute -bottom-6 -left-6 bg-white rounded-xl p-6 shadow-xl">
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-linear-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center">
                     <Heart className="w-6 h-6 text-white" aria-hidden="true" />
                   </div>
                   <div>
@@ -144,7 +144,7 @@ export default function Home() {
               const IconComponent = stat.icon
               return (
                 <div key={index} className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-linear-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <IconComponent className="w-8 h-8 text-white" aria-hidden="true" />
                   </div>
                   <p className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">{stat.number}</p>
@@ -190,7 +190,7 @@ export default function Home() {
             <div
               className="relative"
             >
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
+              <div className="aspect-4/3 rounded-2xl overflow-hidden shadow-xl">
                 <Image
                   src="https://images.pexels.com/photos/6646917/pexels-photo-6646917.jpeg"
                   alt="Vista aérea da sede da Força Flor em São Pedro, Paracuru"
@@ -230,7 +230,7 @@ export default function Home() {
                   key={index}
                   className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group"
                 >
-                  <div className={`w-16 h-16 bg-gradient-to-br ${area.color} rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                  <div className={`w-16 h-16 bg-linear-to-br ${area.color} rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
                     <IconComponent className="w-8 h-8 text-white" aria-hidden="true" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-4">{area.title}</h3>
@@ -290,7 +290,7 @@ export default function Home() {
 
       {/* CTA Section */}
       <section
-        className="py-20 bg-gradient-to-r from-primary-600 to-secondary-600 text-white"
+        className="py-20 bg-linear-to-r from-primary-600 to-secondary-600 text-white"
         aria-labelledby="cta-title">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div
