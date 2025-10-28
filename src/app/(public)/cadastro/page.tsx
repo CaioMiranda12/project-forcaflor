@@ -132,7 +132,7 @@ export default function Cadastro() {
                     onChange={handleInputChange}
                     required
                     aria-required="true"
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="Digite o nome completo do jovem"
                   />
                 </div>
@@ -149,7 +149,7 @@ export default function Cadastro() {
                     onChange={handleInputChange}
                     required
                     aria-required="true"
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                   />
                 </div>
 
@@ -211,7 +211,7 @@ export default function Cadastro() {
                     value={formData.endereco}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="Rua, número, complemento"
                   />
                 </div>
@@ -227,7 +227,7 @@ export default function Cadastro() {
                     value={formData.bairro}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                   />
                 </div>
 
@@ -242,7 +242,7 @@ export default function Cadastro() {
                     value={formData.cidade}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                   />
                 </div>
 
@@ -256,7 +256,7 @@ export default function Cadastro() {
                     value={formData.estado}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors cursor-pointer"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors cursor-pointer"
                   >
                     <option value="">Selecione</option>
                     <option value="CE">Ceará</option>
@@ -299,7 +299,7 @@ export default function Cadastro() {
                     name="cep"
                     value={formData.cep}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="00000-000"
                   />
                 </div>
@@ -314,7 +314,7 @@ export default function Cadastro() {
                     name="telefone"
                     value={formData.telefone}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="(85) 3333-3333"
                   />
                 </div>
@@ -330,7 +330,7 @@ export default function Cadastro() {
                     value={formData.celular}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="(85) 99999-9999"
                   />
                 </div>
@@ -353,7 +353,7 @@ export default function Cadastro() {
                         name="rg"
                         value={formData.rg}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                        className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                       />
                     </div>
 
@@ -367,7 +367,7 @@ export default function Cadastro() {
                         name="cpf"
                         value={formData.cpf}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                        className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                         placeholder="000.000.000-00"
                       />
                     </div>
@@ -382,7 +382,7 @@ export default function Cadastro() {
                         name="certidaoNascimento"
                         value={formData.certidaoNascimento}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                        className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                       />
                     </div>
                   </div>
@@ -399,7 +399,7 @@ export default function Cadastro() {
                     value={formData.escola}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                   />
                 </div>
 
@@ -413,7 +413,7 @@ export default function Cadastro() {
                     value={formData.ano}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors cursor-pointer"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors cursor-pointer"
                   >
                     <option value="">Selecione</option>
                     <option value="1ano">1º Ano</option>
@@ -441,7 +441,7 @@ export default function Cadastro() {
                     value={formData.turno}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors cursor-pointer"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors cursor-pointer"
                   >
                     <option value="">Selecione</option>
                     <option value="manha">Manhã</option>
@@ -461,7 +461,7 @@ export default function Cadastro() {
                     name="cartaoVacina"
                     value={formData.cartaoVacina}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                   />
                 </div>
 
@@ -505,7 +505,7 @@ export default function Cadastro() {
                         value={formData.descricaoSaude}
                         onChange={handleInputChange}
                         rows={3}
-                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors resize-vertical"
+                        className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors resize-vertical"
                         placeholder="Descreva detalhadamente o problema de saúde..."
                       />
                     </div>
@@ -533,7 +533,7 @@ export default function Cadastro() {
                     value={formData.nomeResponsavel}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                   />
                 </div>
 
@@ -548,7 +548,7 @@ export default function Cadastro() {
                     value={formData.emailResponsavel}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="exemplo@email.com"
                   />
                 </div>
@@ -564,7 +564,7 @@ export default function Cadastro() {
                     value={formData.telefoneResponsavel}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="(85) 99999-9999"
                   />
                 </div>
@@ -580,7 +580,7 @@ export default function Cadastro() {
                     value={formData.enderecoResponsavel}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="Rua, número, complemento"
                   />
                 </div>
@@ -596,7 +596,7 @@ export default function Cadastro() {
                     value={formData.rgResponsavel}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                   />
                 </div>
 
@@ -611,7 +611,7 @@ export default function Cadastro() {
                     value={formData.cpfResponsavel}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="000.000.000-00"
                   />
                 </div>
@@ -626,7 +626,7 @@ export default function Cadastro() {
                     name="nisResponsavel"
                     value={formData.nisResponsavel}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                   />
                 </div>
               </div>
