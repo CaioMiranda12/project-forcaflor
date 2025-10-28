@@ -3,98 +3,46 @@
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
+import { CadastroFormData, useCadastroForm } from './_components/cadastro-form'
 
 export default function Cadastro() {
   const router = useRouter()
-  const [formData, setFormData] = useState({
-    // Dados do jovem
-    nomeCompleto: '',
-    dataNascimento: '',
-    idade: '',
-    sexo: '',
-    endereco: '',
-    bairro: '',
-    cidade: '',
-    estado: '',
-    cep: '',
-    telefone: '',
-    celular: '',
-    rg: '',
-    cpf: '',
-    certidaoNascimento: '',
-    escola: '',
-    ano: '',
-    turno: '',
-    cartaoVacina: '',
-    problemaSaude: '',
-    descricaoSaude: '',
-
-    // Dados do responsável
-    nomeResponsavel: '',
-    emailResponsavel: '',
-    telefoneResponsavel: '',
-    enderecoResponsavel: '',
-    rgResponsavel: '',
-    cpfResponsavel: '',
-    nisResponsavel: ''
-  })
-
-  const [aceitouTermos, setAceitouTermos] = useState(false)
+  const form = useCadastroForm();
   const [isLoading, setIsLoading] = useState(false)
+  const aceitouTermos = form.watch("aceitouTermos")
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target
+  console.log(form.formState.errors)
 
-    setFormData(prev => ({ ...prev, [name]: value }))
 
-    // Auto-calcular idade baseada na data de nascimento
-    if (name === 'dataNascimento' && value) {
-      const hoje = new Date()
-      const nascimento = new Date(value)
-      const idade = hoje.getFullYear() - nascimento.getFullYear()
-      const mesAtual = hoje.getMonth()
-      const mesNascimento = nascimento.getMonth()
-
-      const idadeCalculada = mesAtual < mesNascimento ||
-        (mesAtual === mesNascimento && hoje.getDate() < nascimento.getDate())
-        ? idade - 1 : idade
-
-      setFormData(prev => ({ ...prev, idade: idadeCalculada.toString() }))
-    }
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-
+  async function onSubmit(data: CadastroFormData) {
     try {
-      // Validações básicas
-      if (!formData.nomeCompleto || !formData.dataNascimento || !formData.nomeResponsavel) {
-        toast.error('Por favor, preencha todos os campos obrigatórios')
-        return
-      }
-
-      // Validar se pelo menos um documento foi preenchido
-      if (!formData.rg && !formData.cpf && !formData.certidaoNascimento) {
-        toast.error('É necessário informar pelo menos um documento: RG, CPF ou Certidão de Nascimento')
-        return
-      }
-
-      // Validar aceitação dos termos
-      if (!aceitouTermos) {
-        toast.error('É necessário aceitar o Termo de Direitos e Responsabilidades')
-        return
-      }
-
-      // Simular envio do cadastro
-      await new Promise(resolve => setTimeout(resolve, 2000))
-
+      setIsLoading(true)
+      await new Promise((res) => setTimeout(res, 2000))
+      console.log("✅ Dados enviados:", data)
       toast.success('Cadastro realizado com sucesso!')
-      router.push('/login')
-    } catch (error) {
+      // router.push('/login')
+    } catch {
       toast.error('Erro ao realizar cadastro. Tente novamente.')
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    form.setValue("dataNascimento", value)
+    if (value) {
+      const hoje = new Date()
+      const nascimento = new Date(value)
+      let idade = hoje.getFullYear() - nascimento.getFullYear()
+      const mesAtual = hoje.getMonth()
+      const mesNascimento = nascimento.getMonth()
+
+      if (mesAtual < mesNascimento || (mesAtual === mesNascimento && hoje.getDate() < nascimento.getDate())) {
+        idade--
+      }
+
+      form.setValue("idade", idade)
     }
   }
 
@@ -111,7 +59,7 @@ export default function Cadastro() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             {/* Dados do Jovem */}
             <div className="bg-primary-50 p-6 rounded-lg">
               <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
@@ -126,15 +74,14 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="text"
-                    id="nomeCompleto"
-                    name="nomeCompleto"
-                    value={formData.nomeCompleto}
-                    onChange={handleInputChange}
-                    required
-                    aria-required="true"
+                    {...form.register('nomeCompleto')}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="Digite o nome completo do jovem"
+                    style={form.formState.errors.nomeCompleto && { border: '2px solid red' }}
                   />
+                  {form.formState.errors.nomeCompleto && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.nomeCompleto.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -143,14 +90,14 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="date"
-                    id="dataNascimento"
-                    name="dataNascimento"
-                    value={formData.dataNascimento}
-                    onChange={handleInputChange}
-                    required
-                    aria-required="true"
+                    {...form.register('dataNascimento')}
+                    onChange={handleDateChange}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    style={form.formState.errors.dataNascimento && { border: '2px solid red' }}
                   />
+                  {form.formState.errors.dataNascimento && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.dataNascimento.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -159,9 +106,7 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="number"
-                    id="idade"
-                    name="idade"
-                    value={formData.idade}
+                    {...form.register('idade')}
                     readOnly
                     className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
                     placeholder="Calculado automaticamente"
@@ -176,11 +121,9 @@ export default function Cadastro() {
                     <label className="flex items-center cursor-pointer">
                       <input
                         type="radio"
-                        name="sexo"
                         value="masculino"
-                        checked={formData.sexo === 'masculino'}
-                        onChange={handleInputChange}
-                        required
+                        checked={form.watch('sexo') === 'masculino'}
+                        onChange={() => form.setValue('sexo', 'masculino')}
                         className="mr-2 w-4 h-4 text-primary focus:ring-primary"
                       />
                       <span className="text-base">Masculino</span>
@@ -188,11 +131,9 @@ export default function Cadastro() {
                     <label className="flex items-center cursor-pointer">
                       <input
                         type="radio"
-                        name="sexo"
                         value="feminino"
-                        checked={formData.sexo === 'feminino'}
-                        onChange={handleInputChange}
-                        required
+                        checked={form.watch('sexo') === 'feminino'}
+                        onChange={() => form.setValue('sexo', 'feminino')}
                         className="mr-2 w-4 h-4 text-primary focus:ring-primary"
                       />
                       <span className="text-base">Feminino</span>
@@ -206,14 +147,14 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="text"
-                    id="endereco"
-                    name="endereco"
-                    value={formData.endereco}
-                    onChange={handleInputChange}
-                    required
+                    {...form.register("endereco")}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="Rua, número, complemento"
+                    style={form.formState.errors.endereco && { border: '2px solid red' }}
                   />
+                  {form.formState.errors.endereco && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.endereco.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -222,13 +163,13 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="text"
-                    id="bairro"
-                    name="bairro"
-                    value={formData.bairro}
-                    onChange={handleInputChange}
-                    required
+                    {...form.register("bairro")}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    style={form.formState.errors.bairro && { border: '2px solid red' }}
                   />
+                  {form.formState.errors.bairro && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.bairro.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -237,13 +178,13 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="text"
-                    id="cidade"
-                    name="cidade"
-                    value={formData.cidade}
-                    onChange={handleInputChange}
-                    required
+                    {...form.register("cidade")}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    style={form.formState.errors.cidade && { border: '2px solid red' }}
                   />
+                  {form.formState.errors.cidade && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.cidade.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -252,11 +193,9 @@ export default function Cadastro() {
                   </label>
                   <select
                     id="estado"
-                    name="estado"
-                    value={formData.estado}
-                    onChange={handleInputChange}
-                    required
+                    {...form.register('estado')}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors cursor-pointer"
+                    style={form.formState.errors.estado && { border: '2px solid red' }}
                   >
                     <option value="">Selecione</option>
                     <option value="CE">Ceará</option>
@@ -287,6 +226,9 @@ export default function Cadastro() {
                     <option value="SE">Sergipe</option>
                     <option value="TO">Tocantins</option>
                   </select>
+                  {form.formState.errors.estado && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.estado.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -295,13 +237,14 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="text"
-                    id="cep"
-                    name="cep"
-                    value={formData.cep}
-                    onChange={handleInputChange}
+                    {...form.register('cep')}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="00000-000"
+                    style={form.formState.errors.cep && { border: '2px solid red' }}
                   />
+                  {form.formState.errors.cep && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.cep.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -310,13 +253,13 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="tel"
-                    id="telefone"
-                    name="telefone"
-                    value={formData.telefone}
-                    onChange={handleInputChange}
+                    {...form.register('telefone')}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="(85) 3333-3333"
                   />
+                  {form.formState.errors.telefone && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.telefone.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -325,14 +268,14 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="tel"
-                    id="celular"
-                    name="celular"
-                    value={formData.celular}
-                    onChange={handleInputChange}
-                    required
+                    {...form.register('celular')}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="(85) 99999-9999"
+                    style={form.formState.errors.celular && { border: '2px solid red' }}
                   />
+                  {form.formState.errors.celular && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.celular.message}</p>
+                  )}
                 </div>
 
                 <div className="lg:col-span-3">
@@ -349,10 +292,8 @@ export default function Cadastro() {
                       </label>
                       <input
                         type="text"
-                        id="rg"
-                        name="rg"
-                        value={formData.rg}
-                        onChange={handleInputChange}
+                        {...form.register('documento.rg')}
+
                         className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                       />
                     </div>
@@ -363,10 +304,8 @@ export default function Cadastro() {
                       </label>
                       <input
                         type="text"
-                        id="cpf"
-                        name="cpf"
-                        value={formData.cpf}
-                        onChange={handleInputChange}
+                        {...form.register('documento.cpf')}
+
                         className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                         placeholder="000.000.000-00"
                       />
@@ -378,14 +317,16 @@ export default function Cadastro() {
                       </label>
                       <input
                         type="text"
-                        id="certidaoNascimento"
-                        name="certidaoNascimento"
-                        value={formData.certidaoNascimento}
-                        onChange={handleInputChange}
+                        {...form.register('documento.certidaoNascimento')}
+
                         className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                       />
                     </div>
                   </div>
+
+                  {form.formState.errors.documento && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.documento.message}</p>
+                  )}
                 </div>
 
                 <div className="lg:col-span-2">
@@ -394,13 +335,13 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="text"
-                    id="escola"
-                    name="escola"
-                    value={formData.escola}
-                    onChange={handleInputChange}
-                    required
+                    {...form.register('escola')}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    style={form.formState.errors.escola && { border: '2px solid red' }}
                   />
+                  {form.formState.errors.escola && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.escola.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -409,11 +350,9 @@ export default function Cadastro() {
                   </label>
                   <select
                     id="ano"
-                    name="ano"
-                    value={formData.ano}
-                    onChange={handleInputChange}
-                    required
+                    {...form.register('serie')}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors cursor-pointer"
+                    style={form.formState.errors.serie && { border: '2px solid red' }}
                   >
                     <option value="">Selecione</option>
                     <option value="1ano">1º Ano</option>
@@ -429,6 +368,9 @@ export default function Cadastro() {
                     <option value="2medio">2º Médio</option>
                     <option value="3medio">3º Médio</option>
                   </select>
+                  {form.formState.errors.serie && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.serie.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -437,11 +379,9 @@ export default function Cadastro() {
                   </label>
                   <select
                     id="turno"
-                    name="turno"
-                    value={formData.turno}
-                    onChange={handleInputChange}
-                    required
+                    {...form.register('turno')}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors cursor-pointer"
+                    style={form.formState.errors.turno && { border: '2px solid red' }}
                   >
                     <option value="">Selecione</option>
                     <option value="manha">Manhã</option>
@@ -449,6 +389,9 @@ export default function Cadastro() {
                     <option value="noite">Noite</option>
                     <option value="integral">Integral</option>
                   </select>
+                  {form.formState.errors.turno && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.turno.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -457,12 +400,12 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="text"
-                    id="cartaoVacina"
-                    name="cartaoVacina"
-                    value={formData.cartaoVacina}
-                    onChange={handleInputChange}
+                    {...form.register('cartaoVacina')}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                   />
+                  {form.formState.errors.cartaoVacina && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.cartaoVacina.message}</p>
+                  )}
                 </div>
 
                 <div className="lg:col-span-3">
@@ -475,8 +418,8 @@ export default function Cadastro() {
                         type="radio"
                         name="problemaSaude"
                         value="sim"
-                        checked={formData.problemaSaude === 'sim'}
-                        onChange={handleInputChange}
+                        checked={form.watch('problemaSaude') === true}
+                        onChange={() => form.setValue('problemaSaude', true)}
                         className="mr-2 w-4 h-4 text-primary focus:ring-primary"
                       />
                       <span className="text-base">Sim</span>
@@ -486,24 +429,22 @@ export default function Cadastro() {
                         type="radio"
                         name="problemaSaude"
                         value="nao"
-                        checked={formData.problemaSaude === 'nao'}
-                        onChange={handleInputChange}
+                        checked={form.watch('problemaSaude') === false}
+                        onChange={() => form.setValue('problemaSaude', false)}
                         className="mr-2 w-4 h-4 text-primary focus:ring-primary"
                       />
                       <span className="text-base">Não</span>
                     </label>
                   </div>
 
-                  {formData.problemaSaude === 'sim' && (
+                  {form.watch('problemaSaude') === true && (
                     <div>
                       <label htmlFor="descricaoSaude" className="block text-base font-medium text-gray-700 mb-2">
                         Descreva o problema de saúde:
                       </label>
                       <textarea
-                        id="descricaoSaude"
-                        name="descricaoSaude"
-                        value={formData.descricaoSaude}
-                        onChange={handleInputChange}
+                        {...form.register('descricaoProblema')} // verificar depois
+
                         rows={3}
                         className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors resize-vertical"
                         placeholder="Descreva detalhadamente o problema de saúde..."
@@ -528,13 +469,13 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="text"
-                    id="nomeResponsavel"
-                    name="nomeResponsavel"
-                    value={formData.nomeResponsavel}
-                    onChange={handleInputChange}
-                    required
+                    {...form.register('responsavel.nomeCompleto')}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    style={form.formState.errors.responsavel?.nomeCompleto && { border: '2px solid red' }}
                   />
+                  {form.formState.errors.responsavel?.nomeCompleto && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.responsavel.nomeCompleto.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -543,14 +484,14 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="email"
-                    id="emailResponsavel"
-                    name="emailResponsavel"
-                    value={formData.emailResponsavel}
-                    onChange={handleInputChange}
-                    required
+                    {...form.register('responsavel.email')}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="exemplo@email.com"
+                    style={form.formState.errors.responsavel?.email && { border: '2px solid red' }}
                   />
+                  {form.formState.errors.responsavel?.email && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.responsavel.email.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -559,14 +500,14 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="tel"
-                    id="telefoneResponsavel"
-                    name="telefoneResponsavel"
-                    value={formData.telefoneResponsavel}
-                    onChange={handleInputChange}
-                    required
+                    {...form.register('responsavel.telefone')}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="(85) 99999-9999"
+                    style={form.formState.errors.responsavel?.telefone && { border: '2px solid red' }}
                   />
+                  {form.formState.errors.responsavel?.telefone && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.responsavel.telefone.message}</p>
+                  )}
                 </div>
 
                 <div className="lg:col-span-2">
@@ -575,14 +516,14 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="text"
-                    id="enderecoResponsavel"
-                    name="enderecoResponsavel"
-                    value={formData.enderecoResponsavel}
-                    onChange={handleInputChange}
-                    required
+                    {...form.register('responsavel.endereco')}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="Rua, número, complemento"
+                    style={form.formState.errors.responsavel?.endereco && { border: '2px solid red' }}
                   />
+                  {form.formState.errors.responsavel?.endereco && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.responsavel.endereco.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -591,13 +532,13 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="text"
-                    id="rgResponsavel"
-                    name="rgResponsavel"
-                    value={formData.rgResponsavel}
-                    onChange={handleInputChange}
-                    required
+                    {...form.register('responsavel.rg')}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    style={form.formState.errors.responsavel?.rg && { border: '2px solid red' }}
                   />
+                  {form.formState.errors.responsavel?.rg && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.responsavel.rg.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -606,14 +547,14 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="text"
-                    id="cpfResponsavel"
-                    name="cpfResponsavel"
-                    value={formData.cpfResponsavel}
-                    onChange={handleInputChange}
-                    required
+                    {...form.register('responsavel.cpf')}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="000.000.000-00"
+                    style={form.formState.errors.responsavel?.cpf && { border: '2px solid red' }}
                   />
+                  {form.formState.errors.responsavel?.cpf && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.responsavel.cpf.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -622,12 +563,13 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="text"
-                    id="nisResponsavel"
-                    name="nisResponsavel"
-                    value={formData.nisResponsavel}
-                    onChange={handleInputChange}
+                    {...form.register('responsavel.nis')}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                    style={form.formState.errors.responsavel?.nis && { border: '2px solid red' }}
                   />
+                  {form.formState.errors.responsavel?.nis && (
+                    <p className="text-red-600 text-sm mt-1">{form.formState.errors.responsavel.nis.message}</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -701,10 +643,9 @@ export default function Cadastro() {
               <div className="flex items-start space-x-3">
                 <input
                   type="checkbox"
-                  id="aceitarTermos"
-                  checked={aceitouTermos}
-                  onChange={(e) => setAceitouTermos(e.target.checked)}
-                  required
+                  {...form.register("aceitouTermos")}
+                  checked={form.watch("aceitouTermos")}
+                  onChange={(e) => form.setValue("aceitouTermos", e.target.checked)}
                   className="mt-1 w-4 h-4 text-primary focus:ring-primary border-gray-300 rounded cursor-pointer"
                 />
                 <label htmlFor="aceitarTermos" className="text-base text-gray-700 cursor-pointer">
@@ -712,6 +653,9 @@ export default function Cadastro() {
                   autorizando a participação nas atividades da OSC Força Flor e o uso de imagem conforme descrito acima. *
                 </label>
               </div>
+              {form.formState.errors.aceitouTermos && (
+                <p className="text-red-600 text-sm mt-3">{form.formState.errors.aceitouTermos.message}</p>
+              )}
             </div>
 
             {/* Botões de Ação */}
