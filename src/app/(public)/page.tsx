@@ -70,13 +70,12 @@ export default function Home() {
     <main className="min-h-screen">
       {/* Hero Section */}
       <section
-        className="relative bg-gradient-to-br from-primary-600 via-primary-700 to-secondary-600 text-white overflow-hidden" aria-labelledby="hero-title">
+        className="relative bg-gradient-to-br from-primary-600 via-primary-700 to-secondary-600 text-white overflow-hidden"
+        aria-labelledby="hero-title">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div
-              className="opacity-0 translate-x-[-40px] animate-fade-in-left [animation-delay:200ms] animation-fill-forwards"
-            >
+            <div>
               <h1 id="hero-title" className="text-4xl lg:text-6xl font-bold mb-6 leading-tight text-white">
                 Transformando vidas através do
                 <span className="text-secondary-300"> voluntariado</span>
@@ -105,7 +104,7 @@ export default function Home() {
             </div>
 
             <div
-              className="relative opacity-0 translate-x-[40px] animate-fade-in-right [animation-delay:400ms] animation-fill-forwards"
+              className="relative"
             >
               <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl">
                 <Image
@@ -139,7 +138,7 @@ export default function Home() {
         aria-labelledby="stats-title">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div
-            className="grid grid-cols-2 lg:grid-cols-4 gap-8 opacity-0 animate-fade-up"
+            className="grid grid-cols-2 lg:grid-cols-4 gap-8"
           >
             {stats.map((stat, index) => {
               const IconComponent = stat.icon
@@ -164,7 +163,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div
-              className="opacity-0 translate-x-[-40px] animate-fade-in-left animation-fill-forwards"
+              className=""
             >
               <h2 id="about-title" className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">
                 Sobre a Força Flor
@@ -189,7 +188,7 @@ export default function Home() {
             </div>
 
             <div
-              className="relative opacity-0 translate-x-[40px] animate-fade-in-right animation-fill-forwards"
+              className="relative"
             >
               <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
                 <Image
@@ -212,7 +211,7 @@ export default function Home() {
         aria-labelledby="areas-title">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div
-            className="text-center mb-16 opacity-0 animate-fade-up animation-fill-forwards"
+            className="text-center mb-16"
           >
             <h2 id="areas-title" className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
               Nossas Áreas de Atuação
@@ -229,7 +228,7 @@ export default function Home() {
               return (
                 <div
                   key={index}
-                  className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group opacity-0 animate-fade-up animation-delay-[${index * 100}ms] animation-fill-forwards"
+                  className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group"
                 >
                   <div className={`w-16 h-16 bg-gradient-to-br ${area.color} rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
                     <IconComponent className="w-8 h-8 text-white" aria-hidden="true" />
@@ -295,7 +294,7 @@ export default function Home() {
         aria-labelledby="cta-title">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div
-            className="opacity-0 animate-fade-up animation-fill-forwards"
+            className=""
           >
             <h2 id="cta-title" className="text-3xl lg:text-4xl font-bold mb-6 text-white">
               Faça Parte Desta Transformação
