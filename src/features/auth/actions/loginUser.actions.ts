@@ -1,6 +1,6 @@
 'use server'
 
-import { connectDatabase } from '@/app/lib/db'
+import { connectDatabase } from '@/lib/db'
 import User from '@/app/models/User'
 import jwt from 'jsonwebtoken'
 import { cookies } from 'next/headers'

@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
-import { AuthUser } from "@/types/authuser.type";
+import { AuthUser } from "../types/AuthUser";
 
 export async function getCurrentUser() {
   const cookieStore = await cookies();

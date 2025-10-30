@@ -1,9 +1,10 @@
-import { Calendar, FileText, Home, LogOut, Newspaper, User, Users, X } from "lucide-react";
+import { LogOut, X } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { logout } from "../actions/User/logout.actions";
-import { AuthUser } from "@/types/authuser.type";
-import { privateLinks, publicLinks } from "@/constants/menuLinks";
+import { usePathname } from "next/navigation";
+
+import { privateLinks, publicLinks } from "@/shared/constants/menuLinks";
+import { AuthUser } from "@/features/auth/types/AuthUser";
+import { logout } from "@/features/auth/actions/logout.actions";
 
 interface SidebarProps {
   sidebarOpen: boolean
@@ -11,10 +12,8 @@ interface SidebarProps {
   user: AuthUser | null;
 }
 
-
 export function Sidebar({ setSidebarOpen, sidebarOpen, user }: SidebarProps) {
   const pathname = usePathname();
-  const router = useRouter();
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)

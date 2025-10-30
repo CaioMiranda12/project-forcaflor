@@ -1,6 +1,6 @@
 "use server";
 
-import { connectDatabase } from "@/app/lib/db";
+import { connectDatabase } from "@/lib/db";
 import User from "@/app/models/User";
 
 export async function registerUser(formData: FormData) {

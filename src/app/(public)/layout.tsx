@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 
-import { Sidebar } from "../_components/sidebar";
-import { Header } from "../_components/header";
-import { getCurrentUser } from "../lib/getCurrentUser";
-import { AuthUser } from "@/types/authuser.type";
+
+import { Sidebar } from "@/shared/components/layout/sidebar";
+import { Header } from "@/shared/components/layout/header";
+import { AuthUser } from "@/features/auth/types/AuthUser";
+import { getCurrentUser } from "@/features/auth/lib/getCurrentUser";
 
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {

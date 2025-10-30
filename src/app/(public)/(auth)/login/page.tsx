@@ -2,10 +2,11 @@
 
 import Link from 'next/link'
 import React, { useState } from 'react'
-import { LoginFormData, useLoginForm } from './_components/login-form'
-import { loginUserAction } from '@/app/actions/User/loginUser.actions'
+
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
+import { LoginFormData, useLoginForm } from '@/features/auth/components/login-form'
+import { loginUserAction } from '@/features/auth/actions/loginUser.actions'
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false)

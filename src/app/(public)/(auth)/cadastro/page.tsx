@@ -1,10 +1,10 @@
 'use client'
 
+import { registerUser } from '@/features/auth/actions/registerUser.actions'
+import { CadastroFormData, useCadastroForm } from '@/features/auth/components/cadastro-form'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
-import { CadastroFormData, useCadastroForm } from './_components/cadastro-form'
-import { registerUser } from '@/app/actions/User/registerUser.actions'
 
 export default function Cadastro() {
   const router = useRouter()
