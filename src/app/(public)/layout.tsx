@@ -1,21 +1,25 @@
 'use client'
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Sidebar } from "../_components/sidebar";
 import { Header } from "../_components/header";
+import { getCurrentUser } from "../lib/getCurrentUser";
+import { AuthUser } from "@/types/authuser.type";
 
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [user, setUser] = useState<AuthUser | null>(null);
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen)
-  }
+  useEffect(() => {
+    getCurrentUser().then(setUser);
+  }, []);
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <Sidebar setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} />
+      {/* Sidebar */}
+      <Sidebar setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen} user={user} />
 
       {/* Main Content */}
       <div className="flex flex-col flex-1 overflow-hidden">
@@ -25,6 +29,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           {children}
         </main>
       </div>
+
     </div>
   )
 }

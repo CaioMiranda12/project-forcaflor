@@ -1,30 +1,31 @@
 import { Calendar, FileText, Home, LogOut, Newspaper, User, Users, X } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { logout } from "../actions/User/logout.actions";
+import { AuthUser } from "@/types/authuser.type";
+import { privateLinks, publicLinks } from "@/constants/menuLinks";
 
 interface SidebarProps {
   sidebarOpen: boolean
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>
+  user: AuthUser | null;
 }
 
 
-export function Sidebar({ setSidebarOpen, sidebarOpen }: SidebarProps) {
+export function Sidebar({ setSidebarOpen, sidebarOpen, user }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
   }
 
+  async function handleLogout() {
+    await logout();
+  }
 
-  const menuItems = [
-    { path: '/', label: 'Início', icon: Home },
-    { path: '/perfil', label: 'Perfil', icon: User },
-    { path: '/noticias', label: 'Notícias', icon: Newspaper },
-    { path: '/cronograma', label: 'Cronograma', icon: Calendar },
-    { path: '/usuarios', label: 'Usuários', icon: Users },
-    { path: '/posts', label: 'Posts', icon: FileText },
-  ]
+
+  const menuItems = !user ? publicLinks : privateLinks;
 
   return (
     <>
@@ -36,6 +37,8 @@ export function Sidebar({ setSidebarOpen, sidebarOpen }: SidebarProps) {
 
         <nav className="flex-1 px-4 py-6 space-y-2" role="navigation" aria-label="Menu principal">
           {menuItems.map((item) => {
+
+
             const Icon = item.icon
             const isActive = pathname === item.path
 
@@ -57,14 +60,16 @@ export function Sidebar({ setSidebarOpen, sidebarOpen }: SidebarProps) {
         </nav>
 
         <div className="p-4 border-t border-gray-200">
-          <button
-            className="flex items-center w-full px-4 py-3 text-base font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-red-600 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-            aria-label="Sair do sistema"
-            onClick={() => logout()}
-          >
-            <LogOut className="w-5 h-5 mr-3" aria-hidden="true" />
-            Sair
-          </button>
+          {user && (
+            <button
+              className="flex items-center w-full px-4 py-3 text-base font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-red-600 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+              aria-label="Sair do sistema"
+              onClick={handleLogout}
+            >
+              <LogOut className="w-5 h-5 mr-3" aria-hidden="true" />
+              Sair
+            </button>
+          )}
         </div>
       </aside>
 
@@ -93,6 +98,8 @@ export function Sidebar({ setSidebarOpen, sidebarOpen }: SidebarProps) {
 
         <nav className="flex-1 px-4 py-6 space-y-2" role="navigation" aria-label="Menu principal mobile">
           {menuItems.map((item) => {
+
+
             const Icon = item.icon
             const isActive = pathname === item.path
 
@@ -115,13 +122,16 @@ export function Sidebar({ setSidebarOpen, sidebarOpen }: SidebarProps) {
         </nav>
 
         <div className="p-4 border-t border-gray-200">
-          <button
-            className="flex items-center w-full px-4 py-3 text-base font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-red-600 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-            aria-label="Sair do sistema"
-          >
-            <LogOut className="w-5 h-5 mr-3" aria-hidden="true" />
-            Sair
-          </button>
+          {user && (
+            <button
+              className="flex items-center w-full px-4 py-3 text-base font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-red-600 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+              aria-label="Sair do sistema"
+              onClick={handleLogout}
+            >
+              <LogOut className="w-5 h-5 mr-3" aria-hidden="true" />
+              Sair
+            </button>
+          )}
         </div>
       </aside>
     </>
