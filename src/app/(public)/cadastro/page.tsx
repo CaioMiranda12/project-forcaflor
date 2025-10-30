@@ -32,7 +32,7 @@ export default function Cadastro() {
       })
 
       const result = await registerUser(formData)
-      console.log("✅ Dados enviados:", data)
+      console.log("✅ Dados enviados:", result)
       toast.success('Cadastro realizado com sucesso!')
       router.push('/login')
     } catch {
