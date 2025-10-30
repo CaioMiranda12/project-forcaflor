@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 import { CadastroFormData, useCadastroForm } from './_components/cadastro-form'
+import { registerUser } from '@/app/actions/user.actions'
 
 export default function Cadastro() {
   const router = useRouter()
@@ -17,10 +18,23 @@ export default function Cadastro() {
   async function onSubmit(data: CadastroFormData) {
     try {
       setIsLoading(true)
-      await new Promise((res) => setTimeout(res, 2000))
+
+      const formData = new FormData()
+
+      Object.entries(data).forEach(([key, value]) => {
+        if (typeof value === "object" && value !== null) {
+          Object.entries(value).forEach(([subKey, subValue]) => {
+            formData.append(`${key}.${subKey}`, String(subValue ?? ""))
+          })
+        } else {
+          formData.append(key, String(value ?? ""))
+        }
+      })
+
+      const result = await registerUser(formData)
       console.log("✅ Dados enviados:", data)
       toast.success('Cadastro realizado com sucesso!')
-      // router.push('/login')
+      router.push('/login')
     } catch {
       toast.error('Erro ao realizar cadastro. Tente novamente.')
     } finally {
