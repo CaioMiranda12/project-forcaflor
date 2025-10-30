@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { Calendar, FileText, Home, LogOut, Menu, Newspaper, User, Users, X } from "lucide-react";
+import { logout } from "../actions/User/logout.actions";
 
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
@@ -59,6 +60,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           <button
             className="flex items-center w-full px-4 py-3 text-base font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-red-600 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
             aria-label="Sair do sistema"
+            onClick={() => logout()}
           >
             <LogOut className="w-5 h-5 mr-3" aria-hidden="true" />
             Sair

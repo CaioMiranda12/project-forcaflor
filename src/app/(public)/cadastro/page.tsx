@@ -4,16 +4,13 @@ import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 import { CadastroFormData, useCadastroForm } from './_components/cadastro-form'
-import { registerUser } from '@/app/actions/user.actions'
+import { registerUser } from '@/app/actions/User/registerUser.actions'
 
 export default function Cadastro() {
   const router = useRouter()
   const form = useCadastroForm();
   const [isLoading, setIsLoading] = useState(false)
   const aceitouTermos = form.watch("aceitouTermos")
-
-  console.log(form.formState.errors)
-
 
   async function onSubmit(data: CadastroFormData) {
     try {
@@ -31,8 +28,7 @@ export default function Cadastro() {
         }
       })
 
-      const result = await registerUser(formData)
-      console.log("✅ Dados enviados:", result)
+      await registerUser(formData)
       toast.success('Cadastro realizado com sucesso!')
       router.push('/login')
     } catch {

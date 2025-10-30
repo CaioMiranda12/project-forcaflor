@@ -2,14 +2,47 @@
 
 import Link from 'next/link'
 import React, { useState } from 'react'
-import { useLoginForm } from './_components/login-form'
+import { LoginFormData, useLoginForm } from './_components/login-form'
+import { loginUserAction } from '@/app/actions/User/loginUser.actions'
+import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false)
   const form = useLoginForm();
+  const router = useRouter();
 
-  async function onSubmit() {
-    console.log('clicou')
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, '')
+    if (value.length > 2 && value.length <= 4) {
+      value = `${value.slice(0, 2)}/${value.slice(2)}`
+    } else if (value.length > 4) {
+      value = `${value.slice(0, 2)}/${value.slice(2, 4)}/${value.slice(4, 8)}`
+    }
+
+    e.target.value = value
+    form.setValue('dataNascimento', value)
+  }
+
+  async function onSubmit(data: LoginFormData) {
+    try {
+      setIsLoading(true)
+      const formData = new FormData()
+      formData.append('nomeCompleto', data.nomeCompleto)
+      formData.append('dataNascimento', data.dataNascimento)
+
+      const result = await loginUserAction(formData)
+      if (result.success) {
+        toast.success('Login bem-sucedido!')
+        router.push('/')
+      }
+
+    } catch (err) {
+      toast.error('Usuario não encontrado')
+    }
+    finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -55,6 +88,7 @@ export default function Login() {
               </label>
               <input
                 type="text"
+                maxLength={10}
                 {...form.register('dataNascimento', {
                   required: 'A data de nascimento é obrigatória',
                   pattern: {
@@ -63,6 +97,7 @@ export default function Login() {
                   },
                 })}
                 placeholder='dd/mm/aaaa'
+                onChange={handleDateChange}
                 className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                 style={form.formState.errors.dataNascimento && { border: '2px solid red' }}
               />
