@@ -29,11 +29,21 @@ export default function Cadastro() {
   }
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    form.setValue("dataNascimento", value)
-    if (value) {
+    let value = e.target.value.replace(/\D/g, '')
+    if (value.length > 2 && value.length <= 4) {
+      value = `${value.slice(0, 2)}/${value.slice(2)}`
+    } else if (value.length > 4) {
+      value = `${value.slice(0, 2)}/${value.slice(2, 4)}/${value.slice(4, 8)}`
+    }
+
+    e.target.value = value
+    form.setValue('dataNascimento', value)
+
+    // Se estiver completo, calcula idade
+    if (/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d\d$/.test(value)) {
+      const [dia, mes, ano] = value.split('/').map(Number)
+      const nascimento = new Date(ano, mes - 1, dia)
       const hoje = new Date()
-      const nascimento = new Date(value)
       let idade = hoje.getFullYear() - nascimento.getFullYear()
       const mesAtual = hoje.getMonth()
       const mesNascimento = nascimento.getMonth()
@@ -42,9 +52,13 @@ export default function Cadastro() {
         idade--
       }
 
-      form.setValue("idade", idade)
+      form.setValue('idade', idade)
+    } else {
+      form.setValue('idade', 0)
     }
   }
+
+
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -89,11 +103,20 @@ export default function Cadastro() {
                     Data de Nascimento *
                   </label>
                   <input
-                    type="date"
-                    {...form.register('dataNascimento')}
+                    type="text"
+                    maxLength={10}
+                    {...form.register('dataNascimento', {
+                      required: 'A data de nascimento é obrigatória',
+                      pattern: {
+                        value: /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d\d$/,
+                        message: 'Formato inválido. Use dd/mm/aaaa',
+                      },
+                    })}
+                    placeholder="dd/mm/aaaa"
                     onChange={handleDateChange}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     style={form.formState.errors.dataNascimento && { border: '2px solid red' }}
+
                   />
                   {form.formState.errors.dataNascimento && (
                     <p className="text-red-600 text-sm mt-1">{form.formState.errors.dataNascimento.message}</p>
