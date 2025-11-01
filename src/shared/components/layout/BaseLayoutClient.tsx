@@ -6,7 +6,7 @@ import { Header } from "./header";
 import type { AuthUser } from "@/features/auth/types/AuthUser";
 import { AuthProvider } from "@/features/auth/context/AuthContext";
 
-export default function PublicLayoutClient({
+export default function BaseLayoutClient({
   user,
   children,
 }: {

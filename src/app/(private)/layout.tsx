@@ -1,9 +1,14 @@
 import { getCurrentUser } from "@/features/auth/lib/getCurrentUser";
 import BaseLayoutClient from "@/shared/components/layout/BaseLayoutClient";
+import { redirect } from "next/navigation";
 
 
-export default async function PublicLayout({ children }: { children: React.ReactNode }) {
+export default async function PrivateLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser();
+
+  if (!user) {
+    redirect('/')
+  }
 
   return (
     <BaseLayoutClient
