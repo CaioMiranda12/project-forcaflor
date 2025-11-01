@@ -3,17 +3,10 @@
 import React from 'react'
 import { Calendar, FileText, Clock, MapPin, UserPlus, LogIn } from 'lucide-react'
 import Link from 'next/link'
+import { useAuth } from '@/features/auth/context/AuthContext'
 
 export default function Dashboard() {
-  const handleLogin = () => {
-    // Implementar lógica de login
-    console.log('Redirecionando para login...')
-  }
-
-  const handleSignUp = () => {
-    // Implementar lógica de criação de conta
-    console.log('Redirecionando para criar conta...')
-  }
+  const { user } = useAuth();
 
   const recentNews = [
     {
@@ -78,47 +71,49 @@ export default function Dashboard() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
-          <div className="text-center">
-            <div className="p-4 bg-[#E31969] rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-              <LogIn className="w-8 h-8 text-white" aria-hidden="true" />
+      {!user && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+            <div className="text-center">
+              <div className="p-4 bg-[#E31969] rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <LogIn className="w-8 h-8 text-white" aria-hidden="true" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Fazer Login
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Acesse sua conta para gerenciar atividades e conteúdo
+              </p>
+              <Link
+                href={'/login'}
+                className="w-full px-6 py-3 bg-[#E31969] text-white rounded-lg hover:bg-[#c41456] active:bg-[#a01145] transition-colors duration-200 font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#E31969] focus:ring-offset-2"
+              >
+                Entrar
+              </Link>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Fazer Login
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Acesse sua conta para gerenciar atividades e conteúdo
-            </p>
-            <Link
-              href={'/login'}
-              className="w-full px-6 py-3 bg-[#E31969] text-white rounded-lg hover:bg-[#c41456] active:bg-[#a01145] transition-colors duration-200 font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#E31969] focus:ring-offset-2"
-            >
-              Entrar
-            </Link>
           </div>
-        </div>
 
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
-          <div className="text-center">
-            <div className="p-4 bg-[#61CE70] rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-              <UserPlus className="w-8 h-8 text-white" aria-hidden="true" />
+          <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+            <div className="text-center">
+              <div className="p-4 bg-[#61CE70] rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <UserPlus className="w-8 h-8 text-white" aria-hidden="true" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Criar Conta
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Cadastre-se para participar das atividades da comunidade
+              </p>
+              <Link
+                href={'/cadastro'}
+                className="w-full px-6 py-3 bg-[#61CE70] text-white rounded-lg hover:bg-[#4fb85f] active:bg-[#3da34d] transition-colors duration-200 font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#61CE70] focus:ring-offset-2"
+              >
+                Cadastrar
+              </Link>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Criar Conta
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Cadastre-se para participar das atividades da comunidade
-            </p>
-            <Link
-              href={'/cadastro'}
-              className="w-full px-6 py-3 bg-[#61CE70] text-white rounded-lg hover:bg-[#4fb85f] active:bg-[#3da34d] transition-colors duration-200 font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#61CE70] focus:ring-offset-2"
-            >
-              Cadastrar
-            </Link>
           </div>
         </div>
-      </div>
+      )}
 
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
