@@ -1,11 +1,13 @@
+import { AuthUser } from "@/features/auth/types/AuthUser";
 import { Menu } from "lucide-react";
 
 interface HeaderProps {
-  sidebarOpen: boolean
-  setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>
+  sidebarOpen: boolean;
+  setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  user: AuthUser | null;
 }
 
-export function Header({ setSidebarOpen, sidebarOpen }: HeaderProps) {
+export function Header({ setSidebarOpen, sidebarOpen, user }: HeaderProps) {
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
@@ -40,7 +42,7 @@ export function Header({ setSidebarOpen, sidebarOpen }: HeaderProps) {
             </span>
           </div>
           <div className="w-8 h-8 bg-[#61CE70] rounded-full flex items-center justify-center">
-            <span className="text-sm font-medium text-white">U</span>
+            <span className="text-sm font-medium text-white">{user?.nome ? user?.nome.charAt(0) : 'U'}</span>
           </div>
         </div>
       </div>
