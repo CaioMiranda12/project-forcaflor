@@ -1,6 +1,6 @@
 export type AuthUser = {
   userId: string;
   name: string;
-  exp: number;
-  iat: number;
+  exp?: number;
+  iat?: number;
 };

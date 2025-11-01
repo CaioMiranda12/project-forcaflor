@@ -36,6 +36,7 @@ export default function Login() {
       if (result.success) {
         toast.success('Login bem-sucedido!')
         router.push('/')
+        router.refresh()
       }
 
     } catch (err) {
