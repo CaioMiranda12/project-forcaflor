@@ -3,7 +3,7 @@ import { Home, User, Users, Calendar, Newspaper, FileText } from "lucide-react";
 export const publicLinks = [
   { path: "/", label: "Início", icon: Home },
   { path: "/noticias", label: "Notícias", icon: Newspaper },
-  { path: "/posts", label: "Posts", icon: FileText },
+  { path: '/cronograma', label: 'Cronograma', icon: Calendar },
 ];
 
 export const privateLinks = [
