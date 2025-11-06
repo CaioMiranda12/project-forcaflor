@@ -3,6 +3,7 @@ import React, { useState, useRef } from 'react'
 import { Upload, X, Image as ImageIcon } from 'lucide-react'
 import { Modal } from './Modal'
 import { PostFormData } from '../../types/post'
+import { CategoryType } from '../../types/category'
 
 interface Post {
   id?: number
@@ -19,7 +20,7 @@ interface PostModalProps {
   isOpen: boolean
   onClose: () => void
   post?: PostFormData | null
-  categories: Array<{ value: string; label: string; color: string }>
+  categories: CategoryType[],
   onSave: (post: Omit<PostFormData, 'id'>) => void
 }
 
@@ -103,7 +104,7 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
     setIsLoading(true)
 
     try {
-      const selectedCategory = categories.find(cat => cat.value === formData.category)
+      const selectedCategory = categories.find(cat => cat._id === formData.category)
 
       await onSave({
         title: formData.title,
@@ -282,7 +283,7 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
           >
             <option value="">Selecione uma categoria</option>
             {categories.map(category => (
-              <option key={category.value} value={category.value}>
+              <option key={category._id} value={category._id}>
                 {category.label}
               </option>
             ))}

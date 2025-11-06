@@ -2,19 +2,19 @@
 
 import { connectDatabase } from "@/lib/db";
 import { Category } from "../models/Category";
+import { CategoryType } from "../types/category";
 
 export async function getCategories() {
   try {
     await connectDatabase();
 
-    const categories = await Category.find().sort({ label: 1 }).lean();
+    const categories = await Category.find().sort({ label: 1 }).lean<CategoryType[]>();
 
     return {
       success: true,
       data: categories.map((cat) => ({
-        id: cat._id.toString(),
+        _id: cat._id.toString(),
         label: cat.label,
-        slug: cat.slug,
         color: cat.color,
       })),
     };

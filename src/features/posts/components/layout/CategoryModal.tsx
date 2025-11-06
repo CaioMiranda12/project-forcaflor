@@ -5,17 +5,12 @@ import { Modal } from './Modal'
 import { CategoryForm, CategoryFormData } from '../../forms/category-form'
 import { createCategory } from '../../actions/createCategory'
 import { toast } from 'react-toastify'
-
-interface Category {
-  value: string
-  label: string
-  color: string
-}
+import { CategoryType } from '../../types/category'
 
 interface CategoryModalProps {
   isOpen: boolean
   onClose: () => void
-  onSave: (category: Category) => void
+  onSave: (category: CategoryType) => void
 }
 
 export function CategoryModal({ isOpen, onClose, onSave }: CategoryModalProps) {
@@ -57,7 +52,7 @@ export function CategoryModal({ isOpen, onClose, onSave }: CategoryModalProps) {
 
       if (res.success && res.category) {
         onSave({
-          value: res.category._id,
+          _id: res.category._id,
           label: res.category.label,
           color: res.category.color,
         });

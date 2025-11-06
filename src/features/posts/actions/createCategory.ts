@@ -9,7 +9,7 @@ export async function createCategory(data: CategoryFormData) {
   try {
     await connectDatabase();
 
-    const exists = await Category.findOne({ value: data.label });
+    const exists = await Category.findOne({ label: data.label });
 
     if (exists) {
       return { success: false, message: "Categoria já existe" };

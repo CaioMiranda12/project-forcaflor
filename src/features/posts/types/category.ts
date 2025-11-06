@@ -1,5 +1,5 @@
-export type Category = {
-  value: string
+export type CategoryType = {
+  _id: string
   label: string
   color: string
 }

@@ -6,7 +6,7 @@ import { PostViewModal } from '@/features/posts/components/layout/PostViewModal'
 import { PostModal } from '@/features/posts/components/layout/PostModal'
 import { CategoryModal } from '@/features/posts/components/layout/CategoryModal'
 import { Post, PostFormData } from '@/features/posts/types/post'
-import { Category } from '@/features/posts/types/category'
+import { CategoryType } from '@/features/posts/types/category'
 import { getCategories } from '@/features/posts/actions/getCategories'
 
 export default function Posts() {
@@ -16,7 +16,7 @@ export default function Posts() {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false)
   const [selectedPost, setSelectedPost] = useState<Post | null>(null)
   const [isEditing, setIsEditing] = useState(false)
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<CategoryType[]>([]);
 
   // const [categories, setCategories] = useState<Category[]>([
   //   { value: 'education', label: 'Educação', color: '#E31969' },
@@ -33,7 +33,7 @@ export default function Posts() {
 
         if (res.success && Array.isArray(res.data)) {
           const formatted = res.data.map((cat) => ({
-            value: cat.slug,
+            _id: cat._id,
             label: cat.label,
             color: cat.color,
           }));
@@ -147,7 +147,7 @@ export default function Posts() {
   })
 
   const getCategoryColor = (categoryValue: string) => {
-    const category = categories.find(cat => cat.value === categoryValue)
+    const category = categories.find(cat => cat._id === categoryValue)
     return category?.color || '#6B7280'
   }
 
@@ -207,7 +207,7 @@ export default function Posts() {
             views: selectedPost.views,
             featured: selectedPost.featured,
             statusLabel: statusLabelMap[postData.status],
-            categoryLabel: categories.find(c => c.value === postData.category)?.label || '',
+            categoryLabel: categories.find(c => c.label === postData.category)?.label || '',
           }
           : post
       ))
@@ -223,17 +223,18 @@ export default function Posts() {
         views: 0,
         featured: false,
         statusLabel: statusLabelMap[postData.status],
-        categoryLabel: categories.find(c => c.value === postData.category)?.label || '',
+        categoryLabel: categories.find(c => c.label === postData.category)?.label || '',
       }
       setPosts([newPost, ...posts])
     }
   }
 
-  const handleSaveCategory = (categoryData: Category) => {
+  const handleSaveCategory = (categoryData: CategoryType) => {
     // Verificar se a categoria já existe
     const existingCategory = categories.find(cat =>
-      cat.value === categoryData.value || cat.label.toLowerCase() === categoryData.label.toLowerCase()
+      cat.label.toLowerCase() === categoryData.label.toLowerCase()
     )
+
 
     if (existingCategory) {
       alert('Uma categoria com este nome já existe!')
