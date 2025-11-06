@@ -1,17 +1,13 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Search, Plus, Edit, Trash2, Eye, Calendar, User, FolderPlus } from 'lucide-react'
 import { PostViewModal } from '@/features/posts/components/layout/PostViewModal'
 import { PostModal } from '@/features/posts/components/layout/PostModal'
 import { CategoryModal } from '@/features/posts/components/layout/CategoryModal'
 import { Post, PostFormData } from '@/features/posts/types/post'
-
-interface Category {
-  value: string
-  label: string
-  color: string
-}
+import { Category } from '@/features/posts/types/category'
+import { getCategories } from '@/features/posts/actions/getCategories'
 
 export default function Posts() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -20,14 +16,41 @@ export default function Posts() {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false)
   const [selectedPost, setSelectedPost] = useState<Post | null>(null)
   const [isEditing, setIsEditing] = useState(false)
+  const [categories, setCategories] = useState<Category[]>([]);
 
-  const [categories, setCategories] = useState<Category[]>([
-    { value: 'education', label: 'Educação', color: '#E31969' },
-    { value: 'community', label: 'Comunidade', color: '#61CE70' },
-    { value: 'events', label: 'Eventos', color: '#8B5CF6' },
-    { value: 'achievements', label: 'Conquistas', color: '#F59E0B' },
-    { value: 'announcements', label: 'Avisos', color: '#3B82F6' }
-  ])
+  // const [categories, setCategories] = useState<Category[]>([
+  //   { value: 'education', label: 'Educação', color: '#E31969' },
+  //   { value: 'community', label: 'Comunidade', color: '#61CE70' },
+  //   { value: 'events', label: 'Eventos', color: '#8B5CF6' },
+  //   { value: 'achievements', label: 'Conquistas', color: '#F59E0B' },
+  //   { value: 'announcements', label: 'Avisos', color: '#3B82F6' }
+  // ])
+
+  useEffect(() => {
+    async function loadCategories() {
+      try {
+        const res = await getCategories();
+
+        if (res.success && Array.isArray(res.data)) {
+          const formatted = res.data.map((cat) => ({
+            value: cat.slug,
+            label: cat.label,
+            color: cat.color,
+          }));
+          setCategories(formatted);
+        } else {
+          console.error("❌ Erro ao carregar categorias:", res.message);
+        }
+      } catch (err) {
+        console.error("Erro inesperado ao buscar categorias:", err);
+      }
+    }
+
+    loadCategories();
+  }, []);
+
+  console.log(categories)
+
 
   const [posts, setPosts] = useState<Post[]>([
     {

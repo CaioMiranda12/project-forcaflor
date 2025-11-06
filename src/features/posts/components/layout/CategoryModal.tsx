@@ -2,6 +2,9 @@
 import React, { useState } from 'react'
 import { Check } from 'lucide-react'
 import { Modal } from './Modal'
+import { CategoryForm, CategoryFormData } from '../../forms/category-form'
+import { createCategory } from '../../actions/createCategory'
+import { toast } from 'react-toastify'
 
 interface Category {
   value: string
@@ -16,10 +19,18 @@ interface CategoryModalProps {
 }
 
 export function CategoryModal({ isOpen, onClose, onSave }: CategoryModalProps) {
-  const [name, setName] = useState('')
-  const [selectedColor, setSelectedColor] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    watch,
+    formState: { errors },
+  } = CategoryForm();
+
+  const name = watch("label");
+  const selectedColor = watch("color");
 
   const predefinedColors = [
     { name: 'Rosa', value: '#E31969', textColor: 'text-white' },
@@ -36,72 +47,36 @@ export function CategoryModal({ isOpen, onClose, onSave }: CategoryModalProps) {
     { name: 'Cinza', value: '#6B7280', textColor: 'text-white' }
   ]
 
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {}
-
-    if (!name.trim()) {
-      newErrors.name = 'Nome da categoria é obrigatório'
-    } else if (name.length < 2) {
-      newErrors.name = 'Nome deve ter pelo menos 2 caracteres'
-    } else if (name.length > 30) {
-      newErrors.name = 'Nome deve ter no máximo 30 caracteres'
-    }
-
-    if (!selectedColor) {
-      newErrors.color = 'Selecione uma cor para a categoria'
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const generateSlug = (text: string) => {
-    return text
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '') // Remove acentos
-      .replace(/[^a-z0-9\s-]/g, '') // Remove caracteres especiais
-      .replace(/\s+/g, '-') // Substitui espaços por hífens
-      .replace(/-+/g, '-') // Remove hífens duplicados
-      .trim()
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!validateForm()) {
-      return
-    }
-
-    setIsLoading(true)
-
+  const onSubmit = async (data: CategoryFormData) => {
+    setIsLoading(true);
     try {
-      const category: Category = {
-        value: generateSlug(name),
-        label: name.trim(),
-        color: selectedColor
+      const res = await createCategory({
+        label: data.label,
+        color: data.color,
+      });
+
+      if (res.success && res.category) {
+        onSave({
+          value: res.category._id,
+          label: res.category.label,
+          color: res.category.color,
+        });
+        toast.success('Categoria criada com sucesso!')
+      } else {
+        toast.error(res.message || "Erro ao criar categoria");
       }
 
-      await onSave(category)
-
-      // Reset form
-      setName('')
-      setSelectedColor('')
-      setErrors({})
-      onClose()
-    } catch (error) {
-      console.error('Erro ao criar categoria:', error)
+      reset();
+      onClose();
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 
   const handleClose = () => {
     if (!isLoading) {
-      setName('')
-      setSelectedColor('')
-      setErrors({})
-      onClose()
+      reset();
+      onClose();
     }
   }
 
@@ -112,31 +87,26 @@ export function CategoryModal({ isOpen, onClose, onSave }: CategoryModalProps) {
       title="Nova Categoria"
       size="md"
     >
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Nome da Categoria */}
         <div>
           <label htmlFor="category-name" className="block text-base font-medium text-gray-700 mb-2">
             Nome da Categoria *
           </label>
           <input
-            id="category-name"
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className={`w-full px-4 py-3 border rounded-lg text-base focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] ${errors.name ? 'border-red-500' : 'border-gray-300'
+            {...register("label")}
+            type='text'
+            className={`w-full px-4 py-3 border rounded-lg text-base ${errors.label ? "border-red-500" : "border-gray-300"
               }`}
             placeholder="Digite o nome da categoria..."
             maxLength={30}
-            aria-describedby={errors.name ? 'name-error' : undefined}
           />
-          {errors.name && (
-            <p id="name-error" className="mt-2 text-sm text-red-600" role="alert">
-              {errors.name}
+          {errors.label && (
+            <p className="mt-2 text-sm text-red-600" role="alert">
+              {errors.label.message}
             </p>
           )}
-          <p className="mt-1 text-sm text-gray-500">
-            {name.length}/30 caracteres
-          </p>
+          <p className="mt-1 text-sm text-gray-500">{name?.length ?? 0}/30 caracteres</p>
         </div>
 
         {/* Seleção de Cor */}
@@ -149,13 +119,12 @@ export function CategoryModal({ isOpen, onClose, onSave }: CategoryModalProps) {
               <button
                 key={color.value}
                 type="button"
-                onClick={() => setSelectedColor(color.value)}
+                onClick={() => setValue("color", color.value)}
                 className={`relative p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#E31969] focus:ring-offset-2 ${selectedColor === color.value
-                    ? 'border-gray-800 shadow-lg'
-                    : 'border-gray-300 hover:border-gray-400'
+                  ? 'border-gray-800 shadow-lg'
+                  : 'border-gray-300 hover:border-gray-400'
                   }`}
                 style={{ backgroundColor: color.value }}
-                aria-label={`Selecionar cor ${color.name}`}
               >
                 <div className="flex flex-col items-center">
                   {selectedColor === color.value && (
@@ -170,7 +139,7 @@ export function CategoryModal({ isOpen, onClose, onSave }: CategoryModalProps) {
           </div>
           {errors.color && (
             <p className="mt-2 text-sm text-red-600" role="alert">
-              {errors.color}
+              {errors.color.message}
             </p>
           )}
         </div>
