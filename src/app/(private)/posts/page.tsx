@@ -1,16 +1,18 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Search, Plus, Edit, Trash2, Eye, Calendar, User, FolderPlus } from 'lucide-react'
+import { Search, Plus, Edit, Trash2, Eye, Calendar, User, FolderPlus, Settings } from 'lucide-react'
 import { PostViewModal } from '@/features/posts/components/layout/PostViewModal'
 import { PostModal } from '@/features/posts/components/layout/PostModal'
 import { CategoryModal } from '@/features/posts/components/layout/CategoryModal'
 import { Post, PostFormData } from '@/features/posts/types/post'
 import { CategoryType } from '@/features/posts/types/category'
 import { getCategories } from '@/features/posts/actions/getCategories'
+import { ManageCategoriesModalProps } from '@/features/posts/components/layout/ManageCategoriesModal'
 
 export default function Posts() {
   const [searchTerm, setSearchTerm] = useState('')
+  const [isManageCategoriesModalOpen, setIsManageCategoriesModalOpen] = useState(false)
   const [isPostModalOpen, setIsPostModalOpen] = useState(false)
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false)
   const [isViewModalOpen, setIsViewModalOpen] = useState(false)
@@ -244,6 +246,33 @@ export default function Posts() {
     setCategories([...categories, categoryData])
   }
 
+  const handleUpdateCategory = (oldValue: string, updatedCategory: CategoryType) => {
+    // setCategories(categories.map(cat => 
+    //   cat._id === oldValue ? updatedCategory : cat
+    // ))
+
+    // // Atualizar posts que usam essa categoria
+    // setPosts(posts.map(post => 
+    //   post.category === oldValue 
+    //     ? { ...post, category: updatedCategory._id, categoryLabel: updatedCategory.label }
+    //     : post
+    // ))
+  }
+
+  const handleDeleteCategory = (categoryValue: string) => {
+    // // Verificar se há posts usando essa categoria
+    // const postsUsingCategory = posts.filter(post => post.category === categoryValue)
+
+    // if (postsUsingCategory.length > 0) {
+    //   alert(`Não é possível excluir esta categoria pois existem ${postsUsingCategory.length} post(s) usando-a.`)
+    //   return
+    // }
+
+    // if (confirm('Tem certeza que deseja excluir esta categoria?')) {
+    //   setCategories(categories.filter(cat => cat.value !== categoryValue))
+    // }
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -258,6 +287,13 @@ export default function Posts() {
             </p>
           </div>
           <div className="mt-4 sm:mt-0 flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={() => setIsManageCategoriesModalOpen(true)}
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors duration-200 font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 flex items-center justify-center"
+            >
+              <Settings className="w-5 h-5 mr-2" aria-hidden="true" />
+              Gerenciar Categorias
+            </button>
             <button
               onClick={() => setIsCategoryModalOpen(true)}
               className="px-4 py-2 border border-[#E31969] text-[#E31969] rounded-lg hover:bg-[#E31969] hover:text-white active:bg-[#c41456] transition-colors duration-200 font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#E31969] focus:ring-offset-2 flex items-center justify-center"
@@ -421,6 +457,14 @@ export default function Posts() {
         onClose={() => setIsViewModalOpen(false)}
         post={selectedPost}
         onEdit={handleEditPost}
+      />
+
+      <ManageCategoriesModalProps
+        isOpen={isManageCategoriesModalOpen}
+        onClose={() => setIsManageCategoriesModalOpen(false)}
+        categories={categories}
+        onUpdate={handleUpdateCategory}
+        onDelete={handleDeleteCategory}
       />
     </div>
   )
