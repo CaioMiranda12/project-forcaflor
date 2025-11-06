@@ -9,6 +9,9 @@ import { Post, PostFormData } from '@/features/posts/types/post'
 import { CategoryType } from '@/features/posts/types/category'
 import { getCategories } from '@/features/posts/actions/getCategories'
 import { ManageCategoriesModalProps } from '@/features/posts/components/layout/ManageCategoriesModal'
+import { updateCategory } from '@/features/posts/actions/updateCategory'
+import { toast } from 'react-toastify'
+import { deleteCategory } from '@/features/posts/actions/deleteCategory'
 
 export default function Posts() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -246,31 +249,61 @@ export default function Posts() {
     setCategories([...categories, categoryData])
   }
 
-  const handleUpdateCategory = (oldValue: string, updatedCategory: CategoryType) => {
-    // setCategories(categories.map(cat => 
-    //   cat._id === oldValue ? updatedCategory : cat
-    // ))
+  const handleUpdateCategory = async (oldId: string, updatedCategory: CategoryType) => {
+    try {
+      const res = await updateCategory(oldId, {
+        label: updatedCategory.label,
+        color: updatedCategory.color,
+      });
 
-    // // Atualizar posts que usam essa categoria
-    // setPosts(posts.map(post => 
-    //   post.category === oldValue 
-    //     ? { ...post, category: updatedCategory._id, categoryLabel: updatedCategory.label }
-    //     : post
-    // ))
+      if (!res.success) {
+        toast.error(res.message);
+        return;
+      }
+
+      // Atualizar a lista local de categorias
+      setCategories(categories.map(cat =>
+        cat._id === oldId ? { ...cat, ...updatedCategory } : cat
+      ));
+
+      // Atualizar posts com a nova categoria
+      setPosts(posts.map(post =>
+        post.category === oldId
+          ? { ...post, category: updatedCategory._id, categoryLabel: updatedCategory.label }
+          : post
+      ));
+
+      toast.success("Categoria atualizada com sucesso!");
+    } catch (error) {
+      toast.error("Erro ao atualizar categoria:");
+    }
   }
 
-  const handleDeleteCategory = (categoryValue: string) => {
-    // // Verificar se há posts usando essa categoria
-    // const postsUsingCategory = posts.filter(post => post.category === categoryValue)
+  const handleDeleteCategory = async (categoryId: string) => {
+    // Verificar se há posts usando essa categoria
+    const postsUsingCategory = posts.filter(post => post.category === categoryId);
 
-    // if (postsUsingCategory.length > 0) {
-    //   alert(`Não é possível excluir esta categoria pois existem ${postsUsingCategory.length} post(s) usando-a.`)
-    //   return
-    // }
+    if (postsUsingCategory.length > 0) {
+      alert(`❌ Não é possível excluir: existem ${postsUsingCategory.length} post(s) usando esta categoria.`);
+      return;
+    }
 
-    // if (confirm('Tem certeza que deseja excluir esta categoria?')) {
-    //   setCategories(categories.filter(cat => cat.value !== categoryValue))
-    // }
+    if (!confirm("Tem certeza que deseja excluir esta categoria?")) return;
+
+    try {
+      const res = await deleteCategory(categoryId);
+
+      if (!res.success) {
+        toast.error(res.message);
+        return;
+      }
+
+      // Atualizar o estado local
+      setCategories(categories.filter(cat => cat._id !== categoryId));
+      toast.success("Categoria excluída com sucesso!");
+    } catch (error) {
+      toast.error("Erro ao excluir categoria.");
+    }
   }
 
   return (
