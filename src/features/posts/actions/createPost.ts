@@ -2,6 +2,7 @@
 
 import { connectDatabase } from "@/lib/db";
 import { Post } from "../models/Post";
+import { revalidatePath } from "next/cache";
 
 interface CreatePostData {
   title: string;
@@ -40,16 +41,33 @@ export async function createPost(data: CreatePostData) {
       featured: data.featured ?? false
     });
 
+    const populatedPost = await newPost.populate("category", "label color");
+
+
+    revalidatePath("/posts");
+
     return {
       success: true,
       message: "Post criado com sucesso!",
       data: {
-        id: newPost._id.toString(),
-        title: newPost.title,
-        status: newPost.status,
-        featured: newPost.featured,
-        publishDate: newPost.publishDate,
-        createdAt: newPost.createdAt,
+        id: populatedPost._id.toString(),
+        title: populatedPost.title,
+        excerpt: populatedPost.excerpt,
+        content: populatedPost.content,
+        status: populatedPost.status,
+        featured: populatedPost.featured,
+        author: populatedPost.author,
+        publishDate: populatedPost.publishDate,
+        createdAt: populatedPost.createdAt,
+        updatedAt: populatedPost.updatedAt,
+        image: populatedPost.image,
+        category: populatedPost.category
+          ? {
+            id: populatedPost.category._id.toString(),
+            label: populatedPost.category.label,
+            color: populatedPost.category.color,
+          }
+          : null,
       },
     };
   } catch (error) {

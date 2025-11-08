@@ -5,9 +5,9 @@ import { Modal } from './Modal'
 import { PostFormData, PostWithId } from '../../forms/post-form'
 import { CategoryType } from '../../types/category'
 import { toast } from 'react-toastify'
-import { createPost } from '../../actions/createPost'
+// import { createPost } from '../../actions/createPost'
 import { useAuth } from '@/features/auth/context/AuthContext'
-import { updatePost } from '../../actions/updatePost'
+// import { updatePost } from '../../actions/updatePost'
 import { usePostForm } from '../../forms/post-form'
 
 interface PostModalProps {
@@ -89,24 +89,8 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
       return;
     }
 
-    try {
-      const payload = { ...data, author: user.nome }
-
-      const result = post
-        ? await updatePost({ ...payload, id: post.id || "" })
-        : await createPost(payload)
-
-      if (result.success) {
-        toast.success(post ? "✅ Post atualizado!" : "✅ Post criado!")
-        onSave({ ...data, author: user.nome, id: post?.id })
-        onClose()
-      } else {
-        toast.error(result.message || "Erro ao salvar post.")
-      }
-    } catch (err) {
-      console.error(err)
-      toast.error("Erro inesperado ao salvar post.")
-    }
+    // envia os dados limpos para o componente pai
+    onSave({ ...data, author: user.nome, id: post?.id });
   };
 
   return (

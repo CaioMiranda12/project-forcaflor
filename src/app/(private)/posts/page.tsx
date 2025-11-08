@@ -16,6 +16,9 @@ import { getPosts } from '@/features/posts/actions/getPosts'
 import { useAuth } from '@/features/auth/context/AuthContext'
 import { deletePost } from '@/features/posts/actions/deletePost'
 import { PostFormData } from '@/features/posts/forms/post-form'
+import { formatLocalDate } from '@/shared/utils/formatLocalDate '
+import { updatePost } from '@/features/posts/actions/updatePost'
+import { createPost } from '@/features/posts/actions/createPost'
 
 export default function Posts() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -177,51 +180,120 @@ export default function Posts() {
         toast.error("Erro ao excluir o post.")
       }
 
-      setPosts(posts.filter(post => post.id !== postId))
+      // setPosts(posts.filter(post => post.id !== postId))
+      setPosts(prev => prev.filter(post => post.id !== postId));
     }
   }
 
-  const handleSavePost = (postData: Omit<PostFormData, 'id'>) => {
-    const statusLabelMap: Record<Post['status'], string> = {
-      published: 'Publicado',
-      draft: 'Rascunho',
-      scheduled: 'Agendado',
-    }
 
-    if (isEditing && selectedPost) {
-      // Atualizar post existente
-      setPosts(posts.map(post =>
-        post.id === selectedPost.id
-          ? {
-            ...postData,
-            id: selectedPost.id,
-            author: selectedPost.author,
-            publishDate: postData.status === 'published' && !selectedPost.publishDate
-              ? new Date().toISOString().split('T')[0]
-              : selectedPost.publishDate,
-            lastModified: new Date().toISOString().split('T')[0],
-            lastModifiedBy: user.nome, // Em uma aplicação real, viria do contexto do usuário
-            featured: selectedPost.featured,
-            statusLabel: statusLabelMap[postData.status],
-            categoryLabel: categories.find(c => c.label === postData.categoryId)?.label || '',
-          }
-          : post
-      ))
-    } else {
-      // Criar novo post
-      const newPost: Post = {
-        ...postData,
-        id: Date.now().toString(),
-        author: user.nome, // Em uma aplicação real, viria do contexto do usuário
-        publishDate: postData.status === 'published' ? new Date().toISOString().split('T')[0] : null,
-        lastModified: new Date().toISOString().split('T')[0],
-        lastModifiedBy: user.nome,
-        featured: false,
-        statusLabel: statusLabelMap[postData.status],
+  const handleSavePost = async (postData: Omit<PostFormData, "id">) => {
+    const statusLabelMap: Record<Post["status"], string> = {
+      published: "Publicado",
+      draft: "Rascunho",
+      scheduled: "Agendado",
+    };
+
+    try {
+      if (isEditing && selectedPost) {
+        // Atualiza post existente
+        const result = await updatePost({
+          id: selectedPost.id,
+          ...postData,
+          author: selectedPost.author,
+        });
+
+        if (!result.success || !result.data) {
+          toast.error(result.message || "Erro ao atualizar post");
+          return;
+        }
+
+        // Atualiza o estado local com o retorno real
+        setPosts((prev) =>
+          prev.map((post) =>
+            post.id === selectedPost.id
+              ? {
+                ...post,
+                id: result.data.id,
+                title: result.data.title,
+                excerpt: postData.excerpt,
+                content: postData.content,
+                categoryId:
+                  typeof result.data.category === "object"
+                    ? result.data.category?.id
+                    : result.data.category,
+                categoryLabel:
+                  typeof result.data.category === "object"
+                    ? result.data.category?.label
+                    : categories.find((c) => c._id === result.data.category?.id)
+                      ?.label || "",
+                categoryColor:
+                  typeof result.data.category === "object"
+                    ? result.data.category?.color
+                    : categories.find((c) => c._id === result.data.category?.id)
+                      ?.color || "#6B7280",
+                status: postData.status,
+                statusLabel: statusLabelMap[postData.status],
+                featured: postData.featured ?? false,
+                lastModifiedBy: selectedPost.author,
+                lastModified: new Date().toISOString(),
+              }
+              : post
+          )
+        );
+
+        toast.success("Post atualizado com sucesso!");
+      } else {
+        // Cria novo post
+        const result = await createPost({
+          ...postData,
+          author: user.nome,
+        });
+
+        if (!result.success || !result.data) {
+          toast.error(result.message || "Erro ao criar post");
+          return;
+        }
+
+        const newPost = {
+          id: result.data.id,
+          title: result.data.title,
+          excerpt: postData.excerpt,
+          content: postData.content,
+          categoryId:
+            typeof result.data.category === "object"
+              ? result.data.category?.id
+              : result.data.category,
+          categoryLabel:
+            typeof result.data.category === "object"
+              ? result.data.category?.label
+              : categories.find((c) => c._id === result.data.category?.id)?.label ||
+              "Sem categoria",
+          categoryColor:
+            typeof result.data.category === "object"
+              ? result.data.category?.color
+              : categories.find((c) => c._id === result.data.category?.id)?.color ||
+              "#6B7280",
+          status: postData.status,
+          statusLabel: statusLabelMap[postData.status],
+          author: user.nome,
+          publishDate: result.data.publishDate || null,
+          lastModified: result.data.updatedAt || result.data.createdAt,
+          lastModifiedBy: user.nome,
+          image: postData.image || "",
+          featured: postData.featured ?? false,
+        };
+
+        setPosts((prev) => [newPost, ...prev]);
+        toast.success("Post criado com sucesso!");
       }
-      setPosts([newPost, ...posts])
+
+      setIsPostModalOpen(false);
+    } catch (error) {
+      console.error("Erro ao salvar post:", error);
+      toast.error("Erro inesperado ao salvar post.");
     }
-  }
+  };
+
 
   const handleSaveCategory = (categoryData: CategoryType) => {
     // Verificar se a categoria já existe
@@ -231,7 +303,7 @@ export default function Posts() {
 
 
     if (existingCategory) {
-      alert('Uma categoria com este nome já existe!')
+      toast.warning('Uma categoria com este nome já existe!')
       return
     }
 
@@ -273,7 +345,7 @@ export default function Posts() {
     const postsUsingCategory = posts.filter(post => post.categoryId === categoryId);
 
     if (postsUsingCategory.length > 0) {
-      alert(`❌ Não é possível excluir: existem ${postsUsingCategory.length} post(s) usando esta categoria.`);
+      toast.error(`❌ Não é possível excluir: existem ${postsUsingCategory.length} post(s) usando esta categoria.`);
       return;
     }
 
@@ -401,8 +473,8 @@ export default function Posts() {
                         <div className="flex items-center">
                           <Calendar className="w-4 h-4 mr-1" aria-hidden="true" />
                           {post.publishDate
-                            ? `Publicado em ${new Date(post.publishDate).toLocaleDateString('pt-BR')}`
-                            : `Modificado em ${new Date(post.lastModified).toLocaleDateString('pt-BR')}`
+                            ? `Publicado em ${formatLocalDate(post.publishDate)}`
+                            : `Modificado em ${formatLocalDate(post.lastModified)}`
                           }
                         </div>
                       </div>

@@ -2,6 +2,7 @@
 
 import { connectDatabase } from "@/lib/db";
 import { Post } from "../models/Post";
+import { revalidatePath } from "next/cache";
 
 interface UpdatePostData {
   id: string;
@@ -53,6 +54,8 @@ export async function updatePost(data: UpdatePostData) {
     if (!updated) {
       return { success: false, message: "Post não encontrado." };
     }
+
+    revalidatePath("/posts");
 
     return {
       success: true,
