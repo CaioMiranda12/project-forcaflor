@@ -150,9 +150,11 @@ export default function Dashboard() {
               ))}
             </div>
             <div className="p-6 border-t border-gray-200">
-              <button className="w-full sm:w-auto px-6 py-3 bg-[#E31969] text-white rounded-lg hover:bg-[#c41456] active:bg-[#a01145] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#E31969] focus:ring-offset-2">
-                Ver todas as notícias
-              </button>
+              <Link href={'/noticias'}>
+                <button className="w-full sm:w-auto px-6 py-3 bg-[#E31969] text-white rounded-lg hover:bg-[#c41456] active:bg-[#a01145] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#E31969] focus:ring-offset-2">
+                  Ver todas as notícias
+                </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -194,9 +196,11 @@ export default function Dashboard() {
             ))}
           </div>
           <div className="p-6 border-t border-gray-200">
-            <button className="w-full px-6 py-3 bg-[#61CE70] text-white rounded-lg hover:bg-[#4fb85f] active:bg-[#3da34d] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#61CE70] focus:ring-offset-2">
-              Ver cronograma completo
-            </button>
+            <Link href={'/cronograma'}>
+              <button className="w-full px-6 py-3 bg-[#61CE70] text-white rounded-lg hover:bg-[#4fb85f] active:bg-[#3da34d] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#61CE70] focus:ring-offset-2">
+                Ver cronograma completo
+              </button>
+            </Link>
           </div>
         </div>
       </div>
