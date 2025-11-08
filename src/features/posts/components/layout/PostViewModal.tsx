@@ -14,7 +14,6 @@ interface PostViewModalProps {
 
 export function PostViewModal({ isOpen, onClose, post, onEdit }: PostViewModalProps) {
   if (!post) return null
-  console.log(post)
 
   // const getCategoryColor = (categoryValue: string) => {
   //   const category = categories.find(cat => cat._id === categoryValue)

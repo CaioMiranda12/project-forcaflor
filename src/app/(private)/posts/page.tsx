@@ -5,7 +5,7 @@ import { Search, Plus, Edit, Trash2, Eye, Calendar, User, FolderPlus, Settings }
 import { PostViewModal } from '@/features/posts/components/layout/PostViewModal'
 import { PostModal } from '@/features/posts/components/layout/PostModal'
 import { CategoryModal } from '@/features/posts/components/layout/CategoryModal'
-import { Post, PostFormData } from '@/features/posts/types/post'
+import { Post } from '@/features/posts/types/post'
 import { CategoryType } from '@/features/posts/types/category'
 import { getCategories } from '@/features/posts/actions/getCategories'
 import { ManageCategoriesModalProps } from '@/features/posts/components/layout/ManageCategoriesModal'
@@ -15,6 +15,7 @@ import { deleteCategory } from '@/features/posts/actions/deleteCategory'
 import { getPosts } from '@/features/posts/actions/getPosts'
 import { useAuth } from '@/features/auth/context/AuthContext'
 import { deletePost } from '@/features/posts/actions/deletePost'
+import { PostFormData } from '@/features/posts/forms/post-form'
 
 export default function Posts() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -77,7 +78,7 @@ export default function Posts() {
           title: item.title || '',
           excerpt: item.excerpt || '',
           content: item.content || '',
-          category: item.category?._id || '',
+          categoryId: item.category?._id || '',
           categoryLabel: item.category?.label || "Sem categoria",
           categoryColor: item.category?.color || "#6B7280",
           status: item.status || 'draft',
@@ -202,7 +203,7 @@ export default function Posts() {
             lastModifiedBy: user.nome, // Em uma aplicação real, viria do contexto do usuário
             featured: selectedPost.featured,
             statusLabel: statusLabelMap[postData.status],
-            categoryLabel: categories.find(c => c.label === postData.category)?.label || '',
+            categoryLabel: categories.find(c => c.label === postData.categoryId)?.label || '',
           }
           : post
       ))
@@ -256,7 +257,7 @@ export default function Posts() {
 
       // Atualizar posts com a nova categoria
       setPosts(posts.map(post =>
-        post.category === oldId
+        post.categoryId === oldId
           ? { ...post, category: updatedCategory._id, categoryLabel: updatedCategory.label }
           : post
       ));
@@ -269,7 +270,7 @@ export default function Posts() {
 
   const handleDeleteCategory = async (categoryId: string) => {
     // Verificar se há posts usando essa categoria
-    const postsUsingCategory = posts.filter(post => post.category === categoryId);
+    const postsUsingCategory = posts.filter(post => post.categoryId === categoryId);
 
     if (postsUsingCategory.length > 0) {
       alert(`❌ Não é possível excluir: existem ${postsUsingCategory.length} post(s) usando esta categoria.`);
@@ -358,9 +359,9 @@ export default function Posts() {
                   <div className="flex flex-wrap items-center gap-2 mb-3">
                     <span
                       className="px-2 py-1 text-xs font-medium rounded-full text-white"
-                      style={{ backgroundColor: getCategoryColor(post.category) }}
+                      style={{ backgroundColor: getCategoryColor(post.categoryId) }}
                     >
-                      {categories.find(cat => cat._id === post.category)?.label || 'Sem categoria'}
+                      {categories.find(cat => cat._id === post.categoryId)?.label || 'Sem categoria'}
                     </span>
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(post.status)}`}>
                       {post.statusLabel}

@@ -1,35 +1,57 @@
 
-import React, { useState, useRef } from 'react'
-import { Upload, X, Image as ImageIcon } from 'lucide-react'
+import React, { useState, useRef, useEffect } from 'react'
+import { X, Image as ImageIcon } from 'lucide-react'
 import { Modal } from './Modal'
-import { PostFormData } from '../../types/post'
+import { PostFormData, PostWithId } from '../../forms/post-form'
 import { CategoryType } from '../../types/category'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { createPost } from '../../actions/createPost'
-import { PostForm } from '../../forms/post-form'
 import { useAuth } from '@/features/auth/context/AuthContext'
 import { updatePost } from '../../actions/updatePost'
+import { usePostForm } from '../../forms/post-form'
 
 interface PostModalProps {
   isOpen: boolean
   onClose: () => void
-  post?: PostFormData | null
+  post?: PostWithId | null
   categories: CategoryType[],
-  onSave: (post: PostFormData) => void
+  onSave: (post: PostWithId) => void
 }
 
 export function PostModal({ isOpen, onClose, post, categories, onSave }: PostModalProps) {
   const { user } = useAuth();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    watch,
-    setValue,
-  } = PostForm(post);
+  const { register, handleSubmit, watch, formState: { errors, isSubmitting }, setValue, reset } = usePostForm(post || {})
+
+  useEffect(() => {
+    if (post) {
+      reset({
+        title: post.title || "",
+        excerpt: post.excerpt || "",
+        content: post.content || "",
+        categoryId: post.categoryId || "",
+        status: post.status || "draft",
+        image: post.image || "",
+        author: post.author || "",
+        featured: post.featured || false,
+        publishDate: post.publishDate || null,
+      });
+      setImagePreview(post.image || "");
+    } else {
+      reset({
+        title: "",
+        excerpt: "",
+        content: "",
+        categoryId: "",
+        status: "draft",
+        image: "",
+        author: user?.nome || "",
+        featured: false,
+        publishDate: null,
+      });
+      setImagePreview("");
+    }
+  }, [post, reset, user?.nome]);
 
   const [imagePreview, setImagePreview] = useState<string>(post?.image || '')
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -61,36 +83,6 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  // const onSubmit = async (data: PostFormData) => {
-  //   if (!user?.nome) {
-  //     toast.error("Usuário não autenticado.");
-  //     return;
-  //   }
-
-  //   try {
-  //     const result = await createPost({
-  //       ...data,
-  //       author: user.nome
-  //     });
-
-  //     if (result.success) {
-  //       toast.success("✅ Post criado com sucesso!");
-  //       onSave({
-  //         ...data,
-  //         author: user.nome,
-  //         image: data.image || "",
-  //         featured: data.featured || false,
-  //       });
-  //       onClose();
-  //     } else {
-  //       toast.error(result.message || "Erro ao criar post");
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     toast.error("Erro inesperado ao criar post");
-  //   }
-  // };
-
   const onSubmit = async (data: PostFormData) => {
     if (!user?.nome) {
       toast.error("Usuário não autenticado.");
@@ -98,49 +90,22 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
     }
 
     try {
-      if (post && (post as any)._id) {
-        // 🔁 Atualização
-        const result = await updatePost({
-          _id: (post as any)._id,
-          ...data,
-          author: user.nome,
-        });
+      const payload = { ...data, author: user.nome }
 
-        if (result.success) {
-          toast.success("✅ Post atualizado com sucesso!");
-          onSave({
-            ...data,
-            author: user.nome,
-            image: data.image || "",
-            featured: data.featured || false,
-          });
-          onClose();
-        } else {
-          toast.error(result.message || "Erro ao atualizar post");
-        }
+      const result = post
+        ? await updatePost({ ...payload, id: post.id || "" })
+        : await createPost(payload)
+
+      if (result.success) {
+        toast.success(post ? "✅ Post atualizado!" : "✅ Post criado!")
+        onSave({ ...data, author: user.nome, id: post?.id })
+        onClose()
       } else {
-        // 🆕 Criação
-        const result = await createPost({
-          ...data,
-          author: user.nome,
-        });
-
-        if (result.success) {
-          toast.success("✅ Post criado com sucesso!");
-          onSave({
-            ...data,
-            author: user.nome,
-            image: data.image || "",
-            featured: data.featured || false,
-          });
-          onClose();
-        } else {
-          toast.error(result.message || "Erro ao criar post");
-        }
+        toast.error(result.message || "Erro ao salvar post.")
       }
-    } catch (error) {
-      console.error(error);
-      toast.error("Erro inesperado ao salvar post");
+    } catch (err) {
+      console.error(err)
+      toast.error("Erro inesperado ao salvar post.")
     }
   };
 
@@ -282,8 +247,8 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
             Categoria *
           </label>
           <select
-            {...register("category")}
-            className={`w-full px-4 py-3 border rounded-lg text-base focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] bg-white cursor-pointer ${errors.category ? 'border-red-500' : 'border-gray-300'
+            {...register("categoryId")}
+            className={`w-full px-4 py-3 border rounded-lg text-base focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] bg-white cursor-pointer ${errors.categoryId ? 'border-red-500' : 'border-gray-300'
               }`}
           >
             <option value="">Selecione uma categoria</option>
@@ -293,9 +258,9 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
               </option>
             ))}
           </select>
-          {errors.category && (
+          {errors.categoryId && (
             <p id="category-error" className="mt-2 text-sm text-red-600" role="alert">
-              {errors.category.message}
+              {errors.categoryId.message}
             </p>
           )}
         </div>
