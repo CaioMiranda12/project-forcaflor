@@ -12,6 +12,9 @@ import { ManageCategoriesModalProps } from '@/features/posts/components/layout/M
 import { updateCategory } from '@/features/posts/actions/updateCategory'
 import { toast } from 'react-toastify'
 import { deleteCategory } from '@/features/posts/actions/deleteCategory'
+import { getPosts } from '@/features/posts/actions/getPosts'
+import { useAuth } from '@/features/auth/context/AuthContext'
+import { deletePost } from '@/features/posts/actions/deletePost'
 
 export default function Posts() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -23,13 +26,12 @@ export default function Posts() {
   const [isEditing, setIsEditing] = useState(false)
   const [categories, setCategories] = useState<CategoryType[]>([]);
 
-  // const [categories, setCategories] = useState<Category[]>([
-  //   { value: 'education', label: 'Educação', color: '#E31969' },
-  //   { value: 'community', label: 'Comunidade', color: '#61CE70' },
-  //   { value: 'events', label: 'Eventos', color: '#8B5CF6' },
-  //   { value: 'achievements', label: 'Conquistas', color: '#F59E0B' },
-  //   { value: 'announcements', label: 'Avisos', color: '#3B82F6' }
-  // ])
+  const { user } = useAuth();
+
+  if (!user) {
+    toast.error("Usuário não autenticado.");
+    return;
+  }
 
   useEffect(() => {
     async function loadCategories() {
@@ -44,106 +46,81 @@ export default function Posts() {
           }));
           setCategories(formatted);
         } else {
-          console.error("❌ Erro ao carregar categorias:", res.message);
+          toast.error("❌ Erro ao carregar categorias");
         }
       } catch (err) {
-        console.error("Erro inesperado ao buscar categorias:", err);
+        toast.error("Erro inesperado ao buscar categorias:");
       }
     }
 
     loadCategories();
   }, []);
 
-  console.log(categories)
 
 
-  const [posts, setPosts] = useState<Post[]>([
-    {
-      id: 1,
-      title: 'Nova oficina de informática para adolescentes',
-      excerpt: 'Inscrições abertas para curso básico de computação voltado para jovens de 14 a 18 anos.',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      category: 'education',
-      categoryLabel: 'Educação',
-      status: 'published',
-      statusLabel: 'Publicado',
-      author: 'Ana Paula Silva',
-      publishDate: '2024-01-15',
-      lastModified: '2024-01-15',
-      lastModifiedBy: 'Ana Paula Silva',
-      views: 245,
-      image: 'https://images.pexels.com/photos/5905709/pexels-photo-5905709.jpeg?auto=compress&cs=tinysrgb&w=400',
-      featured: true
-    },
-    {
-      id: 2,
-      title: 'Campanha de arrecadação de materiais escolares',
-      excerpt: 'Ajude-nos a coletar materiais escolares para as crianças da comunidade.',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      category: 'community',
-      categoryLabel: 'Comunidade',
-      status: 'published',
-      statusLabel: 'Publicado',
-      author: 'Carlos Santos',
-      publishDate: '2024-01-12',
-      lastModified: '2024-01-16',
-      lastModifiedBy: 'Maria Oliveira',
-      views: 189,
-      image: 'https://images.pexels.com/photos/8613317/pexels-photo-8613317.jpeg?auto=compress&cs=tinysrgb&w=400',
-      featured: false
-    },
-    {
-      id: 3,
-      title: 'Resultado do projeto de leitura',
-      excerpt: 'Confira os resultados incríveis do nosso projeto de incentivo à leitura.',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      category: 'achievements',
-      categoryLabel: 'Conquistas',
-      status: 'published',
-      statusLabel: 'Publicado',
-      author: 'Maria Oliveira',
-      publishDate: '2024-01-10',
-      lastModified: '2024-01-10',
-      lastModifiedBy: 'Maria Oliveira',
-      views: 156,
-      image: 'https://images.pexels.com/photos/5212317/pexels-photo-5212317.jpeg?auto=compress&cs=tinysrgb&w=400',
-      featured: false
-    },
-    {
-      id: 4,
-      title: 'Festa junina da comunidade 2024',
-      excerpt: 'Venha participar da nossa festa junina! Haverá comidas típicas, brincadeiras e apresentações culturais.',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      category: 'events',
-      categoryLabel: 'Eventos',
-      status: 'scheduled',
-      statusLabel: 'Agendado',
-      author: 'João Silva',
-      publishDate: '2024-01-20',
-      lastModified: '2024-01-17',
-      lastModifiedBy: 'Laura Costa',
-      views: 0,
-      image: 'https://images.pexels.com/photos/6646917/pexels-photo-6646917.jpeg?auto=compress&cs=tinysrgb&w=400',
-      featured: false
-    },
-    {
-      id: 5,
-      title: 'Rascunho - Novo projeto social',
-      excerpt: 'Este é um rascunho sobre o novo projeto social que será implementado em breve.',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      category: 'announcements',
-      categoryLabel: 'Avisos',
-      status: 'draft',
-      statusLabel: 'Rascunho',
-      author: 'Laura Costa',
-      publishDate: null,
-      lastModified: '2024-01-16',
-      lastModifiedBy: 'Laura Costa',
-      views: 0,
-      image: undefined,
-      featured: false
+  const [posts, setPosts] = useState<Post[]>([])
+
+  useEffect(() => {
+    async function loadPosts() {
+      try {
+        const res = await getPosts();
+
+        if (!res.success || !Array.isArray(res.data)) {
+          toast.error('Falha ao carregar posts');
+          setPosts([]);
+          return;
+        }
+
+        // Converter o retorno da API para o formato correto de Post
+        const formattedPosts: Post[] = res.data.map((item: any) => ({
+          id: item._id, // ou gerar um id se vier diferente
+          title: item.title || '',
+          excerpt: item.excerpt || '',
+          content: item.content || '',
+          category: item.category?._id || '',
+          categoryLabel: item.category?.label || "Sem categoria",
+          categoryColor: item.category?.color || "#6B7280",
+          status: item.status || 'draft',
+          statusLabel:
+            item.status === 'published'
+              ? 'Publicado'
+              : item.status === 'scheduled'
+                ? 'Agendado'
+                : 'Rascunho',
+          author: item.author,
+          publishDate: item.createdAt || null,
+          lastModified: item.updatedAt || item.createdAt || '',
+          lastModifiedBy: item.author,
+          image: item.image || undefined,
+          featured: !!item.featured,
+        }));
+
+        setPosts(formattedPosts);
+      } catch (err) {
+        toast.error('Falha ao carregar posts');
+        setPosts([]);
+      }
     }
-  ])
+
+    loadPosts();
+  }, []);
+
+
+  // {
+  //     id: 5,
+  //     title: 'Rascunho - Novo projeto social',
+  //     excerpt: 'Este é um rascunho sobre o novo projeto social que será implementado em breve.',
+  //     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+  //     category: 'announcements',
+  //     status: 'draft',
+  //     statusLabel: 'Rascunho',
+  //     author: 'Laura Costa',
+  //     publishDate: null,
+  //     lastModified: '2024-01-16',
+  //     lastModifiedBy: 'Laura Costa',
+  //     image: undefined,
+  //     featured: false
+  //   }
 
   const filteredPosts = posts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -183,8 +160,22 @@ export default function Posts() {
     setIsViewModalOpen(true)
   }
 
-  const handleDeletePost = (postId: number) => {
+  const handleDeletePost = async (postId: string, onSuccess?: () => void) => {
     if (confirm('Tem certeza que deseja excluir este post?')) {
+      try {
+        const response = await deletePost(postId)
+
+        if (response.success) {
+          toast.success(response.message)
+          if (onSuccess) onSuccess()
+        } else {
+          toast.error(response.message)
+        }
+      } catch (error) {
+        console.error("Erro ao excluir post:", error)
+        toast.error("Erro ao excluir o post.")
+      }
+
       setPosts(posts.filter(post => post.id !== postId))
     }
   }
@@ -208,8 +199,7 @@ export default function Posts() {
               ? new Date().toISOString().split('T')[0]
               : selectedPost.publishDate,
             lastModified: new Date().toISOString().split('T')[0],
-            lastModifiedBy: 'Usuário Atual', // Em uma aplicação real, viria do contexto do usuário
-            views: selectedPost.views,
+            lastModifiedBy: user.nome, // Em uma aplicação real, viria do contexto do usuário
             featured: selectedPost.featured,
             statusLabel: statusLabelMap[postData.status],
             categoryLabel: categories.find(c => c.label === postData.category)?.label || '',
@@ -220,15 +210,13 @@ export default function Posts() {
       // Criar novo post
       const newPost: Post = {
         ...postData,
-        id: Math.max(...posts.map(p => p.id)) + 1,
-        author: 'Usuário Atual', // Em uma aplicação real, viria do contexto do usuário
+        id: Date.now().toString(),
+        author: user.nome, // Em uma aplicação real, viria do contexto do usuário
         publishDate: postData.status === 'published' ? new Date().toISOString().split('T')[0] : null,
         lastModified: new Date().toISOString().split('T')[0],
-        lastModifiedBy: 'Usuário Atual',
-        views: 0,
+        lastModifiedBy: user.nome,
         featured: false,
         statusLabel: statusLabelMap[postData.status],
-        categoryLabel: categories.find(c => c.label === postData.category)?.label || '',
       }
       setPosts([newPost, ...posts])
     }
@@ -372,7 +360,7 @@ export default function Posts() {
                       className="px-2 py-1 text-xs font-medium rounded-full text-white"
                       style={{ backgroundColor: getCategoryColor(post.category) }}
                     >
-                      {post.categoryLabel}
+                      {categories.find(cat => cat._id === post.category)?.label || 'Sem categoria'}
                     </span>
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(post.status)}`}>
                       {post.statusLabel}
@@ -416,12 +404,6 @@ export default function Posts() {
                             : `Modificado em ${new Date(post.lastModified).toLocaleDateString('pt-BR')}`
                           }
                         </div>
-                        {post.status === 'published' && (
-                          <div className="flex items-center">
-                            <Eye className="w-4 h-4 mr-1" aria-hidden="true" />
-                            {post.views} visualizações
-                          </div>
-                        )}
                       </div>
                     </div>
                   </div>

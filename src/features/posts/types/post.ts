@@ -1,19 +1,19 @@
 export type Post = {
-  id: number
-  title: string
-  excerpt: string
-  content: string
-  category: string
-  categoryLabel: string
-  status: 'published' | 'draft' | 'scheduled'
-  statusLabel: string
-  author: string
-  publishDate: string | null
-  lastModified: string
-  lastModifiedBy: string
-  views: number
-  image?: string
-  featured: boolean
+  id: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string; // categoryId seria até mais explícito
+  categoryLabel?: string;
+  categoryColor?: string;
+  status: 'published' | 'draft' | 'scheduled';
+  statusLabel: string;
+  author: string;
+  publishDate: string | null;
+  lastModified: string;
+  lastModifiedBy: string;
+  image?: string;
+  featured: boolean;
 }
 
 export type PostFormData = Pick<
@@ -22,7 +22,10 @@ export type PostFormData = Pick<
   | 'excerpt'
   | 'content'
   | 'category'
-  | 'categoryLabel'
   | 'status'
   | 'image'
+  | 'featured'
+  & {
+    author?: string;
+  }
 >

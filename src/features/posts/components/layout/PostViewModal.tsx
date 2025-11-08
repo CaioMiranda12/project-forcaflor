@@ -3,27 +3,23 @@ import React from 'react'
 import { Calendar, User, Eye, Edit, Tag } from 'lucide-react'
 import { Modal } from './Modal'
 import { Post } from '../../types/post'
+import { CategoryType } from '../../types/category'
 
 interface PostViewModalProps {
   isOpen: boolean
   onClose: () => void
   post: Post | null
-  onEdit?: (post: Post) => void
+  onEdit?: (post: Post) => void,
 }
 
 export function PostViewModal({ isOpen, onClose, post, onEdit }: PostViewModalProps) {
   if (!post) return null
+  console.log(post)
 
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case 'education': return '#E31969'
-      case 'community': return '#61CE70'
-      case 'events': return '#8B5CF6'
-      case 'achievements': return '#F59E0B'
-      case 'announcements': return '#3B82F6'
-      default: return '#6B7280'
-    }
-  }
+  // const getCategoryColor = (categoryValue: string) => {
+  //   const category = categories.find(cat => cat._id === categoryValue)
+  //   return category?.color || '#6B7280'
+  // }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -54,7 +50,7 @@ export function PostViewModal({ isOpen, onClose, post, onEdit }: PostViewModalPr
         <div className="flex flex-wrap items-center gap-2 mb-4">
           <span
             className="px-3 py-1 text-sm font-medium rounded-full text-white"
-            style={{ backgroundColor: getCategoryColor(post.category) }}
+            style={{ backgroundColor: post.categoryColor }}
           >
             <Tag className="w-4 h-4 mr-1 inline" />
             {post.categoryLabel}
@@ -91,12 +87,6 @@ export function PostViewModal({ isOpen, onClose, post, onEdit }: PostViewModalPr
               }
             </span>
           </div>
-          {post.status === 'published' && (
-            <div className="flex items-center">
-              <Eye className="w-4 h-4 mr-2" />
-              <span>{post.views} visualizações</span>
-            </div>
-          )}
         </div>
 
         {/* Imagem */}

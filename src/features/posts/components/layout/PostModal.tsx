@@ -4,140 +4,154 @@ import { Upload, X, Image as ImageIcon } from 'lucide-react'
 import { Modal } from './Modal'
 import { PostFormData } from '../../types/post'
 import { CategoryType } from '../../types/category'
-
-interface Post {
-  id?: number
-  title: string
-  excerpt: string
-  content: string
-  category: string
-  categoryLabel: string
-  image?: string
-  status: 'published' | 'draft' | 'scheduled'
-}
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
+import { createPost } from '../../actions/createPost'
+import { PostForm } from '../../forms/post-form'
+import { useAuth } from '@/features/auth/context/AuthContext'
+import { updatePost } from '../../actions/updatePost'
 
 interface PostModalProps {
   isOpen: boolean
   onClose: () => void
   post?: PostFormData | null
   categories: CategoryType[],
-  onSave: (post: Omit<PostFormData, 'id'>) => void
+  onSave: (post: PostFormData) => void
 }
 
 export function PostModal({ isOpen, onClose, post, categories, onSave }: PostModalProps) {
-  const [formData, setFormData] = useState({
-    title: post?.title || '',
-    excerpt: post?.excerpt || '',
-    content: post?.content || '',
-    category: post?.category || '',
-    status: post?.status || 'draft' as const,
-    image: post?.image || ''
-  })
+  const { user } = useAuth();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    watch,
+    setValue,
+  } = PostForm(post);
+
   const [imagePreview, setImagePreview] = useState<string>(post?.image || '')
-  const [isLoading, setIsLoading] = useState(false)
-  const [errors, setErrors] = useState<Record<string, string>>({})
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const title = watch('title') || ''
+  const excerpt = watch('excerpt') || ''
+  const content = watch('content') || ''
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
-        setErrors(prev => ({ ...prev, image: 'A imagem deve ter no máximo 5MB' }))
-        return
-      }
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const result = e.target?.result as string
-        setImagePreview(result)
-        setFormData(prev => ({ ...prev, image: result }))
-        setErrors(prev => ({ ...prev, image: '' }))
-      }
-      reader.readAsDataURL(file)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("A imagem deve ter no máximo 5MB");
+      return;
     }
-  }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const result = event.target?.result as string;
+      setImagePreview(result);
+      setValue("image", result);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const removeImage = () => {
-    setImagePreview('')
-    setFormData(prev => ({ ...prev, image: '' }))
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
+    setImagePreview("");
+    setValue("image", "");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  // const onSubmit = async (data: PostFormData) => {
+  //   if (!user?.nome) {
+  //     toast.error("Usuário não autenticado.");
+  //     return;
+  //   }
+
+  //   try {
+  //     const result = await createPost({
+  //       ...data,
+  //       author: user.nome
+  //     });
+
+  //     if (result.success) {
+  //       toast.success("✅ Post criado com sucesso!");
+  //       onSave({
+  //         ...data,
+  //         author: user.nome,
+  //         image: data.image || "",
+  //         featured: data.featured || false,
+  //       });
+  //       onClose();
+  //     } else {
+  //       toast.error(result.message || "Erro ao criar post");
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error("Erro inesperado ao criar post");
+  //   }
+  // };
+
+  const onSubmit = async (data: PostFormData) => {
+    if (!user?.nome) {
+      toast.error("Usuário não autenticado.");
+      return;
     }
-  }
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {}
-
-    if (!formData.title.trim()) {
-      newErrors.title = 'Título é obrigatório'
-    } else if (formData.title.length < 5) {
-      newErrors.title = 'Título deve ter pelo menos 5 caracteres'
-    }
-
-    if (!formData.excerpt.trim()) {
-      newErrors.excerpt = 'Descrição é obrigatória'
-    } else if (formData.excerpt.length < 20) {
-      newErrors.excerpt = 'Descrição deve ter pelo menos 20 caracteres'
-    }
-
-    if (!formData.content.trim()) {
-      newErrors.content = 'Conteúdo é obrigatório'
-    } else if (formData.content.length < 50) {
-      newErrors.content = 'Conteúdo deve ter pelo menos 50 caracteres'
-    }
-
-    if (!formData.category) {
-      newErrors.category = 'Categoria é obrigatória'
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!validateForm()) {
-      return
-    }
-
-    setIsLoading(true)
 
     try {
-      const selectedCategory = categories.find(cat => cat._id === formData.category)
+      if (post && (post as any)._id) {
+        // 🔁 Atualização
+        const result = await updatePost({
+          _id: (post as any)._id,
+          ...data,
+          author: user.nome,
+        });
 
-      await onSave({
-        title: formData.title,
-        excerpt: formData.excerpt,
-        content: formData.content,
-        category: formData.category,
-        categoryLabel: selectedCategory?.label || '',
-        status: formData.status,
-        image: formData.image || undefined
-      })
+        if (result.success) {
+          toast.success("✅ Post atualizado com sucesso!");
+          onSave({
+            ...data,
+            author: user.nome,
+            image: data.image || "",
+            featured: data.featured || false,
+          });
+          onClose();
+        } else {
+          toast.error(result.message || "Erro ao atualizar post");
+        }
+      } else {
+        // 🆕 Criação
+        const result = await createPost({
+          ...data,
+          author: user.nome,
+        });
 
-      onClose()
+        if (result.success) {
+          toast.success("✅ Post criado com sucesso!");
+          onSave({
+            ...data,
+            author: user.nome,
+            image: data.image || "",
+            featured: data.featured || false,
+          });
+          onClose();
+        } else {
+          toast.error(result.message || "Erro ao criar post");
+        }
+      }
     } catch (error) {
-      console.error('Erro ao salvar post:', error)
-    } finally {
-      setIsLoading(false)
+      console.error(error);
+      toast.error("Erro inesperado ao salvar post");
     }
-  }
-
-  const handleClose = () => {
-    if (!isLoading) {
-      onClose()
-    }
-  }
+  };
 
   return (
     <Modal
       isOpen={isOpen}
-      onClose={handleClose}
+      onClose={onClose}
       title={post ? 'Editar Post' : 'Novo Post'}
       size="xl"
     >
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Upload de Imagem */}
         <div>
           <label className="block text-base font-medium text-gray-700 mb-2">
@@ -184,9 +198,9 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
             aria-label="Selecionar arquivo de imagem"
           />
 
-          {errors.image && (
+          {errors.image?.message && (
             <p className="mt-2 text-sm text-red-600" role="alert">
-              {errors.image}
+              {errors.image.message}
             </p>
           )}
         </div>
@@ -199,21 +213,18 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
           <input
             id="post-title"
             type="text"
-            value={formData.title}
-            onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-            className={`w-full px-4 py-3 border rounded-lg text-base focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] ${errors.title ? 'border-red-500' : 'border-gray-300'
+            {...register("title")}
+            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#E31969] ${errors.title ? "border-red-500" : "border-gray-300"
               }`}
             placeholder="Digite o título do post..."
             maxLength={100}
             aria-describedby={errors.title ? 'title-error' : undefined}
           />
           {errors.title && (
-            <p id="title-error" className="mt-2 text-sm text-red-600" role="alert">
-              {errors.title}
-            </p>
+            <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
           )}
           <p className="mt-1 text-sm text-gray-500">
-            {formData.title.length}/100 caracteres
+            {title.length}/100 caracteres
           </p>
         </div>
 
@@ -224,22 +235,21 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
           </label>
           <textarea
             id="post-excerpt"
-            value={formData.excerpt}
-            onChange={(e) => setFormData(prev => ({ ...prev, excerpt: e.target.value }))}
+            {...register("excerpt")}
             rows={3}
-            className={`w-full px-4 py-3 border rounded-lg text-base focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] resize-vertical ${errors.excerpt ? 'border-red-500' : 'border-gray-300'
+            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#E31969] ${errors.excerpt ? "border-red-500" : "border-gray-300"
               }`}
-            placeholder="Digite uma breve descrição do post..."
             maxLength={200}
+            placeholder="Digite uma breve descrição do post..."
             aria-describedby={errors.excerpt ? 'excerpt-error' : undefined}
           />
           {errors.excerpt && (
-            <p id="excerpt-error" className="mt-2 text-sm text-red-600" role="alert">
-              {errors.excerpt}
+            <p className="mt-1 text-sm text-red-600">
+              {errors.excerpt.message}
             </p>
           )}
           <p className="mt-1 text-sm text-gray-500">
-            {formData.excerpt.length}/200 caracteres
+            {excerpt.length}/200 caracteres
           </p>
         </div>
 
@@ -249,9 +259,7 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
             Conteúdo *
           </label>
           <textarea
-            id="post-content"
-            value={formData.content}
-            onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+            {...register("content")}
             rows={8}
             className={`w-full px-4 py-3 border rounded-lg text-base focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] resize-vertical ${errors.content ? 'border-red-500' : 'border-gray-300'
               }`}
@@ -260,11 +268,11 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
           />
           {errors.content && (
             <p id="content-error" className="mt-2 text-sm text-red-600" role="alert">
-              {errors.content}
+              {errors.content.message}
             </p>
           )}
           <p className="mt-1 text-sm text-gray-500">
-            {formData.content.length} caracteres
+            {content.length} caracteres
           </p>
         </div>
 
@@ -274,12 +282,9 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
             Categoria *
           </label>
           <select
-            id="post-category"
-            value={formData.category}
-            onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+            {...register("category")}
             className={`w-full px-4 py-3 border rounded-lg text-base focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] bg-white cursor-pointer ${errors.category ? 'border-red-500' : 'border-gray-300'
               }`}
-            aria-describedby={errors.category ? 'category-error' : undefined}
           >
             <option value="">Selecione uma categoria</option>
             {categories.map(category => (
@@ -290,7 +295,7 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
           </select>
           {errors.category && (
             <p id="category-error" className="mt-2 text-sm text-red-600" role="alert">
-              {errors.category}
+              {errors.category.message}
             </p>
           )}
         </div>
@@ -301,9 +306,7 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
             Status
           </label>
           <select
-            id="post-status"
-            value={formData.status}
-            onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as 'published' | 'draft' | 'scheduled' }))}
+            {...register("status")}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] bg-white cursor-pointer"
           >
             <option value="draft">Rascunho</option>
@@ -316,18 +319,18 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
         <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
           <button
             type="button"
-            onClick={handleClose}
-            disabled={isLoading}
+            onClick={onClose}
+            disabled={isSubmitting}
             className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors duration-200 font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancelar
           </button>
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isSubmitting}
             className="px-6 py-3 bg-[#E31969] text-white rounded-lg hover:bg-[#c41456] active:bg-[#a01145] transition-colors duration-200 font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#E31969] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
-            {isLoading ? (
+            {isSubmitting ? (
               <div className="flex items-center">
                 <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2" />
                 Salvando...
