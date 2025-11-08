@@ -29,6 +29,7 @@ export async function getPosts() {
         : null,
       image: post.image || "",
       status: post.status,
+      featured: post.featured,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
     }));

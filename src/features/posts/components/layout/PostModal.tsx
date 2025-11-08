@@ -33,7 +33,7 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
         status: post.status || "draft",
         image: post.image || "",
         author: post.author || "",
-        featured: post.featured || false,
+        featured: post.featured ?? false,
         // publishDate: post.publishDate || null,
       });
       setImagePreview(post.image || "");
@@ -289,6 +289,29 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
             )}
           </button>
         </div>
+
+        {/* Destaque (Featured) */}
+        <div>
+          <label className="block text-base font-medium text-gray-700 mb-2">
+            Destaque do site
+          </label>
+          <div className="flex items-center gap-4">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                {...register("featured")}
+                checked={watch("featured") || false}
+                onChange={(e) => setValue("featured", e.target.checked)}
+                className="h-5 w-5 text-[#E31969] border-gray-300 rounded focus:ring-2 focus:ring-[#E31969]"
+              />
+              <span className="text-gray-700 text-base">Marcar como destaque</span>
+            </label>
+          </div>
+          <p className="mt-1 text-sm text-gray-500">
+            Posts em destaque aparecem na seção “Principais Notícias”.
+          </p>
+        </div>
+
       </form>
     </Modal>
   )

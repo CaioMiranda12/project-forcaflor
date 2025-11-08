@@ -22,7 +22,7 @@ export function usePostForm(defaultValues?: Partial<PostFormData>) {
   return useForm<PostFormData>({
     resolver: zodResolver(postSchema),
     defaultValues: {
-      // status: "draft",
+      status: "draft",
       // featured: false,
       ...defaultValues,
     }
