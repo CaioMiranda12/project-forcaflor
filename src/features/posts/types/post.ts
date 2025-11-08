@@ -18,14 +18,8 @@ export type Post = {
 
 export type PostFormData = Pick<
   Post,
-  | 'title'
-  | 'excerpt'
-  | 'content'
-  | 'category'
-  | 'status'
-  | 'image'
-  | 'featured'
-  & {
-    author?: string;
-  }
->
+  'title' | 'excerpt' | 'content' | 'category' | 'status' | 'image'
+> & {
+  featured?: boolean;
+  author?: string;
+};
