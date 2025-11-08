@@ -2,6 +2,7 @@
 
 import { connectDatabase } from "@/lib/db";
 import { Post } from "../models/Post";
+import "../models/Category";
 
 export async function getPosts() {
   try {
@@ -37,4 +38,43 @@ export async function getPosts() {
     console.error("❌ Erro ao buscar posts:", error);
     return { success: false, message: "Erro ao buscar posts." };
   }
+}
+
+export async function getFeaturedPosts() {
+  await connectDatabase();
+
+  const posts = await Post.find({ status: "published", featured: true })
+    .sort({ publishDate: -1 })
+    .limit(3)
+    .populate("category", "label color")
+  // .lean();
+
+  return posts.map(post => ({
+    id: post._id.toString(),
+    title: post.title,
+    excerpt: post.excerpt,
+    image: post.image ?? null,
+    categoryLabel: post.category?.label ?? "",
+    categoryColor: post.category?.color ?? "",
+    publishDate: post.publishDate?.toISOString() ?? null,
+  }));
+}
+
+export async function getPublishedPosts() {
+  await connectDatabase();
+
+  const posts = await Post.find({ status: "published" })
+    .sort({ publishDate: -1 })
+    .populate("category", "label color")
+  // .lean();
+
+  return posts.map(post => ({
+    id: post._id.toString(),
+    title: post.title,
+    excerpt: post.excerpt,
+    image: post.image ?? null,
+    categoryLabel: post.category?.label ?? "",
+    categoryColor: post.category?.color ?? "",
+    publishDate: post.publishDate?.toISOString() ?? null,
+  }));
 }
