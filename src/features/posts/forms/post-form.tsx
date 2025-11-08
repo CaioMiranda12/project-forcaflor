@@ -11,7 +11,7 @@ const postSchema = z.object({
   image: z.string().optional(),
   author: z.string().optional(),
   featured: z.boolean().optional(),
-  publishDate: z.string().nullable().optional(),
+  // publishDate: z.string().nullable().optional(),
 })
 
 export type PostFormData = z.infer<typeof postSchema>
@@ -22,8 +22,8 @@ export function usePostForm(defaultValues?: Partial<PostFormData>) {
   return useForm<PostFormData>({
     resolver: zodResolver(postSchema),
     defaultValues: {
-      status: "draft",
-      featured: false,
+      // status: "draft",
+      // featured: false,
       ...defaultValues,
     }
   })

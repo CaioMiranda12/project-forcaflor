@@ -34,7 +34,7 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
         image: post.image || "",
         author: post.author || "",
         featured: post.featured || false,
-        publishDate: post.publishDate || null,
+        // publishDate: post.publishDate || null,
       });
       setImagePreview(post.image || "");
     } else {
@@ -47,7 +47,7 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
         image: "",
         author: user?.nome || "",
         featured: false,
-        publishDate: null,
+        // publishDate: null,
       });
       setImagePreview("");
     }

@@ -17,7 +17,6 @@ interface UpdatePostData {
 }
 
 export async function updatePost(data: UpdatePostData) {
-  console.log(data.id)
 
   try {
     await connectDatabase();
