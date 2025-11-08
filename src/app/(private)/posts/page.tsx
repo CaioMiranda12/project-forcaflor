@@ -324,16 +324,26 @@ export default function Posts() {
       }
 
       // Atualizar a lista local de categorias
-      setCategories(categories.map(cat =>
-        cat._id === oldId ? { ...cat, ...updatedCategory } : cat
-      ));
+      setCategories((prev) =>
+        prev.map((cat) =>
+          cat._id === oldId
+            ? { ...cat, label: updatedCategory.label, color: updatedCategory.color }
+            : cat
+        )
+      );
 
       // Atualizar posts com a nova categoria
-      setPosts(posts.map(post =>
-        post.categoryId === oldId
-          ? { ...post, category: updatedCategory._id, categoryLabel: updatedCategory.label }
-          : post
-      ));
+      setPosts((prev) =>
+        prev.map((post) =>
+          post.categoryId === oldId
+            ? {
+              ...post,
+              categoryLabel: updatedCategory.label,
+              categoryColor: updatedCategory.color,
+            }
+            : post
+        )
+      );
 
       toast.success("Categoria atualizada com sucesso!");
     } catch (error) {
