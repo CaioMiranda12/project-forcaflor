@@ -1,12 +1,14 @@
 
-'use client'
 import React from 'react'
 import { Calendar, FileText, Clock, MapPin, UserPlus, LogIn } from 'lucide-react'
 import Link from 'next/link'
 import { useAuth } from '@/features/auth/context/AuthContext'
+import { getFeaturedPosts } from '@/features/posts/actions/getPosts'
+import AuthCards from '@/features/dashboard/components/AuthCards'
+import FeaturedNews from '@/features/dashboard/components/FeaturedNews'
 
-export default function Dashboard() {
-  const { user } = useAuth();
+export default async function Dashboard() {
+  const featuredPosts = await getFeaturedPosts();
 
   const recentNews = [
     {
@@ -71,93 +73,12 @@ export default function Dashboard() {
         </p>
       </div>
 
-      {!user && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
-            <div className="text-center">
-              <div className="p-4 bg-[#E31969] rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <LogIn className="w-8 h-8 text-white" aria-hidden="true" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Fazer Login
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Acesse sua conta para gerenciar atividades e conteúdo
-              </p>
-              <Link
-                href={'/login'}
-                className="w-full px-6 py-3 bg-[#E31969] text-white rounded-lg hover:bg-[#c41456] active:bg-[#a01145] transition-colors duration-200 font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#E31969] focus:ring-offset-2"
-              >
-                Entrar
-              </Link>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
-            <div className="text-center">
-              <div className="p-4 bg-[#61CE70] rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <UserPlus className="w-8 h-8 text-white" aria-hidden="true" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Criar Conta
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Cadastre-se para participar das atividades da comunidade
-              </p>
-              <Link
-                href={'/cadastro'}
-                className="w-full px-6 py-3 bg-[#61CE70] text-white rounded-lg hover:bg-[#4fb85f] active:bg-[#3da34d] transition-colors duration-200 font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#61CE70] focus:ring-offset-2"
-              >
-                Cadastrar
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
+      <AuthCards />
 
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent News */}
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900">
-                Notícias Recentes
-              </h2>
-            </div>
-            <div className="divide-y divide-gray-200">
-              {recentNews.map((news) => (
-                <article key={news.id} className="p-6 hover:bg-gray-50 transition-colors duration-200">
-                  <div className="flex space-x-4">
-                    <img
-                      src={news.image}
-                      alt={news.title}
-                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover shrink-0"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">
-                        {news.title}
-                      </h3>
-                      <p className="text-gray-600 text-base mb-2 line-clamp-2">
-                        {news.excerpt}
-                      </p>
-                      <time className="text-sm text-gray-500">
-                        {new Date(news.date).toLocaleDateString('pt-BR')}
-                      </time>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-            <div className="p-6 border-t border-gray-200">
-              <Link href={'/noticias'}>
-                <button className="w-full sm:w-auto px-6 py-3 bg-[#E31969] text-white rounded-lg hover:bg-[#c41456] active:bg-[#a01145] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#E31969] focus:ring-offset-2">
-                  Ver todas as notícias
-                </button>
-              </Link>
-            </div>
-          </div>
-        </div>
+        <FeaturedNews posts={featuredPosts} />
 
         {/* Upcoming Activities */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200">
