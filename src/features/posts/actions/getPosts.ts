@@ -72,6 +72,8 @@ export async function getPublishedPosts() {
     id: post._id.toString(),
     title: post.title,
     excerpt: post.excerpt,
+    content: post.content,
+    author: post.author,
     image: post.image ?? null,
     categoryLabel: post.category?.label ?? "",
     categoryColor: post.category?.color ?? "",

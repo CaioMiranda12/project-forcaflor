@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from "react";
-import { Search, Calendar, User, Eye, ImageOff } from "lucide-react";
+import { Search, Calendar, User, Eye, ImageOff, X } from "lucide-react";
 
 interface NewsItem {
   id: string;
@@ -10,9 +10,7 @@ interface NewsItem {
   content: string;
   author: string;
   publishDate: string;
-  views: number;
   image: string;
-  category: string;
   categoryLabel: string;
   categoryColor?: string;
 }
@@ -97,10 +95,6 @@ export default function NoticiasList({ initialNews }: { initialNews: NewsItem[] 
                     {new Date(item.publishDate).toLocaleDateString("pt-BR")}
                   </div>
                 </div>
-                <div className="flex items-center">
-                  <Eye className="w-4 h-4 mr-1" />
-                  {item.views}
-                </div>
               </div>
             </div>
           </article>
@@ -118,13 +112,17 @@ export default function NoticiasList({ initialNews }: { initialNews: NewsItem[] 
 
       {/* Modal de notícia */}
       {selectedNews && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-            <div
-              className="fixed inset-0 bg-gray-500 bg-opacity-75"
-              onClick={() => setSelectedNews(null)}
-            />
-            <div className="inline-block w-full max-w-4xl p-6 my-8 bg-white shadow-xl rounded-lg text-left">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Overlay */}
+          <div
+            className="fixed inset-0 bg-black/50"
+            onClick={() => setSelectedNews(null)}
+          />
+
+          {/* Modal Content */}
+          <div className="relative bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              {/* Header */}
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <span
@@ -133,25 +131,33 @@ export default function NoticiasList({ initialNews }: { initialNews: NewsItem[] 
                   >
                     {selectedNews.categoryLabel}
                   </span>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900">
                     {selectedNews.title}
                   </h2>
                 </div>
                 <button
                   onClick={() => setSelectedNews(null)}
-                  className="p-2 text-gray-400 hover:text-gray-600 focus:ring-2 focus:ring-[#E31969] rounded-lg"
+                  className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
                 >
-                  ✕
+                  <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <img
-                src={selectedNews.image}
-                alt={selectedNews.title}
-                className="w-full h-64 object-cover rounded-lg mb-6"
-              />
+              {/* Image */}
+              {selectedNews.image ? (
+                <img
+                  src={selectedNews.image}
+                  alt={selectedNews.title}
+                  className="w-full h-64 object-cover rounded-lg mb-6"
+                />
+              ) : (
+                <div className="w-full h-64 flex items-center justify-center bg-gray-100 text-gray-400 rounded-lg mb-6">
+                  <ImageOff className="w-16 h-16" />
+                </div>
+              )}
 
-              <div className="text-sm text-gray-500 mb-6 border-b border-gray-200 pb-6 flex space-x-6">
+              {/* Meta Info */}
+              <div className="flex flex-wrap gap-6 text-sm text-gray-500 mb-6 pb-6 border-b border-gray-200">
                 <div className="flex items-center">
                   <User className="w-4 h-4 mr-2" />
                   {selectedNews.author}
@@ -160,20 +166,20 @@ export default function NoticiasList({ initialNews }: { initialNews: NewsItem[] 
                   <Calendar className="w-4 h-4 mr-2" />
                   {new Date(selectedNews.publishDate).toLocaleDateString("pt-BR")}
                 </div>
-                <div className="flex items-center">
-                  <Eye className="w-4 h-4 mr-2" />
-                  {selectedNews.views} visualizações
-                </div>
               </div>
 
-              <p className="text-base text-gray-700 whitespace-pre-line">
-                {selectedNews.content}
-              </p>
+              {/* Content */}
+              <div className="prose prose-gray max-w-none mb-8">
+                <p className="text-base text-gray-700 whitespace-pre-line leading-relaxed">
+                  {selectedNews.content}
+                </p>
+              </div>
 
-              <div className="mt-8 pt-6 border-t border-gray-200">
+              {/* Footer */}
+              <div className="pt-6 border-t border-gray-200">
                 <button
                   onClick={() => setSelectedNews(null)}
-                  className="px-6 py-3 bg-[#E31969] text-white rounded-lg hover:bg-[#c41456] transition-colors font-medium"
+                  className="px-6 py-3 bg-[#E31969] text-white rounded-lg hover:bg-[#c41456] transition-colors font-medium cursor-pointer"
                 >
                   Fechar
                 </button>
