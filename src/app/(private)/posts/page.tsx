@@ -217,6 +217,7 @@ export default function Posts() {
                 title: result.data.title,
                 excerpt: postData.excerpt,
                 content: postData.content,
+                image: postData.image,
                 categoryId:
                   typeof result.data.category === "object"
                     ? result.data.category?.id
