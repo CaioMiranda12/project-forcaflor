@@ -109,23 +109,6 @@ export default function Posts() {
     loadPosts();
   }, []);
 
-
-  // {
-  //     id: 5,
-  //     title: 'Rascunho - Novo projeto social',
-  //     excerpt: 'Este é um rascunho sobre o novo projeto social que será implementado em breve.',
-  //     content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-  //     category: 'announcements',
-  //     status: 'draft',
-  //     statusLabel: 'Rascunho',
-  //     author: 'Laura Costa',
-  //     publishDate: null,
-  //     lastModified: '2024-01-16',
-  //     lastModifiedBy: 'Laura Costa',
-  //     image: undefined,
-  //     featured: false
-  //   }
-
   const filteredPosts = posts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       post.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
@@ -194,6 +177,8 @@ export default function Posts() {
     };
 
     try {
+      let updatedPosts: Post[];
+
       if (isEditing && selectedPost) {
         // Atualiza post existente
         const result = await updatePost({
@@ -207,39 +192,39 @@ export default function Posts() {
           return;
         }
 
+
+
         // Atualiza o estado local com o retorno real
-        setPosts((prev) =>
-          prev.map((post) =>
-            post.id === selectedPost.id
-              ? {
-                ...post,
-                id: result.data.id,
-                title: result.data.title,
-                excerpt: postData.excerpt,
-                content: postData.content,
-                image: postData.image,
-                categoryId:
-                  typeof result.data.category === "object"
-                    ? result.data.category?.id
-                    : result.data.category,
-                categoryLabel:
-                  typeof result.data.category === "object"
-                    ? result.data.category?.label
-                    : categories.find((c) => c._id === result.data.category?.id)
-                      ?.label || "",
-                categoryColor:
-                  typeof result.data.category === "object"
-                    ? result.data.category?.color
-                    : categories.find((c) => c._id === result.data.category?.id)
-                      ?.color || "#6B7280",
-                status: postData.status,
-                statusLabel: statusLabelMap[postData.status],
-                featured: postData.featured ?? false,
-                lastModifiedBy: selectedPost.author,
-                lastModified: new Date().toISOString(),
-              }
-              : post
-          )
+        updatedPosts = posts.map((post) =>
+          post.id === selectedPost.id
+            ? {
+              ...post,
+              id: result.data.id,
+              title: result.data.title,
+              excerpt: postData.excerpt,
+              content: postData.content,
+              image: postData.image,
+              categoryId:
+                typeof result.data.category === "object"
+                  ? result.data.category?.id
+                  : result.data.category,
+              categoryLabel:
+                typeof result.data.category === "object"
+                  ? result.data.category?.label
+                  : categories.find((c) => c._id === result.data.category?.id)
+                    ?.label || "",
+              categoryColor:
+                typeof result.data.category === "object"
+                  ? result.data.category?.color
+                  : categories.find((c) => c._id === result.data.category?.id)
+                    ?.color || "#6B7280",
+              status: postData.status,
+              statusLabel: statusLabelMap[postData.status],
+              featured: postData.featured ?? false,
+              lastModifiedBy: selectedPost.author,
+              lastModified: new Date().toISOString(),
+            }
+            : post
         );
 
         toast.success("Post atualizado com sucesso!");
@@ -284,10 +269,23 @@ export default function Posts() {
           featured: postData.featured ?? false,
         };
 
-        setPosts((prev) => [newPost, ...prev]);
-        toast.success("Post criado com sucesso!");
+        updatedPosts = [newPost, ...posts];
       }
 
+      updatedPosts = updatedPosts.sort((a, b) => {
+        // Ordena primeiro por "featured" (true primeiro)
+        if (a.featured !== b.featured) {
+          return b.featured ? 1 : -1; // b.featured primeiro
+        }
+
+        const aPublishDate = a.publishDate ? new Date(a.publishDate).getTime() : 0;
+        const bPublishDate = b.publishDate ? new Date(b.publishDate).getTime() : 0;
+
+        return bPublishDate - aPublishDate;
+      });
+
+      setPosts(updatedPosts);
+      toast.success("Post criado com sucesso!");
       setIsPostModalOpen(false);
     } catch (error) {
       console.error("Erro ao salvar post:", error);
