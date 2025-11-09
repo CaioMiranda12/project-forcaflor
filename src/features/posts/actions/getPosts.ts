@@ -11,7 +11,7 @@ export async function getPosts() {
     // Busca posts e popula a categoria (pra já trazer o nome/cor)
     const posts = await Post.find()
       .populate("category", "label color")
-      .sort({ createdAt: -1 })
+      .sort({ featured: -1, createdAt: -1 })
 
     // Retorna o array já convertido
     const formattedPosts = posts.map((post) => ({
