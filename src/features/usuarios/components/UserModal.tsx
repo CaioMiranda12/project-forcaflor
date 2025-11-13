@@ -25,7 +25,8 @@ export function UserModal({ isOpen, onClose, onSave }: UserModalProps) {
   } = useCadastroForm();
 
   const handleClose = () => {
-    onClose()
+    reset();
+    onClose();
   }
 
   const onSubmit = async (data: CadastroFormData) => {
@@ -39,9 +40,13 @@ export function UserModal({ isOpen, onClose, onSave }: UserModalProps) {
         isAdmin: data.isAdmin
       })
 
-      if (res.success) {
-        toast.success('Usuario criado com sucesso')
+      if (!res.success) {
+        toast.error(res.message || 'Erro ao criar usuário')
+        return
       }
+
+      toast.success('Usuário criado com sucesso!')
+      handleClose()
 
     } catch (err) {
       toast.error('Falha ao criar usuario')
