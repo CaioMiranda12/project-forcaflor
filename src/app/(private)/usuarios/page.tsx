@@ -4,6 +4,8 @@ import { Search, Filter, Plus, Edit, Trash2, User, Mail, Phone, Calendar, UserCh
 import { UserModal } from '@/features/usuarios/components/UserModal'
 import { EditUserModal } from '@/features/usuarios/components/EditUserModal'
 import { DeleteUserModal } from '@/features/usuarios/components/DeleteUserModal'
+import { CadastroFormData, useCadastroForm } from '@/features/auth/forms/cadastro-form'
+import { createUser } from '@/features/auth/actions/createUser'
 
 export default function Usuarios() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -162,8 +164,6 @@ export default function Usuarios() {
 
   const handleCreateUser = async (userData: UserFormData) => {
     console.log('Criar usuário:', userData)
-    // Aqui você integrará com Lumi SDK: await lumi.entities.Users.create(userData)
-    // Por enquanto, apenas logando no console
   }
 
   const handleEditUser = (user: UserData) => {
@@ -173,8 +173,6 @@ export default function Usuarios() {
 
   const handleUpdateUser = async (userId: number, userData: EditUserFormData) => {
     console.log('Atualizar usuário:', userId, userData)
-    // Aqui você integrará com Lumi SDK: await lumi.entities.Users.update(userId, userData)
-    // Por enquanto, apenas logando no console
   }
 
   const handleDeleteClick = (userId: number, userName: string) => {
@@ -184,8 +182,6 @@ export default function Usuarios() {
 
   const handleDeleteUser = async (userId: number) => {
     console.log('Excluir usuário:', userId)
-    // Aqui você integrará com Lumi SDK: await lumi.entities.Users.delete(userId)
-    // Por enquanto, apenas logando no console
   }
 
   return (
