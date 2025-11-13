@@ -3,8 +3,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const LoginSchema = z.object({
-  nomeCompleto: z.string().min(3, 'Informe o nome completo'),
-  dataNascimento: z.string().min(8, 'Informe a data de nascimento'),
+  email: z.string().min(1, 'Informe o email completo'),
+  password: z.string().min(1, 'Informe a senha'),
 })
 
 export type LoginFormData = z.infer<typeof LoginSchema>
@@ -13,8 +13,8 @@ export function useLoginForm() {
   return useForm<LoginFormData>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
-      nomeCompleto: '',
-      dataNascimento: ''
+      email: '',
+      password: ''
     }
   })
 }
