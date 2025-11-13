@@ -13,24 +13,12 @@ export default function Login() {
   const form = useLoginForm();
   const router = useRouter();
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/\D/g, '')
-    if (value.length > 2 && value.length <= 4) {
-      value = `${value.slice(0, 2)}/${value.slice(2)}`
-    } else if (value.length > 4) {
-      value = `${value.slice(0, 2)}/${value.slice(2, 4)}/${value.slice(4, 8)}`
-    }
-
-    e.target.value = value
-    form.setValue('dataNascimento', value)
-  }
-
   async function onSubmit(data: LoginFormData) {
     try {
       setIsLoading(true)
       const formData = new FormData()
-      formData.append('nomeCompleto', data.nomeCompleto)
-      formData.append('dataNascimento', data.dataNascimento)
+      formData.append('nomeCompleto', data.email)
+      formData.append('dataNascimento', data.password)
 
       const result = await loginUserAction(formData)
       if (result.success) {
@@ -70,41 +58,33 @@ export default function Login() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div>
               <label htmlFor="nomeCompleto" className="block text-base font-medium text-gray-700 mb-2">
-                Nome Completo *
+                E-mail *
               </label>
               <input
                 type="text"
-                {...form.register('nomeCompleto')}
+                {...form.register('email')}
                 className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                placeholder="Digite seu nome completo"
-                style={form.formState.errors.nomeCompleto && { border: '2px solid red' }}
+                placeholder="Digite seu e-mail"
+                style={form.formState.errors.email && { border: '2px solid red' }}
               />
-              {form.formState.errors.nomeCompleto && (
-                <p className="text-red-600 text-sm mt-1">{form.formState.errors.nomeCompleto.message}</p>
+              {form.formState.errors.email && (
+                <p className="text-red-600 text-sm mt-1">{form.formState.errors.email.message}</p>
               )}
             </div>
 
             <div>
               <label htmlFor="dataNascimento" className="block text-base font-medium text-gray-700 mb-2">
-                Data de Nascimento *
+                Senha *
               </label>
               <input
-                type="text"
-                maxLength={10}
-                {...form.register('dataNascimento', {
-                  required: 'A data de nascimento é obrigatória',
-                  pattern: {
-                    value: /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d\d$/,
-                    message: 'Formato inválido. Use dd/mm/aaaa',
-                  },
-                })}
-                placeholder='dd/mm/aaaa'
-                onChange={handleDateChange}
+                type="password"
+                {...form.register('password')}
+                placeholder='Digite a senha'
                 className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                style={form.formState.errors.dataNascimento && { border: '2px solid red' }}
+                style={form.formState.errors.password && { border: '2px solid red' }}
               />
-              {form.formState.errors.dataNascimento && (
-                <p className="text-red-600 text-sm mt-1">{form.formState.errors.dataNascimento.message}</p>
+              {form.formState.errors.password && (
+                <p className="text-red-600 text-sm mt-1">{form.formState.errors.password.message}</p>
               )}
             </div>
 
