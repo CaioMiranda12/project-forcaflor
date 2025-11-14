@@ -32,7 +32,7 @@ export async function loginUser(formData: FormData) {
 
   const tokenPayload = {
     userId: user._id,
-    nome: user.name,
+    name: user.name,
     isAdmin: user.isAdmin,
   };
 
