@@ -6,7 +6,7 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import { LoginFormData, useLoginForm } from '@/features/auth/components/login-form'
-import { loginUserAction } from '@/features/auth/actions/loginUser.actions'
+import { loginUser } from '@/features/auth/actions/loginUser'
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false)
@@ -17,15 +17,18 @@ export default function Login() {
     try {
       setIsLoading(true)
       const formData = new FormData()
-      formData.append('nomeCompleto', data.email)
-      formData.append('dataNascimento', data.password)
+      formData.append('email', data.email)
+      formData.append('password', data.password)
 
-      const result = await loginUserAction(formData)
-      if (result.success) {
-        toast.success('Login bem-sucedido!')
-        router.push('/')
-        router.refresh()
+      const result = await loginUser(formData)
+      if (!result.success) {
+        toast.error(result.message)
+        return
       }
+
+      toast.success('Login bem-sucedido!')
+      router.push('/')
+      router.refresh()
 
     } catch (err) {
       toast.error('Usuario não encontrado')
