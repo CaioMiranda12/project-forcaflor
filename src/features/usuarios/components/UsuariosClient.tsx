@@ -8,6 +8,8 @@ import { CadastroFormData, useCadastroForm } from '@/features/auth/forms/cadastr
 import { createUser } from '@/features/auth/actions/createUser'
 import { toast } from 'react-toastify'
 import { getUsers } from '../actions/getUsers'
+import { updateUser } from '../actions/updateUser'
+import { EditUserFormData } from '../forms/edit-user-form'
 
 export default function UsuariosClient({ users }) {
   const [searchTerm, setSearchTerm] = useState('')
@@ -82,8 +84,18 @@ export default function UsuariosClient({ users }) {
     setIsEditModalOpen(true)
   }
 
-  const handleUpdateUser = async (userId: number, userData: EditUserFormData) => {
-    console.log('Atualizar usuário:', userId, userData)
+  const handleUpdateUser = async (userId: string, userData: EditUserFormData) => {
+     const res = await updateUser(userId, userData)
+
+      if (!res.success) {
+        toast.error(res.message)
+        return
+      }
+      const updatedUsers = await getUsers()
+      setUserList(updatedUsers)
+
+      toast.success(res.message)
+      setIsEditModalOpen(false)
   }
 
   const handleDeleteClick = (userId: number, userName: string) => {
