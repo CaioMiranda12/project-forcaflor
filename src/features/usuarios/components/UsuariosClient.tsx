@@ -11,15 +11,16 @@ import { getUsers } from '../actions/getUsers'
 import { updateUser } from '../actions/updateUser'
 import { EditUserFormData } from '../forms/edit-user-form'
 import { deleteUser } from '../actions/deleteUser'
+import { AuthUser } from '@/features/auth/types/AuthUser'
 
-export default function UsuariosClient({ users }) {
+export default function UsuariosClient({ users }: { users: AuthUser[] }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedRole, setSelectedRole] = useState('all')
   const [selectedStatus, setSelectedStatus] = useState('all')
   const [isUserModalOpen, setIsUserModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const [selectedUser, setSelectedUser] = useState<UserData | null>(null)
+  const [selectedUser, setSelectedUser] = useState<AuthUser | null>(null)
   const [userToDelete, setUserToDelete] = useState<{ id: string, name: string } | null>(null)
 
   const [userList, setUserList] = useState(users);
@@ -38,12 +39,18 @@ export default function UsuariosClient({ users }) {
   // ]
 
   const filteredUsers = userList.filter(user => {
-    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesRole = selectedRole === 'all' || user.role === selectedRole
-    const matchesStatus = selectedStatus === 'all' || user.status === selectedStatus
-    return matchesSearch && matchesRole && matchesStatus
-  })
+  const matchesSearch =
+    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchTerm.toLowerCase());
+
+  const matchesRole =
+    selectedRole === 'all' ||
+    (selectedRole === 'admin' && user.isAdmin) ||
+    (selectedRole === 'volunteer' && !user.isAdmin);
+
+  return matchesSearch && matchesRole;
+});
+
 
   const getRoleColor = (isAdmin: boolean) => {
     if (isAdmin) {
@@ -80,12 +87,13 @@ export default function UsuariosClient({ users }) {
     toast.success(res.message);
   }
 
-  const handleEditUser = (user: UserData) => {
+  const handleEditUser = (user: AuthUser) => {
     setSelectedUser(user)
     setIsEditModalOpen(true)
   }
 
   const handleUpdateUser = async (userId: string, userData: EditUserFormData) => {
+    console.log(userId)
      const res = await updateUser(userId, userData)
 
       if (!res.success) {
@@ -99,7 +107,7 @@ export default function UsuariosClient({ users }) {
       setIsEditModalOpen(false)
   }
 
-  const handleDeleteClick = (userId: number, userName: string) => {
+  const handleDeleteClick = (userId: string, userName: string) => {
     setUserToDelete({ id: userId, name: userName })
     setIsDeleteModalOpen(true)
   }
@@ -280,7 +288,7 @@ export default function UsuariosClient({ users }) {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50 transition-colors duration-200">
+                <tr key={user.userId} className="hover:bg-gray-50 transition-colors duration-200">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
@@ -329,14 +337,14 @@ export default function UsuariosClient({ users }) {
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end space-x-2">
                       <button
-                        onClick={() => handleEditUser(user as UserData)}
+                        onClick={() => handleEditUser(user as AuthUser)}
                         className="p-2 text-[#61CE70] hover:bg-[#61CE70] hover:text-white rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#61CE70] focus:ring-offset-2"
                         aria-label={`Editar ${user.name}`}
                       >
                         <Edit className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => handleDeleteClick(user.id, user.name)}
+                        onClick={() => handleDeleteClick(user.userId, user.name)}
                         className="p-2 text-red-600 hover:bg-red-600 hover:text-white rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2"
                         aria-label={`Excluir ${user.name}`}
                       >
