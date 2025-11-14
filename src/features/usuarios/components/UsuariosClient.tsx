@@ -7,7 +7,7 @@ import { DeleteUserModal } from '@/features/usuarios/components/DeleteUserModal'
 import { CadastroFormData, useCadastroForm } from '@/features/auth/forms/cadastro-form'
 import { createUser } from '@/features/auth/actions/createUser'
 
-export default function UsuariosClient() {
+export default function UsuariosClient({ users }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedRole, setSelectedRole] = useState('all')
   const [selectedStatus, setSelectedStatus] = useState('all')
@@ -19,7 +19,6 @@ export default function UsuariosClient() {
 
   const roles = [
     { value: 'all', label: 'Todos os tipos' },
-    { value: 'participant', label: 'Participante' },
     { value: 'volunteer', label: 'Voluntário' },
     { value: 'admin', label: 'Administrador' }
   ]
@@ -31,107 +30,6 @@ export default function UsuariosClient() {
     { value: 'pending', label: 'Pendente' }
   ]
 
-  const users = [
-    {
-      id: 1,
-      name: 'Maria Silva Santos',
-      email: 'maria.santos@email.com',
-      phone: '(11) 99999-9999',
-      role: 'participant',
-      roleLabel: 'Participante',
-      status: 'active',
-      statusLabel: 'Ativo',
-      joinDate: '2023-03-10',
-      lastActivity: '2024-01-15',
-      age: 16,
-      avatar: null
-    },
-    {
-      id: 2,
-      name: 'Ana Paula Silva',
-      email: 'ana.paula@email.com',
-      phone: '(11) 98888-8888',
-      role: 'volunteer',
-      roleLabel: 'Voluntário',
-      status: 'active',
-      statusLabel: 'Ativo',
-      joinDate: '2022-08-15',
-      lastActivity: '2024-01-16',
-      age: 28,
-      avatar: null
-    },
-    {
-      id: 3,
-      name: 'Carlos Santos',
-      email: 'carlos.santos@email.com',
-      phone: '(11) 97777-7777',
-      role: 'admin',
-      roleLabel: 'Administrador',
-      status: 'active',
-      statusLabel: 'Ativo',
-      joinDate: '2021-01-20',
-      lastActivity: '2024-01-16',
-      age: 35,
-      avatar: null
-    },
-    {
-      id: 4,
-      name: 'João Silva',
-      email: 'joao.silva@email.com',
-      phone: '(11) 96666-6666',
-      role: 'participant',
-      roleLabel: 'Participante',
-      status: 'active',
-      statusLabel: 'Ativo',
-      joinDate: '2023-06-12',
-      lastActivity: '2024-01-14',
-      age: 14,
-      avatar: null
-    },
-    {
-      id: 5,
-      name: 'Laura Costa',
-      email: 'laura.costa@email.com',
-      phone: '(11) 95555-5555',
-      role: 'volunteer',
-      roleLabel: 'Voluntário',
-      status: 'active',
-      statusLabel: 'Ativo',
-      joinDate: '2023-01-08',
-      lastActivity: '2024-01-15',
-      age: 24,
-      avatar: null
-    },
-    {
-      id: 6,
-      name: 'Roberto Lima',
-      email: 'roberto.lima@email.com',
-      phone: '(11) 94444-4444',
-      role: 'participant',
-      roleLabel: 'Participante',
-      status: 'inactive',
-      statusLabel: 'Inativo',
-      joinDate: '2023-09-03',
-      lastActivity: '2023-12-20',
-      age: 17,
-      avatar: null
-    },
-    {
-      id: 7,
-      name: 'Fernanda Oliveira',
-      email: 'fernanda.oliveira@email.com',
-      phone: '(11) 93333-3333',
-      role: 'participant',
-      roleLabel: 'Participante',
-      status: 'pending',
-      statusLabel: 'Pendente',
-      joinDate: '2024-01-10',
-      lastActivity: '2024-01-10',
-      age: 15,
-      avatar: null
-    }
-  ]
-
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase())
@@ -140,12 +38,11 @@ export default function UsuariosClient() {
     return matchesSearch && matchesRole && matchesStatus
   })
 
-  const getRoleColor = (role: string) => {
-    switch (role) {
-      case 'admin': return 'bg-red-100 text-red-800'
-      case 'volunteer': return 'bg-[#61CE70] text-white'
-      case 'participant': return 'bg-[#E31969] text-white'
-      default: return 'bg-gray-100 text-gray-800'
+  const getRoleColor = (isAdmin: boolean) => {
+    if (isAdmin) {
+      return 'bg-red-100 text-red-800'
+    } else {
+      return 'bg-[#61CE70] text-white'
     }
   }
 
@@ -370,14 +267,14 @@ export default function UsuariosClient() {
                       <Mail className="w-4 h-4 mr-2 text-gray-400" aria-hidden="true" />
                       {user.email}
                     </div>
-                    <div className="text-sm text-gray-500 flex items-center">
+                    {/* <div className="text-sm text-gray-500 flex items-center">
                       <Phone className="w-4 h-4 mr-2 text-gray-400" aria-hidden="true" />
                       {user.phone}
-                    </div>
+                    </div> */}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${getRoleColor(user.role)}`}>
-                      {user.roleLabel}
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${getRoleColor(user.isAdmin)}`}>
+                      {user.isAdmin ? "Admin" : "Voluntário"}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
