@@ -10,6 +10,7 @@ import { toast } from 'react-toastify'
 import { getUsers } from '../actions/getUsers'
 import { updateUser } from '../actions/updateUser'
 import { EditUserFormData } from '../forms/edit-user-form'
+import { deleteUser } from '../actions/deleteUser'
 
 export default function UsuariosClient({ users }) {
   const [searchTerm, setSearchTerm] = useState('')
@@ -19,7 +20,7 @@ export default function UsuariosClient({ users }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [selectedUser, setSelectedUser] = useState<UserData | null>(null)
-  const [userToDelete, setUserToDelete] = useState<{ id: number, name: string } | null>(null)
+  const [userToDelete, setUserToDelete] = useState<{ id: string, name: string } | null>(null)
 
   const [userList, setUserList] = useState(users);
 
@@ -103,8 +104,19 @@ export default function UsuariosClient({ users }) {
     setIsDeleteModalOpen(true)
   }
 
-  const handleDeleteUser = async (userId: number) => {
-    console.log('Excluir usuário:', userId)
+  const handleDeleteUser = async (userId: string) => {
+    const res = await deleteUser(userId)
+
+    if (!res.success) {
+      toast.error(res.message)
+      return
+    }
+
+    // Atualiza lista
+    const updatedUsers = await getUsers()
+    setUserList(updatedUsers)
+
+    toast.success(res.message)
   }
 
   return (
