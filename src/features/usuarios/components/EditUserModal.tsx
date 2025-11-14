@@ -7,12 +7,12 @@ import { useEditUserForm } from '../forms/edit-user-form'
 interface EditUserModalProps {
   isOpen: boolean
   onClose: () => void
-  onSave: (userId: number, userData: EditUserFormData) => void
+  onSave: (userId: string, userData: EditUserFormData) => void
   user: UserData | null
 }
 
 export interface UserData {
-  id: number
+  id: string
   name: string
   email: string
   isAdmin: boolean
