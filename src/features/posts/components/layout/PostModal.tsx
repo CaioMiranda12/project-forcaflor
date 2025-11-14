@@ -45,13 +45,13 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
         categoryId: "",
         status: "draft",
         image: "",
-        author: user?.nome || "",
+        author: user?.name || "",
         featured: false,
         // publishDate: null,
       });
       setImagePreview("");
     }
-  }, [post, reset, user?.nome]);
+  }, [post, reset, user?.name]);
 
   const [imagePreview, setImagePreview] = useState<string>(post?.image || '')
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -90,7 +90,7 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
     }
 
     // envia os dados limpos para o componente pai
-    onSave({ ...data, author: user.nome, id: post?.id });
+    onSave({ ...data, author: user.name, id: post?.id });
   };
 
   return (
