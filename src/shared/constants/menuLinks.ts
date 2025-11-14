@@ -8,7 +8,6 @@ export const publicLinks = [
 
 export const privateLinks = [
   { path: '/', label: 'Início', icon: Home },
-  { path: '/perfil', label: 'Perfil', icon: User },
   { path: '/noticias', label: 'Notícias', icon: Newspaper },
   { path: '/cronograma', label: 'Cronograma', icon: Calendar },
   { path: '/usuarios', label: 'Usuários', icon: Users },
