@@ -136,7 +136,7 @@ export default function UsuariosClient({ users }) {
               </select>
             </div>
 
-            <div className="relative">
+            {/* <div className="relative">
               <UserCheck className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" aria-hidden="true" />
               <select
                 value={selectedStatus}
@@ -150,14 +150,14 @@ export default function UsuariosClient({ users }) {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+        {/* <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
           <div className="flex items-center">
             <div className="p-3 rounded-full bg-[#E31969]">
               <User className="w-6 h-6 text-white" aria-hidden="true" />
@@ -169,7 +169,7 @@ export default function UsuariosClient({ users }) {
               </p>
             </div>
           </div>
-        </div>
+        </div> */}
 
         <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
           <div className="flex items-center">
@@ -179,7 +179,7 @@ export default function UsuariosClient({ users }) {
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Voluntários</p>
               <p className="text-2xl font-bold text-gray-900">
-                {users.filter(u => u.role === 'volunteer').length}
+                {users.filter(user => !(user.isAdmin)).length}
               </p>
             </div>
           </div>
@@ -193,13 +193,13 @@ export default function UsuariosClient({ users }) {
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Administradores</p>
               <p className="text-2xl font-bold text-gray-900">
-                {users.filter(u => u.role === 'admin').length}
+                {users.filter(user => user.isAdmin).length}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        {/* <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
           <div className="flex items-center">
             <div className="p-3 rounded-full bg-green-500">
               <UserCheck className="w-6 h-6 text-white" aria-hidden="true" />
@@ -211,7 +211,7 @@ export default function UsuariosClient({ users }) {
               </p>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Users Table */}
@@ -229,9 +229,9 @@ export default function UsuariosClient({ users }) {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Tipo
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
-                </th>
+                </th> */}
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Última Atividade
                 </th>
@@ -256,9 +256,9 @@ export default function UsuariosClient({ users }) {
                         <div className="text-base font-medium text-gray-900">
                           {user.name}
                         </div>
-                        <div className="text-sm text-gray-500">
+                        {/* <div className="text-sm text-gray-500">
                           {user.age} anos
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </td>
@@ -277,11 +277,11 @@ export default function UsuariosClient({ users }) {
                       {user.isAdmin ? "Admin" : "Voluntário"}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  {/* <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(user.status)}`}>
                       {user.statusLabel}
                     </span>
-                  </td>
+                  </td> */}
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <div className="flex items-center">
                       <Calendar className="w-4 h-4 mr-2" aria-hidden="true" />
