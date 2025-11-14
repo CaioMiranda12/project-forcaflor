@@ -15,19 +15,19 @@ export async function loginUser(formData: FormData) {
   const password = formData.get("password") as string;
 
   if (!email || !password) {
-    return { success: false, message: "Credenciais inválidas." };
+    return { success: false, message: "Nome ou senha incorretos" };
   }
 
   const user = await User.findOne({ email });
 
   if (!user) {
-    return { success: false, message: "Usuário não encontrado." };
+    return { success: false, message: "Nome ou senha incorretos" };
   }
 
   const isCorrect = await bcrypt.compare(password, user.password);
 
   if (!isCorrect) {
-    return { success: false, message: "Senha incorreta." };
+    return { success: false, message: "Nome ou senha incorretos" };
   }
 
   const tokenPayload = {
@@ -35,8 +35,6 @@ export async function loginUser(formData: FormData) {
     name: user.name,
     isAdmin: user.isAdmin,
   };
-
-  console.log(tokenPayload)
 
   const token = jwt.sign(tokenPayload, SECRET_KEY, {
     expiresIn: "1d",
