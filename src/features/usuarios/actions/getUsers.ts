@@ -11,7 +11,7 @@ export async function getUsers() {
     const users = await User.find()
 
     return users.map(u => ({
-      id: u._id.toString(),
+      userId: u._id.toString(),
       name: u.name,
       email: u.email,
       isAdmin: u.isAdmin,
