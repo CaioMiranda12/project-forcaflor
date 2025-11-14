@@ -232,7 +232,7 @@ export default function Posts() {
         // Cria novo post
         const result = await createPost({
           ...postData,
-          author: user.nome,
+          author: user.name,
         });
 
         if (!result.success || !result.data) {
@@ -261,10 +261,10 @@ export default function Posts() {
               "#6B7280",
           status: postData.status,
           statusLabel: statusLabelMap[postData.status],
-          author: user.nome,
+          author: user.name,
           publishDate: result.data.publishDate || null,
           lastModified: result.data.updatedAt || result.data.createdAt,
-          lastModifiedBy: user.nome,
+          lastModifiedBy: user.name,
           image: postData.image || "",
           featured: postData.featured ?? false,
         };
