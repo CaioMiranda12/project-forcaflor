@@ -6,6 +6,8 @@ import { EditUserModal } from '@/features/usuarios/components/EditUserModal'
 import { DeleteUserModal } from '@/features/usuarios/components/DeleteUserModal'
 import { CadastroFormData, useCadastroForm } from '@/features/auth/forms/cadastro-form'
 import { createUser } from '@/features/auth/actions/createUser'
+import { toast } from 'react-toastify'
+import { getUsers } from '../actions/getUsers'
 
 export default function UsuariosClient({ users }) {
   const [searchTerm, setSearchTerm] = useState('')
@@ -17,20 +19,22 @@ export default function UsuariosClient({ users }) {
   const [selectedUser, setSelectedUser] = useState<UserData | null>(null)
   const [userToDelete, setUserToDelete] = useState<{ id: number, name: string } | null>(null)
 
+  const [userList, setUserList] = useState(users);
+
   const roles = [
     { value: 'all', label: 'Todos os tipos' },
     { value: 'volunteer', label: 'Voluntário' },
     { value: 'admin', label: 'Administrador' }
   ]
 
-  const statuses = [
-    { value: 'all', label: 'Todos os status' },
-    { value: 'active', label: 'Ativo' },
-    { value: 'inactive', label: 'Inativo' },
-    { value: 'pending', label: 'Pendente' }
-  ]
+  // const statuses = [
+  //   { value: 'all', label: 'Todos os status' },
+  //   { value: 'active', label: 'Ativo' },
+  //   { value: 'inactive', label: 'Inativo' },
+  //   { value: 'pending', label: 'Pendente' }
+  // ]
 
-  const filteredUsers = users.filter(user => {
+  const filteredUsers = userList.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesRole = selectedRole === 'all' || user.role === selectedRole
@@ -46,21 +50,31 @@ export default function UsuariosClient({ users }) {
     }
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return 'bg-green-100 text-green-800'
-      case 'inactive': return 'bg-red-100 text-red-800'
-      case 'pending': return 'bg-yellow-100 text-yellow-800'
-      default: return 'bg-gray-100 text-gray-800'
-    }
-  }
+  // const getStatusColor = (status: string) => {
+  //   switch (status) {
+  //     case 'active': return 'bg-green-100 text-green-800'
+  //     case 'inactive': return 'bg-red-100 text-red-800'
+  //     case 'pending': return 'bg-yellow-100 text-yellow-800'
+  //     default: return 'bg-gray-100 text-gray-800'
+  //   }
+  // }
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
   }
 
-  const handleCreateUser = async (userData: UserFormData) => {
-    console.log('Criar usuário:', userData)
+  const handleCreateUser = async (userData: CadastroFormData) => {
+    const res = await createUser(userData)
+
+    if (!res.success) {
+      toast.error(res.message)
+      return
+    }
+
+    const updatedUsers = await getUsers();
+    setUserList(updatedUsers);
+
+    toast.success(res.message);
   }
 
   const handleEditUser = (user: UserData) => {
@@ -179,7 +193,7 @@ export default function UsuariosClient({ users }) {
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Voluntários</p>
               <p className="text-2xl font-bold text-gray-900">
-                {users.filter(user => !(user.isAdmin)).length}
+                {userList.filter(user => !(user.isAdmin)).length}
               </p>
             </div>
           </div>
@@ -193,7 +207,7 @@ export default function UsuariosClient({ users }) {
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Administradores</p>
               <p className="text-2xl font-bold text-gray-900">
-                {users.filter(user => user.isAdmin).length}
+                {userList.filter(user => user.isAdmin).length}
               </p>
             </div>
           </div>

@@ -32,25 +32,13 @@ export function UserModal({ isOpen, onClose, onSave }: UserModalProps) {
   const onSubmit = async (data: CadastroFormData) => {
     try {
       setIsLoading(true);
-
-      const res = await createUser({
-        name: data.name,
-        email: data.email,
-        password: data.password,
-        isAdmin: data.isAdmin
-      })
-
-
-      if (!res.success) {
-        toast.error(res.message)
-        return
-      }
-
-      toast.success('Usuário criado com sucesso!')
+      await onSave(data)
       handleClose()
 
     } catch (err) {
       toast.error('Falha ao criar usuario')
+    } finally {
+      setIsLoading(false);
     }
   }
 
