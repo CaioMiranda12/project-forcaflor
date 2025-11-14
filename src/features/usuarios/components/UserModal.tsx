@@ -40,8 +40,9 @@ export function UserModal({ isOpen, onClose, onSave }: UserModalProps) {
         isAdmin: data.isAdmin
       })
 
+
       if (!res.success) {
-        toast.error(res.message || 'Erro ao criar usuário')
+        toast.error(res.message)
         return
       }
 
