@@ -3,19 +3,13 @@ import React, { useState, useEffect } from 'react'
 import { Modal } from '@/features/posts/components/layout/Modal'
 import { User, Mail, UserCheck } from 'lucide-react'
 import { useEditUserForm } from '../forms/edit-user-form'
+import { AuthUser } from '@/features/auth/types/AuthUser'
 
 interface EditUserModalProps {
   isOpen: boolean
   onClose: () => void
   onSave: (userId: string, userData: EditUserFormData) => void
-  user: UserData | null
-}
-
-export interface UserData {
-  id: string
-  name: string
-  email: string
-  isAdmin: boolean
+  user: AuthUser | null
 }
 
 export interface EditUserFormData {
@@ -53,7 +47,7 @@ export function EditUserModal({ isOpen, onClose, onSave, user }: EditUserModalPr
 
   const onSubmit = async (data: EditUserFormData) => {
     if (!user) return;
-    await onSave(user.id, data);
+    await onSave(user.userId, data);
     handleClose();
   };
 
