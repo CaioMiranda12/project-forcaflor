@@ -6,9 +6,9 @@ import { AlertTriangle } from 'lucide-react'
 interface DeleteUserModalProps {
   isOpen: boolean
   onClose: () => void
-  onConfirm: (userId: number) => void
+  onConfirm: (userId: string) => void
   userName: string
-  userId: number | null
+  userId: string | null
 }
 
 export function DeleteUserModal({ isOpen, onClose, onConfirm, userName, userId }: DeleteUserModalProps) {
