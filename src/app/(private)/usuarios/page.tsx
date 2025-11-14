@@ -3,7 +3,7 @@ import { getUsers } from '@/features/usuarios/actions/getUsers'
 import { AuthUser } from '@/features/auth/types/AuthUser'
 
 export default async function Usuarios() {
-  const users = await getUsers()
+  const users: AuthUser[] = await getUsers()
 
   return (
     <UsuariosClient users={users} />
