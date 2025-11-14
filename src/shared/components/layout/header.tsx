@@ -42,7 +42,7 @@ export function Header({ setSidebarOpen, sidebarOpen, user }: HeaderProps) {
             </span>
           </div>
           <div className="w-8 h-8 bg-[#61CE70] rounded-full flex items-center justify-center">
-            <span className="text-sm font-medium text-white">{user?.nome ? user?.nome.charAt(0) : 'U'}</span>
+            <span className="text-sm font-medium text-white">{user?.name ? user?.name.charAt(0).toLocaleUpperCase() : 'U'}</span>
           </div>
         </div>
       </div>
