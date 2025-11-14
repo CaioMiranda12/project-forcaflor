@@ -84,7 +84,7 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
   };
 
   const onSubmit = async (data: PostFormData) => {
-    if (!user?.nome) {
+    if (!user?.name) {
       toast.error("Usuário não autenticado.");
       return;
     }
