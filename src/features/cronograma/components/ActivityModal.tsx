@@ -3,7 +3,6 @@ import { Modal } from "@/features/posts/components/layout/Modal"
 import { Calendar, Clock, MapPin } from 'lucide-react'
 import { ActivityType } from "../types/activityType"
 import { ActivityFormData, useActivityForm } from "../forms/activity-form"
-import { createActivity } from "../actions/create-activity"
 import { toast } from "react-toastify"
 
 interface ActivityModalProps {
@@ -38,6 +37,45 @@ export function ActivityModal({ isOpen, onClose, onSave, activity }: ActivityMod
       reset()
     }
   }, [activity, isOpen, reset])
+
+  // const handleCreateActivity = async (data: ActivityFormData) => {
+  //   try {
+  //     setIsLoading(true);
+  //     await onSave(data)
+  //     reset()
+  //     onClose()
+
+  //   } catch (err) {
+  //     toast.error('Falha ao criar usuario')
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }
+
+  // const handleUpdateActivity = async (data: ActivityFormData) => {
+  //    if (!activity) return;
+
+  //   try {
+  //     setIsLoading(true);
+
+  //     const res = await updateActivity(activity.id, data);
+
+  //     if (!res.success) {
+  //       toast.error(res.message);
+  //       return;
+  //     }
+
+  //     onSave(res.activity);
+  //     toast.success("Atividade atualizada!");
+  //     reset();
+  //     onClose();
+
+  //   } catch {
+  //     toast.error("Erro ao atualizar atividade.");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }
 
   const onSubmit = async (data: ActivityFormData) => {
     try {
@@ -173,7 +211,13 @@ export function ActivityModal({ isOpen, onClose, onSave, activity }: ActivityMod
             type="submit"
             className="flex-1 px-4 py-2 bg-[#E31969] text-white rounded-lg hover:bg-[#c01456] transition-colors cursor-pointer"
           >
-            {isLoading ? "Criando atividade..." : "Criar Atividade"}
+            {isLoading
+              ? activity
+                ? "Salvando..."
+                : "Criando..."
+              : activity
+                ? "Salvar Alterações"
+                : "Criar Atividade"}
           </button>
         </div>
       </form>
