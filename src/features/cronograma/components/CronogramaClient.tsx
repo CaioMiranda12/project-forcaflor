@@ -6,6 +6,8 @@ import { toast } from 'react-toastify'
 import { ActivityModal } from './ActivityModal'
 import { useAuth } from '@/features/auth/context/AuthContext'
 import { ActivityType } from '../types/activityType'
+import { createActivity } from '../actions/create-activity'
+import { getActivities } from '../actions/get-activities'
 
 interface CronogramaClientProps {
   activitiesList: ActivityType[]
@@ -35,13 +37,18 @@ export default function CronogramaClient({ activitiesList }: CronogramaClientPro
   };
 
 
-  const handleCreateActivity = (activityData: Omit<ActivityType, 'id'>) => {
-    const newActivity: ActivityType = {
-      ...activityData,
-      id: Math.max(...activities.map(a => a.id), 0) + 1
+  const handleCreateActivity = async (activityData: Omit<ActivityType, 'id'>) => {
+    const res = await createActivity(activityData);
+
+    if (!res.success) {
+      toast.error(res.message || "Erro ao criar atividade.");
+      return;
     }
-    setActivities([...activities, newActivity])
-    toast.success('Atividade criada com sucesso!')
+
+    const updatedUsers = await getActivities();
+    setActivities(updatedUsers);
+
+    toast.success(res.message);
   }
 
   const handleUpdateActivity = (activityData: Omit<ActivityType, 'id'>) => {
