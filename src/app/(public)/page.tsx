@@ -1,65 +1,14 @@
 
 import React from 'react'
-import { Calendar, FileText, Clock, MapPin, UserPlus, LogIn } from 'lucide-react'
-import Link from 'next/link'
-import { useAuth } from '@/features/auth/context/AuthContext'
 import { getFeaturedPosts } from '@/features/posts/actions/getPosts'
 import AuthCards from '@/features/dashboard/components/AuthCards'
 import FeaturedNews from '@/features/dashboard/components/FeaturedNews'
+import { getUpcomingActivities } from '@/features/cronograma/actions/get-upcoming-activities'
+import { UpcomingActivities } from '@/features/dashboard/components/UpcomingActivities'
 
 export default async function Dashboard() {
   const featuredPosts = await getFeaturedPosts();
-
-  const recentNews = [
-    {
-      id: 1,
-      title: 'Nova oficina de informática para adolescentes',
-      excerpt: 'Inscrições abertas para curso básico de computação voltado para jovens de 14 a 18 anos.',
-      date: '2024-01-15',
-      image: 'https://images.pexels.com/photos/5905709/pexels-photo-5905709.jpeg?auto=compress&cs=tinysrgb&w=400'
-    },
-    {
-      id: 2,
-      title: 'Campanha de arrecadação de materiais escolares',
-      excerpt: 'Ajude-nos a coletar materiais escolares para as crianças da comunidade.',
-      date: '2024-01-12',
-      image: 'https://images.pexels.com/photos/8613317/pexels-photo-8613317.jpeg?auto=compress&cs=tinysrgb&w=400'
-    },
-    {
-      id: 3,
-      title: 'Resultado do projeto de leitura',
-      excerpt: 'Confira os resultados incríveis do nosso projeto de incentivo à leitura.',
-      date: '2024-01-10',
-      image: 'https://images.pexels.com/photos/5212317/pexels-photo-5212317.jpeg?auto=compress&cs=tinysrgb&w=400'
-    }
-  ]
-
-  const upcomingActivities = [
-    {
-      id: 1,
-      title: 'Aula de Reforço - Matemática',
-      time: '14:00 - 16:00',
-      date: 'Hoje',
-      location: 'Sala 1',
-      type: 'Educação'
-    },
-    {
-      id: 2,
-      title: 'Oficina de Arte e Pintura',
-      time: '09:00 - 11:00',
-      date: 'Amanhã',
-      location: 'Ateliê',
-      type: 'Arte'
-    },
-    {
-      id: 3,
-      title: 'Reunião com Voluntários',
-      time: '19:00 - 20:30',
-      date: '18 Jan',
-      location: 'Sala de Reuniões',
-      type: 'Administrativo'
-    }
-  ]
+  const upcomingActivities = await getUpcomingActivities();
 
   return (
     <div className="space-y-6">
@@ -81,49 +30,7 @@ export default async function Dashboard() {
         <FeaturedNews posts={featuredPosts} />
 
         {/* Upcoming Activities */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900">
-              Próximas Atividades
-            </h2>
-          </div>
-          <div className="divide-y divide-gray-200">
-            {upcomingActivities.map((activity) => (
-              <div key={activity.id} className="p-6">
-                <div className="flex items-start space-x-3">
-                  <div className="shrink-0">
-                    <div className="w-3 h-3 bg-[#61CE70] rounded-full mt-2"></div>
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-base font-medium text-gray-900 mb-2">
-                      {activity.title}
-                    </h3>
-                    <div className="space-y-1">
-                      <div className="flex items-center text-sm text-gray-600">
-                        <Clock className="w-4 h-4 mr-2" aria-hidden="true" />
-                        {activity.time} - {activity.date}
-                      </div>
-                      <div className="flex items-center text-sm text-gray-600">
-                        <MapPin className="w-4 h-4 mr-2" aria-hidden="true" />
-                        {activity.location}
-                      </div>
-                    </div>
-                    <span className="inline-block px-2 py-1 text-xs font-medium bg-[#61CE70] text-white rounded-full mt-2">
-                      {activity.type}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="p-6 border-t border-gray-200">
-            <Link href={'/cronograma'}>
-              <button className="w-full px-6 py-3 bg-[#61CE70] text-white rounded-lg hover:bg-[#4fb85f] active:bg-[#3da34d] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 font-medium cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#61CE70] focus:ring-offset-2">
-                Ver cronograma completo
-              </button>
-            </Link>
-          </div>
-        </div>
+        <UpcomingActivities upcomingActivities={upcomingActivities} />
       </div>
     </div>
   )
