@@ -38,45 +38,6 @@ export function ActivityModal({ isOpen, onClose, onSave, activity }: ActivityMod
     }
   }, [activity, isOpen, reset])
 
-  // const handleCreateActivity = async (data: ActivityFormData) => {
-  //   try {
-  //     setIsLoading(true);
-  //     await onSave(data)
-  //     reset()
-  //     onClose()
-
-  //   } catch (err) {
-  //     toast.error('Falha ao criar usuario')
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }
-
-  // const handleUpdateActivity = async (data: ActivityFormData) => {
-  //    if (!activity) return;
-
-  //   try {
-  //     setIsLoading(true);
-
-  //     const res = await updateActivity(activity.id, data);
-
-  //     if (!res.success) {
-  //       toast.error(res.message);
-  //       return;
-  //     }
-
-  //     onSave(res.activity);
-  //     toast.success("Atividade atualizada!");
-  //     reset();
-  //     onClose();
-
-  //   } catch {
-  //     toast.error("Erro ao atualizar atividade.");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // }
-
   const onSubmit = async (data: ActivityFormData) => {
     try {
       setIsLoading(true);
