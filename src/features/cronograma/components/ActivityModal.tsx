@@ -14,6 +14,8 @@ interface ActivityModalProps {
 }
 
 export function ActivityModal({ isOpen, onClose, onSave, activity }: ActivityModalProps) {
+  const [isLoading, setIsLoading] = useState(false)
+
   const {
     register,
     handleSubmit,
@@ -38,17 +40,17 @@ export function ActivityModal({ isOpen, onClose, onSave, activity }: ActivityMod
   }, [activity, isOpen, reset])
 
   const onSubmit = async (data: ActivityFormData) => {
-    // onSave(data)
-    const res = await createActivity(data);
+    try {
+      setIsLoading(true);
+      await onSave(data)
+      reset()
+      onClose()
 
-    if (!res.success) {
-      toast.error(res.message || "Erro ao criar atividade.");
-      return;
+    } catch (err) {
+      toast.error('Falha ao criar usuario')
+    } finally {
+      setIsLoading(false);
     }
-
-    toast.success(res.message);
-
-    onClose();
   }
 
   return (
@@ -171,7 +173,7 @@ export function ActivityModal({ isOpen, onClose, onSave, activity }: ActivityMod
             type="submit"
             className="flex-1 px-4 py-2 bg-[#E31969] text-white rounded-lg hover:bg-[#c01456] transition-colors cursor-pointer"
           >
-            {activity ? "Salvar Alterações" : "Criar Atividade"}
+            {isLoading ? "Criando atividade..." : "Criar Atividade"}
           </button>
         </div>
       </form>
