@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Modal } from "@/features/posts/components/layout/Modal"
 import { Calendar, Clock, MapPin } from 'lucide-react'
-import { ActivityType } from "../types/scheduleType"
+import { ActivityType } from "../types/activityType"
 import { ActivityFormData, useActivityForm } from "../forms/activity-form"
 import { createActivity } from "../actions/create-activity"
 import { toast } from "react-toastify"
