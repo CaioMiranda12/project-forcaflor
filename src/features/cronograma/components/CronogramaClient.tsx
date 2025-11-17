@@ -5,7 +5,7 @@ import { Calendar, Clock, MapPin, Users, Plus, Edit2, Trash2, Eye } from 'lucide
 import { toast } from 'react-toastify'
 import { ActivityModal } from './ActivityModal'
 import { useAuth } from '@/features/auth/context/AuthContext'
-import { ActivityType } from '../types/scheduleType'
+import { ActivityType } from '../types/activityType'
 
 export default function CronogramaClient() {
   const { user } = useAuth();
