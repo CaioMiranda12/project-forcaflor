@@ -7,21 +7,15 @@ import { ActivityModal } from './ActivityModal'
 import { useAuth } from '@/features/auth/context/AuthContext'
 import { ActivityType } from '../types/activityType'
 
-export default function CronogramaClient() {
+interface CronogramaClientProps {
+  activitiesList: ActivityType[]
+}
+
+export default function CronogramaClient({ activitiesList }: CronogramaClientProps) {
   const { user } = useAuth();
 
-  const [activities, setActivities] = useState<ActivityType[]>([
-    {
-      id: 1,
-      title: 'Aula de Yoga',
-      description: 'Uma sessão relaxante de yoga para iniciantes.',
-      startHour: '08:00',
-      endHour: '09:00',
-      instructor: 'Ana Silva',
-      location: 'Sala 1',
-      dayOfWeek: 'Monday'
-    }
-  ])
+  const [activities, setActivities] = useState<ActivityType[]>(activitiesList)
+  console.log(activitiesList)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingActivity, setEditingActivity] = useState<ActivityType | undefined>(undefined)
@@ -29,20 +23,17 @@ export default function CronogramaClient() {
 
   // Agrupar atividades por dia da semana
   const groupByWeekday = (activities: ActivityType[]) => {
-    const weekdays = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
-    const grouped: Record<string, ActivityType[]> = {}
+    const grouped: Record<string, ActivityType[]> = {};
 
     activities.forEach((activity) => {
-      const date = new Date(activity.date + 'T00:00:00')
-      const weekday = weekdays[date.getDay()]
-      if (!grouped[weekday]) {
-        grouped[weekday] = []
-      }
-      grouped[weekday].push(activity)
-    })
+      const weekday = activity.dayOfWeek;
+      if (!grouped[weekday]) grouped[weekday] = [];
+      grouped[weekday].push(activity);
+    });
 
-    return grouped
-  }
+    return grouped;
+  };
+
 
   const handleCreateActivity = (activityData: Omit<ActivityType, 'id'>) => {
     const newActivity: ActivityType = {
@@ -81,13 +72,6 @@ export default function CronogramaClient() {
 
   const groupedActivities = groupByWeekday(activities)
   const weekdayOrder = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo']
-
-  const getParticipationStatus = (participants: number, maxParticipants: number) => {
-    const percentage = (participants / maxParticipants) * 100
-    if (percentage >= 90) return { status: 'Quase lotado', color: 'text-red-600' }
-    if (percentage >= 70) return { status: 'Muitas vagas', color: 'text-yellow-600' }
-    return { status: 'Vagas disponíveis', color: 'text-green-600' }
-  }
 
   return (
     <div className="space-y-6">
@@ -133,13 +117,11 @@ export default function CronogramaClient() {
 
               <div className="divide-y divide-gray-200">
                 {dayActivities.map((activity) => {
-                  const participationStatus = getParticipationStatus(activity.participants, activity.maxParticipants)
-
                   return (
                     <div key={activity.id} className="p-6 hover:bg-gray-50 transition-colors duration-200">
                       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                         <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-3">
+                          {/* <div className="flex items-center gap-3 mb-3">
                             <span
                               className="px-3 py-1 text-sm font-medium rounded-full text-white"
                               style={{ backgroundColor: activity.color }}
@@ -149,7 +131,7 @@ export default function CronogramaClient() {
                             <span className={`text-sm font-medium ${participationStatus.color}`}>
                               {participationStatus.status}
                             </span>
-                          </div>
+                          </div> */}
 
                           <h3 className="text-lg font-semibold text-gray-900 mb-2">
                             {activity.title}
@@ -161,7 +143,7 @@ export default function CronogramaClient() {
                           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-gray-500">
                             <div className="flex items-center">
                               <Clock className="w-4 h-4 mr-2" aria-hidden="true" />
-                              {activity.time}
+                              {activity.startHour} - {activity.endHour}
                             </div>
                             <div className="flex items-center">
                               <MapPin className="w-4 h-4 mr-2" aria-hidden="true" />
@@ -169,7 +151,7 @@ export default function CronogramaClient() {
                             </div>
                             <div className="flex items-center">
                               <Users className="w-4 h-4 mr-2" aria-hidden="true" />
-                              {activity.participants}/{activity.maxParticipants} participantes
+                              Sem limite definido
                             </div>
                             <div className="flex items-center">
                               <span className="w-4 h-4 mr-2 text-center">👨‍🏫</span>
