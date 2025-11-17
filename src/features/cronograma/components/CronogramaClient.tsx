@@ -9,6 +9,7 @@ import { ActivityType } from '../types/activityType'
 import { createActivity } from '../actions/create-activity'
 import { getActivities } from '../actions/get-activities'
 import { updateActivity } from '../actions/update-activity'
+import { deleteActivity } from '../actions/delete-activity'
 
 interface CronogramaClientProps {
   activitiesList: ActivityType[]
@@ -67,11 +68,23 @@ export default function CronogramaClient({ activitiesList }: CronogramaClientPro
     toast.success(res.message || "Atividade atualizada com sucesso.");
   }
 
-  const handleDeleteActivity = (id: number) => {
-    if (window.confirm('Tem certeza que deseja excluir esta atividade?')) {
-      setActivities(activities.filter(a => a.id !== id))
-      toast.success('Atividade excluída com sucesso!')
+  const handleDeleteActivity = async (id: string) => {
+    if (!window.confirm("Tem certeza que deseja excluir esta atividade?")) {
+      return;
     }
+
+    const res = await deleteActivity(id);
+
+    if (!res.success) {
+      toast.error(res.message || "Erro ao deletar atividade.");
+      return;
+    }
+
+    // Atualiza lista
+    const updatedList = await getActivities();
+    setActivities(updatedList);
+
+    toast.success(res.message);
   }
 
   const handleEditClick = (activity: ActivityType) => {
