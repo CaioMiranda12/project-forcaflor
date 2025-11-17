@@ -8,6 +8,7 @@ import { useAuth } from '@/features/auth/context/AuthContext'
 import { ActivityType } from '../types/activityType'
 import { createActivity } from '../actions/create-activity'
 import { getActivities } from '../actions/get-activities'
+import { updateActivity } from '../actions/update-activity'
 
 interface CronogramaClientProps {
   activitiesList: ActivityType[]
@@ -17,7 +18,6 @@ export default function CronogramaClient({ activitiesList }: CronogramaClientPro
   const { user } = useAuth();
 
   const [activities, setActivities] = useState<ActivityType[]>(activitiesList)
-  console.log(activitiesList)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingActivity, setEditingActivity] = useState<ActivityType | undefined>(undefined)
@@ -51,13 +51,20 @@ export default function CronogramaClient({ activitiesList }: CronogramaClientPro
     toast.success(res.message);
   }
 
-  const handleUpdateActivity = (activityData: Omit<ActivityType, 'id'>) => {
-    if (editingActivity) {
-      setActivities(activities.map(a =>
-        a.id === editingActivity.id ? { ...activityData, id: editingActivity.id } : a
-      ))
-      toast.success('Atividade atualizada com sucesso!')
+  const handleUpdateActivity = async (activityData: Omit<ActivityType, 'id'>) => {
+    if (!editingActivity) return;
+
+    const res = await updateActivity(editingActivity.id, activityData);
+
+    if (!res.success) {
+      toast.error(res.message || "Erro ao atualizar atividade.");
+      return;
     }
+
+    const updatedList = await getActivities();
+    setActivities(updatedList);
+
+    toast.success(res.message || "Atividade atualizada com sucesso.");
   }
 
   const handleDeleteActivity = (id: number) => {
