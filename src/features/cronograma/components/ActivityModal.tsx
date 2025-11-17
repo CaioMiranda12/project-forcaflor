@@ -23,6 +23,7 @@ export function ActivityModal({ isOpen, onClose, onSave, activity }: ActivityMod
   } = useActivityForm()
 
   useEffect(() => {
+  if (isOpen) {
     if (activity) {
       reset({
         title: activity.title,
@@ -34,9 +35,19 @@ export function ActivityModal({ isOpen, onClose, onSave, activity }: ActivityMod
         dayOfWeek: activity.dayOfWeek
       })
     } else {
-      reset()
+      reset({
+        title: "",
+        description: "",
+        startHour: "",
+        endHour: "",
+        location: "",
+        instructor: "",
+        dayOfWeek: ""
+      })
     }
-  }, [activity, isOpen, reset])
+  }
+}, [isOpen, activity, reset])
+
 
   const onSubmit = async (data: ActivityFormData) => {
     try {
