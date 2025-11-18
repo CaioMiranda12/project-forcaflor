@@ -1,13 +1,24 @@
 "use server";
 
 import { connectDatabase } from "@/lib/db";
-import { Activity } from "../models/Activity"; 
+import { Activity } from "../models/Activity";
+import { ActivityType } from "../types/activityType";
 
 export async function getUpcomingActivities() {
   try {
     await connectDatabase();
 
-    const activities = await Activity.find().lean();
+    const allActivities = await Activity.find().lean()
+    const activities: ActivityType[] = allActivities.map(activity => ({
+      id: String(activity._id),
+      dayOfWeek: activity.dayOfWeek,
+      title: activity.title,
+      description: activity.description,
+      startHour: activity.startHour,
+      endHour: activity.endHour,
+      location: activity.location,
+      instructor: activity.instructor,
+    }))
 
     // Data/hora no Brasil
     const now = new Date();
