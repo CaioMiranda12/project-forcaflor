@@ -1,10 +1,10 @@
 export interface ActivityType {
-  id: number
+  id: string
   title: string
-  description: string
+  description?: string
   startHour: string
   endHour: string
-  location: string
-  instructor: string
+  location?: string
+  instructor?: string
   dayOfWeek: string
 }
