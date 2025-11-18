@@ -4,20 +4,11 @@ import { connectDatabase } from "@/lib/db";
 import { Activity } from "../models/Activity";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
+import { ActivityType } from "../types/activityType";
 
 const SECRET_KEY = process.env.JWT_SECRET!;
 
-export interface UpdateActivityPayload {
-  title: string;
-  description: string;
-  dayOfWeek: string;
-  startHour: string;
-  endHour: string;
-  location: string;
-  instructor: string;
-}
-
-export async function updateActivity(activityId: string, data: UpdateActivityPayload) {
+export async function updateActivity(activityId: string, data: Omit<ActivityType, 'id'>) {
   try {
     await connectDatabase();
 
