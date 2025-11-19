@@ -3,6 +3,8 @@
 import { connectDatabase } from "@/lib/db";
 import { Post } from "../models/Post";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
 
 interface CreatePostData {
   title: string;
@@ -16,9 +18,32 @@ interface CreatePostData {
   publishDate?: string | null;
 }
 
+const SECRET_KEY = process.env.JWT_SECRET!;
+
 export async function createPost(data: CreatePostData) {
   try {
     await connectDatabase();
+
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+
+    if (!token) {
+      return { success: false, message: "Usuário não autenticado." };
+    }
+
+    let payload: any;
+    try {
+      payload = jwt.verify(token, SECRET_KEY);
+    } catch {
+      return { success: false, message: "Token inválido." };
+    }
+
+    // O autor do post deve ser o usuário logado
+    // const authorId = payload.userId || payload._id;
+
+    // if (!authorId) {
+    //   return { success: false, message: "Autor inválido no token." };
+    // }
 
     const now = new Date();
 
