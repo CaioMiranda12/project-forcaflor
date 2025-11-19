@@ -2,10 +2,14 @@
 
 import { connectDatabase } from "@/lib/db";
 import { Post } from "../models/Post";
+import { verifyAuth } from "@/lib/auth";
 
 export async function deletePost(postId: string) {
   try {
     await connectDatabase();
+
+    const auth = await verifyAuth();
+    if (!auth.ok) return { success: false, message: auth.error };
 
     const deletedPost = await Post.findByIdAndDelete(postId);
 
