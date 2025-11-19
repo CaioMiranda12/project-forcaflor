@@ -3,10 +3,7 @@
 import { connectDatabase } from "@/lib/db";
 import { Category } from "../models/Category";
 import { CategoryType } from "../types/category";
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
-
-const SECRET_KEY = process.env.JWT_SECRET!;
+import { verifyAuth } from "@/lib/auth";
 
 export async function updateCategory(
   id: string,
@@ -15,18 +12,8 @@ export async function updateCategory(
   try {
     await connectDatabase();
 
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value;
-
-    if (!token) {
-      return { success: false, message: "Usuário não autenticado." };
-    }
-
-    try {
-      jwt.verify(token, SECRET_KEY);
-    } catch {
-      return { success: false, message: "Token inválido." };
-    }
+    const auth = await verifyAuth();
+    if (!auth.ok) return { success: false, message: auth.error };
 
     const category = (await Category.findByIdAndUpdate(
       id,
