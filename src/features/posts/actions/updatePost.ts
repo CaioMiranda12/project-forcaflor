@@ -26,6 +26,9 @@ export async function updatePost(data: UpdatePostData) {
     const auth = await verifyAuth();
     if (!auth.ok) return { success: false, message: auth.error };
 
+    const user = auth.user;
+    const isAdmin = user?.isAdmin === true;
+
     const now = new Date();
 
     const existing = await Post.findById(data.id);
@@ -33,10 +36,19 @@ export async function updatePost(data: UpdatePostData) {
       return { success: false, message: "Post não encontrado." };
     }
 
-    const publishDate =
-      data.status === "published" && !existing.publishDate
-        ? now
-        : data.publishDate ?? existing.publishDate;
+    let status = existing.status;
+    let publishDate = existing.publishDate;
+
+    if (isAdmin) {
+      // admin pode alterar status
+      status = data.status;
+
+      if (data.status === "published" && !existing.publishDate) {
+        publishDate = new Date(); // define data automática da publicação
+      } else if (data.status === "scheduled") {
+        publishDate = data.publishDate ?? existing.publishDate;
+      }
+    }
 
     const updated = await Post.findByIdAndUpdate(
       data.id,
@@ -45,7 +57,7 @@ export async function updatePost(data: UpdatePostData) {
         excerpt: data.excerpt,
         content: data.content,
         category: data.categoryId,
-        status: data.status,
+        status,
         image: data.image,
         author: data.author,
         publishDate,
