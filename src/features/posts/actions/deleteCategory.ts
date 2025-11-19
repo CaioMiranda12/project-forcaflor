@@ -2,28 +2,14 @@
 
 import { connectDatabase } from "@/lib/db";
 import { Category } from "../models/Category";
-import jwt from "jsonwebtoken";
-import { cookies } from "next/headers";
-
-const SECRET_KEY = process.env.JWT_SECRET!;
-
+import { verifyAuth } from "@/lib/auth";
 
 export async function deleteCategory(id: string) {
   try {
     await connectDatabase();
 
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value;
-
-    if (!token) {
-      return { success: false, message: "Usuário não autenticado." };
-    }
-
-    try {
-          jwt.verify(token, SECRET_KEY);
-    } catch {
-          return { success: false, message: "Token inválido." };
-      }
+    const auth = await verifyAuth();
+    if (!auth.ok) return { success: false, message: auth.error };
 
     const deleted = await Category.findByIdAndDelete(id).lean();
 
