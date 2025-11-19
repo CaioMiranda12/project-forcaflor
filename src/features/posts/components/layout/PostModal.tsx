@@ -249,8 +249,9 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
           )}
         </div>
 
-        {/* Status */}
-        <div>
+        {/* Status - apenas para editar */}
+        {post && (
+          <div>
           <label htmlFor="post-status" className="block text-base font-medium text-gray-700 mb-2">
             Status
           </label>
@@ -263,6 +264,7 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
             <option value="scheduled">Agendado</option>
           </select>
         </div>
+        )}
 
         {/* Botões */}
         <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
