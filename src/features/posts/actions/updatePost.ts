@@ -3,8 +3,7 @@
 import { connectDatabase } from "@/lib/db";
 import { Post } from "../models/Post";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
+import { verifyAuth } from "@/lib/auth";
 
 interface UpdatePostData {
   id: string;
@@ -19,25 +18,13 @@ interface UpdatePostData {
   publishDate?: string | null;
 }
 
-const SECRET_KEY = process.env.JWT_SECRET!;
-
 export async function updatePost(data: UpdatePostData) {
 
   try {
     await connectDatabase();
 
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value;
-    
-    if (!token) {
-      return { success: false, message: "Usuário não autenticado." };
-    }
-
-    try {
-        jwt.verify(token, SECRET_KEY);
-      } catch {
-        return { success: false, message: "Token inválido." };
-      }
+    const auth = await verifyAuth();
+    if (!auth.ok) return { success: false, message: auth.error };
 
     const now = new Date();
 
