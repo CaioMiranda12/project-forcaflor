@@ -39,7 +39,7 @@ export async function createPost(data: CreatePostData) {
       content: data.content,
       category: data.categoryId,
       image: data.image,
-      status: data.status,
+      status: "draft",
       author: data.author,
       publishDate,
       featured: data.featured ?? false
