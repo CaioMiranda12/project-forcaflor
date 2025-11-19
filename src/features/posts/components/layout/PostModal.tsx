@@ -250,7 +250,7 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
         </div>
 
         {/* Status - apenas para editar */}
-        {post && (
+        {post && user?.isAdmin && (
           <div>
           <label htmlFor="post-status" className="block text-base font-medium text-gray-700 mb-2">
             Status
