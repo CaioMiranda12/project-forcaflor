@@ -2,11 +2,7 @@
 
 import { connectDatabase } from "@/lib/db";
 import User from "@/app/models/User";
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-
-const SECRET_KEY = process.env.JWT_SECRET!;
+import { verifyAuth } from "@/lib/auth";
 
 interface UpdateUserPayload {
   name: string;
@@ -18,21 +14,12 @@ export async function updateUser(userId: string, data: UpdateUserPayload) {
   try {
     await connectDatabase();
 
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value;
-
-    if (!token) {
+    const auth = await verifyAuth();
+    if (!auth.ok) {
       return { success: false, message: "Usuário não autenticado." };
     }
 
-    let decoded: any;
-    try {
-      decoded = jwt.verify(token, SECRET_KEY);
-    } catch {
-      return { success: false, message: "Token inválido." };
-    }
-
-    if (!decoded.isAdmin) {
+    if (!auth.user.isAdmin) {
       return { success: false, message: "Acesso negado. Apenas admins podem editar usuários." };
     }
 
