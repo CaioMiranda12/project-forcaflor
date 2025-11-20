@@ -148,7 +148,7 @@ export default function NoticiasList({ initialNews }: { initialNews: NewsItem[] 
                 <img
                   src={selectedNews.image}
                   alt={selectedNews.title}
-                  className="w-full h-64 object-cover rounded-lg mb-6"
+                  className="w-full h-64 object-contain rounded-lg mb-6"
                 />
               ) : (
                 <div className="w-full h-64 flex items-center justify-center bg-gray-100 text-gray-400 rounded-lg mb-6">
