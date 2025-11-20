@@ -16,7 +16,7 @@ import { getPosts } from '@/features/posts/actions/getPosts'
 import { useAuth } from '@/features/auth/context/AuthContext'
 import { deletePost } from '@/features/posts/actions/deletePost'
 import { PostFormData } from '@/features/posts/forms/post-form'
-import { formatLocalDate } from '@/shared/utils/formatLocalDate '
+import { formatLocalDate } from '@/shared/utils/formatLocalDate'
 import { updatePost } from '@/features/posts/actions/updatePost'
 import { createPost } from '@/features/posts/actions/createPost'
 
