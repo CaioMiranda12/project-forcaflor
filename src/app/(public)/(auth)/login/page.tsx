@@ -112,21 +112,6 @@ export default function Login() {
 
           {/* Links adicionais */}
           <div className="mt-8 text-center space-y-4">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Ainda não tem conta?</span>
-              </div>
-            </div>
-
-            <Link
-              href="/cadastro"
-              className="block w-full px-6 py-3 text-base font-medium text-primary bg-white border-2 border-primary rounded-lg hover:bg-primary-50 active:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-200 cursor-pointer transform hover:scale-[1.02] active:scale-[0.98]"
-            >
-              Fazer Cadastro na Escolinha
-            </Link>
 
             <Link
               href="/"
