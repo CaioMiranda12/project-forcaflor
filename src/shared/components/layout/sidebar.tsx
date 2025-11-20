@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { privateLinks, publicLinks } from "@/shared/constants/menuLinks";
 import { AuthUser } from "@/features/auth/types/AuthUser";
 import { logout } from "@/features/auth/actions/logout.actions";
+import Image from "next/image";
 
 interface SidebarProps {
   sidebarOpen: boolean
@@ -31,7 +32,12 @@ export function Sidebar({ setSidebarOpen, sidebarOpen, user }: SidebarProps) {
       {/* Sidebar Desktop */}
       <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:bg-white lg:border-r lg:border-gray-200">
         <div className="flex items-center justify-center h-16 px-4 border-b border-gray-200">
-          <h1 className="text-xl font-bold text-[#E31969]">Portal Força Flor</h1>
+          <Image
+            src="/logo.png"
+            alt="Logo da força flor"
+            width={80}
+            height={80}
+          />
         </div>
 
         <nav className="flex-1 px-4 py-6 space-y-2" role="navigation" aria-label="Menu principal">
