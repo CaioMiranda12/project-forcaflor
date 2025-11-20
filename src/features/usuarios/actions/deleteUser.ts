@@ -13,13 +13,13 @@ export async function deleteUser(userId: string) {
     await connectDatabase();
 
     const auth = await verifyAuth();
-      if (!auth.ok) {
-          return { success: false, message: "Usuário não autenticado." };
-      }
-    
-      if (!auth.user.isAdmin) {
-        return { success: false, message: "Acesso negado. Apenas admins podem deletar usuários." };
-      }
+    if (!auth.ok || !auth.user) {
+      return { success: false, message: "Usuário não autenticado." };
+    }
+
+    if (!auth.user.isAdmin) {
+      return { success: false, message: "Acesso negado. Apenas admins podem deletar usuários." };
+    }
 
     // 🔒 Evita que o admin delete a si mesmo (opcional)
     if (auth.user.userId === userId) {
