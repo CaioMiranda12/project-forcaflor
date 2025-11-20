@@ -15,7 +15,7 @@ export async function updateUser(userId: string, data: UpdateUserPayload) {
     await connectDatabase();
 
     const auth = await verifyAuth();
-    if (!auth.ok) {
+    if (!auth.ok || !auth.user) {
       return { success: false, message: "Usuário não autenticado." };
     }
 
