@@ -5,6 +5,12 @@ import jwt from "jsonwebtoken";
 
 const SECRET_KEY = process.env.JWT_SECRET!;
 
+interface AuthPayload extends jwt.JwtPayload {
+  userId: string;
+  email: string;
+  isAdmin: boolean;
+}
+
 export async function verifyAuth() {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
@@ -14,7 +20,7 @@ export async function verifyAuth() {
   }
 
   try {
-    const decoded = jwt.verify(token, SECRET_KEY);
+    const decoded = jwt.verify(token, SECRET_KEY) as AuthPayload;
     return { ok: true, user: decoded };
   } catch {
     return { ok: false, error: "Token inválido." };
