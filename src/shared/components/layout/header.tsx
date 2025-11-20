@@ -31,16 +31,6 @@ export function Header({ setSidebarOpen, sidebarOpen, user }: HeaderProps) {
 
         <div className="flex items-center space-x-4">
           {/* Logo da Força Flor */}
-          <div className="flex items-center">
-            <img
-              src="https://lumi.new/lumi.ing/logo.png"
-              alt="Logo Força Flor"
-              className="w-8 h-8 rounded-full"
-            />
-            <span className="ml-2 text-sm font-medium text-[#E31969] hidden sm:inline">
-              Força Flor
-            </span>
-          </div>
           <div className="w-8 h-8 bg-[#61CE70] rounded-full flex items-center justify-center">
             <span className="text-sm font-medium text-white">{user?.name ? user?.name.charAt(0).toLocaleUpperCase() : 'U'}</span>
           </div>
