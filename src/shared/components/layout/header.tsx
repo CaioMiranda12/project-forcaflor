@@ -25,7 +25,7 @@ export function Header({ setSidebarOpen, sidebarOpen, user }: HeaderProps) {
             <Menu className="w-6 h-6" />
           </button>
           <h2 className="ml-2 text-xl font-semibold text-gray-900 lg:ml-0">
-            Dashboard
+            Espaço Força Flor
           </h2>
         </div>
 
