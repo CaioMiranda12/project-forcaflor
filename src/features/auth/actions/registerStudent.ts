@@ -1,7 +1,7 @@
 "use server";
 
+import Student from "@/app/models/Student";
 import { connectDatabase } from "@/lib/db";
-import User from "@/app/models/User";
 
 export async function registerStudent(formData: FormData) {
   await connectDatabase();
@@ -16,7 +16,7 @@ export async function registerStudent(formData: FormData) {
     (hoje < new Date(hoje.getFullYear(), nascimento.getMonth(), nascimento.getDate()) ? 1 : 0);
 
   try {
-    await User.create({
+    await Student.create({
       ...data,
       idade,
     });
