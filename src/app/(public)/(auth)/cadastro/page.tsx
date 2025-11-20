@@ -28,8 +28,7 @@ export default function Cadastro() {
         }
       })
 
-      // await registerStudent(formData)
-      console.log(data)
+      await registerStudent(formData)
       toast.success('Cadastro realizado com sucesso!')
       router.push('/login')
     } catch {
