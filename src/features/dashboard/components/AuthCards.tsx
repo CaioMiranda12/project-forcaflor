@@ -21,7 +21,7 @@ export default function AuthCards() {
             Fazer Login
           </h3>
           <p className="text-gray-600 mb-4">
-            Acesse sua conta para gerenciar atividades e conteúdo
+            Acesse sua conta para gerenciar atividades e conteúdo (Voluntários e Administradores)
           </p>
           <Link
             href="/login"
@@ -39,10 +39,10 @@ export default function AuthCards() {
             <UserPlus className="w-8 h-8 text-white" aria-hidden="true" />
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Criar Conta
+            Fazer ficha de inscrição
           </h3>
           <p className="text-gray-600 mb-4">
-            Cadastre-se para participar das atividades da comunidade
+            Preencha sua ficha de inscrição para participar das atividades da comunidade
           </p>
           <Link
             href="/cadastro"
