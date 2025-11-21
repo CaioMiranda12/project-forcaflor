@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Modal } from '@/features/posts/components/layout/Modal'
 import { User, Mail, Phone, MapPin, FileText, GraduationCap, Users } from 'lucide-react'
-import { Participants } from '@/app/(private)/participantes/page'
+import { Participants } from '../types/participants'
 
 const editStudentSchema = z.object({
   nomeCompleto: z.string().min(3, 'Informe o nome completo'),
