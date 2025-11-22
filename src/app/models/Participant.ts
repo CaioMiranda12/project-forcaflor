@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
-export interface IStudent extends Document {
+export interface IParticipant extends Document {
   nomeCompleto: string;
   dataNascimento: string;
   idade?: number;
@@ -36,7 +36,7 @@ export interface IStudent extends Document {
   updatedAt?: Date;
 }
 
-const StudentSchema = new Schema<IStudent>({
+const ParticipantSchema = new Schema<IParticipant>({
   nomeCompleto: { type: String, required: true },
   dataNascimento: { type: String, required: true },
   idade: { type: Number },
@@ -70,6 +70,6 @@ const StudentSchema = new Schema<IStudent>({
   }
 }, { timestamps: true });
 
-const StudentModal: Model<IStudent> = (mongoose.models.Student as Model<IStudent>) || mongoose.model<IStudent>("Student", StudentSchema);
+const ParticipantModel: Model<IParticipant> = (mongoose.models.Participant as Model<IParticipant>) || mongoose.model<IParticipant>("Participant", ParticipantSchema);
 
-export default StudentModal;
+export default ParticipantModel;
