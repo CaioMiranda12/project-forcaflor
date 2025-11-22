@@ -32,6 +32,6 @@ export interface Participants {
     nis?: string
   }
   aceitouTermos: boolean
-  status: "active" | "inactive"
+  isActive: boolean;
   createdAt: string
 }
