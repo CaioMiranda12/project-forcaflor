@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-const studentSchema = z.object({
+const participantSchema = z.object({
   // Dados do Jovem
   nomeCompleto: z.string().min(3, 'Informe o nome completo'),
   dataNascimento: z.string().refine(
@@ -52,11 +52,11 @@ const studentSchema = z.object({
   aceitouTermos: z.boolean().refine(val => val === true, { message: 'Você deve aceitar o termo para continuar', }),
 })
 
-export type StudentFormData = z.infer<typeof studentSchema>
+export type ParticipantFormData = z.infer<typeof participantSchema>
 
-export function useStudentForm() {
-  return useForm<StudentFormData>({
-    resolver: zodResolver(studentSchema),
+export function useParticipantForm() {
+  return useForm<ParticipantFormData>({
+    resolver: zodResolver(participantSchema),
     defaultValues: {
       nomeCompleto: '',
       dataNascimento: '',
