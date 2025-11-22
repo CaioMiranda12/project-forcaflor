@@ -4,6 +4,7 @@ import { Search, Filter, Edit, Trash2, GraduationCap, UserCheck, Clock } from 'l
 import { Participants } from '../types/participants'
 import { EditParticipantModal } from './editParticipantModal'
 import { DeleteParticipantModal } from './deleteParticipantModal'
+import { convertYearToText } from '@/shared/utils/convertYearToText'
 
 export default function ParticipantsClient({ participants }: { participants: Participants[] }) {
   const [searchTerm, setSearchTerm] = useState('')
@@ -179,7 +180,7 @@ export default function ParticipantsClient({ participants }: { participants: Par
                           {participant.nomeCompleto}
                         </div>
                         <div className="text-sm text-gray-500">
-                          {participant.idade} anos • {participant.serie}
+                          {participant.idade} anos • {convertYearToText(participant.serie)}
                         </div>
                       </div>
                     </div>
