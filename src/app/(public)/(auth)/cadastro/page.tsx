@@ -1,18 +1,18 @@
 'use client'
 
 import { registerParticipant } from '@/features/auth/actions/registerParticipant'
-import { StudentFormData, useStudentForm } from '@/features/auth/forms/student-form'
+import { ParticipantFormData, useParticipantForm } from '@/features/participants/forms/participant-form'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
 
 export default function Cadastro() {
   const router = useRouter()
-  const form = useStudentForm();
+  const form = useParticipantForm();
   const [isLoading, setIsLoading] = useState(false)
   const aceitouTermos = form.watch("aceitouTermos")
 
-  async function onSubmit(data: StudentFormData) {
+  async function onSubmit(data: ParticipantFormData) {
     try {
       setIsLoading(true)
 
