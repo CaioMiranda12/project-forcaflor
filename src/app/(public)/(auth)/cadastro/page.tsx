@@ -1,6 +1,6 @@
 'use client'
 
-import { registerStudent } from '@/features/auth/actions/registerStudent'
+import { registerParticipant } from '@/features/auth/actions/registerParticipant'
 import { StudentFormData, useStudentForm } from '@/features/auth/forms/student-form'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
@@ -28,7 +28,7 @@ export default function Cadastro() {
         }
       })
 
-      await registerStudent(formData)
+      await registerParticipant(formData)
       toast.success('Cadastro realizado com sucesso!')
       router.push('/login')
     } catch {
