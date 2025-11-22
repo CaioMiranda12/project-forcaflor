@@ -37,11 +37,11 @@ export type EditStudentFormData = z.infer<typeof editStudentSchema>
 interface EditStudentModalProps {
   isOpen: boolean
   onClose: () => void
-  onSave: (studentId: number, studentData: EditStudentFormData) => void
+  onSave: (participantId: string, participantData: EditStudentFormData) => void
   participants: Participants | null
 }
 
-export function EditStudentModal({
+export function EditParticipantModal({
   isOpen,
   onClose,
   onSave,
