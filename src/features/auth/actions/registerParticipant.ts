@@ -19,6 +19,7 @@ export async function registerParticipant(formData: FormData) {
     await Participant.create({
       ...data,
       idade,
+      isActive: true
     });
     return { success: true, message: "Usuário cadastrado com sucesso!" };
   } catch (err) {
