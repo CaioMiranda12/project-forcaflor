@@ -1,6 +1,6 @@
 "use server";
 
-import Student from "@/app/models/Student";
+import Participant from "@/app/models/Participant";
 import { connectDatabase } from "@/lib/db";
 
 
@@ -8,10 +8,10 @@ export async function getParticipants() {
   try {
     await connectDatabase();
 
-    const students = await Student.find().lean();
+    const participants = await Participant.find().lean();
 
     // retorna já formatado para o front
-    return students.map((s: any) => ({
+    return participants.map((s: any) => ({
       id: s._id.toString(),
       nomeCompleto: s.nomeCompleto,
       dataNascimento: s.dataNascimento,
