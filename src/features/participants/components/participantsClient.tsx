@@ -24,7 +24,11 @@ export default function ParticipantsClient({ participants }: { participants: Par
     const matchesSearch =
       participant.nomeCompleto.toLowerCase().includes(searchTerm.toLowerCase()) ||
       participant.escola.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = selectedStatus === 'all' || participant.status === selectedStatus
+    const matchesStatus =
+      selectedStatus === 'all' ||
+      (selectedStatus === 'active' && participant.isActive === true) ||
+      (selectedStatus === 'inactive' && participant.isActive === false)
+
     return matchesSearch && matchesStatus
   })
 
@@ -48,11 +52,11 @@ export default function ParticipantsClient({ participants }: { participants: Par
   }
 
   const handleUpdateParticipant = async (participantId: string, participantData: any) => {
-    console.log('Atualizar estudante:', participantId, participantData)
+    console.log('Atualizar participante:', participantId, participantData)
   }
 
   const handleDeleteParticipant = async (participantId: string) => {
-    console.log('Excluir estudante:', participantId)
+    console.log('Excluir participante:', participantId)
   }
 
   return (
@@ -64,7 +68,7 @@ export default function ParticipantsClient({ participants }: { participants: Par
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
               Gerenciamento de Participantes
             </h1>
-            <p className="text-lg text-gray-600">Gerencie os participantes cadastrados na ONG</p>
+            <p className="text-lg text-gray-600">Gerencie os participantes cadastrados na OSC</p>
           </div>
         </div>
       </div>
@@ -79,11 +83,11 @@ export default function ParticipantsClient({ participants }: { participants: Par
             />
             <input
               type="text"
-              placeholder="Buscar estudantes por nome ou escola..."
+              placeholder="Buscar participantes por nome ou escola..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base"
-              aria-label="Buscar estudantes"
+              aria-label="Buscar participantes"
             />
           </div>
 
@@ -130,7 +134,7 @@ export default function ParticipantsClient({ participants }: { participants: Par
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Participantes Ativos</p>
               <p className="text-2xl font-bold text-gray-900">
-                {participants.filter((p) => p.status === 'active').length}
+                {participants.filter((p) => p.isActive).length}
               </p>
             </div>
           </div>
@@ -195,12 +199,12 @@ export default function ParticipantsClient({ participants }: { participants: Par
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
-                      className={`px-2 py-1 text-xs font-medium rounded-full ${participant.status === 'active'
+                      className={`px-2 py-1 text-xs font-medium rounded-full ${participant.isActive
                         ? 'bg-green-100 text-green-800'
                         : 'bg-red-100 text-red-800'
                         }`}
                     >
-                      {participant.status === 'active' ? 'Ativo' : 'Inativo'}
+                      {participant.isActive ? 'Ativo' : 'Inativo'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -235,7 +239,7 @@ export default function ParticipantsClient({ participants }: { participants: Par
 
         {filteredParticipants.length === 0 && (
           <div className="p-12 text-center">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum estudante encontrado</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum participante encontrado</h3>
             <p className="text-base text-gray-600">
               Tente ajustar sua busca ou filtros para encontrar o que procura.
             </p>
