@@ -46,7 +46,7 @@ export async function getParticipants() {
       },
       aceitouTermos: s.aceitouTermos,
       createdAt: s.createdAt,
-      status: s.status,
+      isActive: s.isActive,
     }));
   } catch (err) {
     console.error("Erro ao listar students:", err);
