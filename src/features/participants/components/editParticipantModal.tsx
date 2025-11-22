@@ -29,7 +29,7 @@ const editStudentSchema = z.object({
     email: z.string().email('Email inválido'),
     telefone: z.string().min(8, 'Telefone inválido'),
   }),
-  status: z.enum(['active', 'inactive']),
+  isActive: z.boolean()
 })
 
 export type EditStudentFormData = z.infer<typeof editStudentSchema>
@@ -87,7 +87,7 @@ export function EditParticipantModal({
           email: participants.responsavel.email,
           telefone: participants.responsavel.telefone,
         },
-        status: participants.status,
+        isActive: participants.isActive,
       })
     }
   }, [participants, reset])
@@ -177,11 +177,14 @@ export function EditParticipantModal({
               </label>
               <select
                 id="status"
-                {...register('status')}
+                {...register("isActive", {
+                  setValueAs: (val) => val === "true",
+                })}
+                defaultValue={participants.isActive ? "true" : "false"}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base bg-white cursor-pointer"
               >
-                <option value="active">Ativo</option>
-                <option value="inactive">Inativo</option>
+                <option value="true">Ativo</option>
+                <option value="false">Inativo</option>
               </select>
             </div>
           </div>
