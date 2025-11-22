@@ -4,7 +4,7 @@ import Student from "@/app/models/Student";
 import { connectDatabase } from "@/lib/db";
 
 
-export async function getStudents() {
+export async function getParticipants() {
   try {
     await connectDatabase();
 
@@ -45,6 +45,8 @@ export async function getStudents() {
         nis: s.responsavel?.nis || "",
       },
       aceitouTermos: s.aceitouTermos,
+      createdAt: s.createdAt,
+      status: s.status,
     }));
   } catch (err) {
     console.error("Erro ao listar students:", err);
