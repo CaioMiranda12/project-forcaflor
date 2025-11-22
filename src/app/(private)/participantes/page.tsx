@@ -1,12 +1,11 @@
+import { getParticipants } from "@/features/auth/actions/getParticipants";
+import ParticipantsClient from "@/features/participants/components/participantsClient";
+import { Participants } from "@/features/participants/types/participants";
 
-import { getStudents } from '@/features/auth/actions/getStudents'
-import StudentsClient from '@/features/students/components/studentsClient'
-import { Participants } from '@/features/students/types/participants';
-
-export default async function StudentsPage() {
-  const students: Participants[] = await getStudents();
+export default async function ParticipantsPage() {
+  const participants: Participants[] = await getParticipants();
 
   return (
-    <StudentsClient students={students} />
+    <ParticipantsClient participants={participants} />
   )
 }
