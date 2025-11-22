@@ -39,17 +39,17 @@ export default function UsuariosClient({ users }: { users: AuthUser[] }) {
   // ]
 
   const filteredUsers = userList.filter(user => {
-  const matchesSearch =
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase());
 
-  const matchesRole =
-    selectedRole === 'all' ||
-    (selectedRole === 'admin' && user.isAdmin) ||
-    (selectedRole === 'volunteer' && !user.isAdmin);
+    const matchesRole =
+      selectedRole === 'all' ||
+      (selectedRole === 'admin' && user.isAdmin) ||
+      (selectedRole === 'volunteer' && !user.isAdmin);
 
-  return matchesSearch && matchesRole;
-});
+    return matchesSearch && matchesRole;
+  });
 
 
   const getRoleColor = (isAdmin: boolean) => {
@@ -94,17 +94,17 @@ export default function UsuariosClient({ users }: { users: AuthUser[] }) {
 
   const handleUpdateUser = async (userId: string, userData: EditUserFormData) => {
     console.log(userId)
-     const res = await updateUser(userId, userData)
+    const res = await updateUser(userId, userData)
 
-      if (!res.success) {
-        toast.error(res.message)
-        return
-      }
-      const updatedUsers = await getUsers()
-      setUserList(updatedUsers)
+    if (!res.success) {
+      toast.error(res.message)
+      return
+    }
+    const updatedUsers = await getUsers()
+    setUserList(updatedUsers)
 
-      toast.success(res.message)
-      setIsEditModalOpen(false)
+    toast.success(res.message)
+    setIsEditModalOpen(false)
   }
 
   const handleDeleteClick = (userId: string, userName: string) => {
@@ -291,7 +291,7 @@ export default function UsuariosClient({ users }: { users: AuthUser[] }) {
                 <tr key={user.userId} className="hover:bg-gray-50 transition-colors duration-200">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10">
+                      <div className="shrink-0 h-10 w-10">
                         <div className="h-10 w-10 rounded-full bg-[#61CE70] flex items-center justify-center">
                           <span className="text-sm font-medium text-white">
                             {getInitials(user.name)}
