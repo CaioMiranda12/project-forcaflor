@@ -1,4 +1,4 @@
-import { getParticipants } from "@/features/auth/actions/getParticipants";
+import { getParticipants } from "@/features/participants/actions/getParticipants";
 import ParticipantsClient from "@/features/participants/components/participantsClient";
 import { Participants } from "@/features/participants/types/participants";
 
