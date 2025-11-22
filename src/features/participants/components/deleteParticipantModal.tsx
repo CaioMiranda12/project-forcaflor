@@ -3,29 +3,29 @@ import React, { useState } from 'react'
 import { Modal } from '@/features/posts/components/layout/Modal'
 import { AlertTriangle } from 'lucide-react'
 
-interface DeleteStudentModalProps {
+interface DeleteParticipantModalProps {
   isOpen: boolean
   onClose: () => void
-  onConfirm: (studentId: number) => void
-  studentName: string
-  studentId: number | null
+  onConfirm: (participantId: string) => void
+  participantName: string
+  participantId: string | null
 }
 
-export function DeleteStudentModal({
+export function DeleteParticipantModal({
   isOpen,
   onClose,
   onConfirm,
-  studentName,
-  studentId,
-}: DeleteStudentModalProps) {
+  participantName,
+  participantId,
+}: DeleteParticipantModalProps) {
   const [isDeleting, setIsDeleting] = useState(false)
 
   const handleConfirm = async () => {
-    if (!studentId) return
+    if (!participantId) return
 
     setIsDeleting(true)
     try {
-      await onConfirm(studentId)
+      await onConfirm(participantId)
       onClose()
     } catch (error) {
       console.error('Erro ao excluir estudante:', error)
@@ -50,7 +50,7 @@ export function DeleteStudentModal({
             Tem certeza que deseja excluir este estudante?
           </h3>
           <p className="text-base text-gray-600">
-            O estudante <span className="font-semibold text-gray-900">{studentName}</span> será
+            O estudante <span className="font-semibold text-gray-900">{participantName}</span> será
             removido permanentemente do sistema.
           </p>
           <p className="text-sm text-red-600 mt-2">Esta ação não pode ser desfeita.</p>
