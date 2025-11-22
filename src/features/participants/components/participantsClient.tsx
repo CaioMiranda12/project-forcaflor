@@ -1,18 +1,17 @@
 'use client'
 import React, { useState } from 'react'
-import { Search, Filter, Plus, Edit, Trash2, GraduationCap, Users, UserCheck, Clock } from 'lucide-react'
-import { EditStudentModal } from '@/features/students/components/editStudentModal'
-import { DeleteStudentModal } from '@/features/students/components/deleteStudentModal'
+import { Search, Filter, Edit, Trash2, GraduationCap, UserCheck, Clock } from 'lucide-react'
 import { Participants } from '../types/participants'
+import { EditParticipantModal } from './editParticipantModal'
+import { DeleteParticipantModal } from './deleteParticipantModal'
 
-export default function StudentsClient({ students }: { students: Participants[] }) {
+export default function ParticipantsClient({ participants }: { participants: Participants[] }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedStatus, setSelectedStatus] = useState('all')
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const [selectedStudent, setSelectedStudent] = useState<Participants | null>(null)
-  const [studentToDelete, setStudentToDelete] = useState<{ id: number; name: string } | null>(null)
+  const [selectedParticipant, setSelectedParticipant] = useState<Participants | null>(null)
+  const [studentToDelete, setStudentToDelete] = useState<{ id: string; name: string } | null>(null)
 
   const statuses = [
     { value: 'all', label: 'Todos os status' },
@@ -20,11 +19,11 @@ export default function StudentsClient({ students }: { students: Participants[] 
     { value: 'inactive', label: 'Inativo' },
   ]
 
-  const filteredStudents = students.filter((student) => {
+  const filteredParticipants = participants.filter((participant) => {
     const matchesSearch =
-      student.nomeCompleto.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.escola.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = selectedStatus === 'all' || student.status === selectedStatus
+      participant.nomeCompleto.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      participant.escola.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesStatus = selectedStatus === 'all' || participant.status === selectedStatus
     return matchesSearch && matchesStatus
   })
 
@@ -37,29 +36,22 @@ export default function StudentsClient({ students }: { students: Participants[] 
       .slice(0, 2)
   }
 
-  const handleEditStudent = (student: Participants) => {
-    setSelectedStudent(student)
+  const handleEditParticipant = (participant: Participants) => {
+    setSelectedParticipant(participant)
     setIsEditModalOpen(true)
   }
 
-  const handleDeleteClick = (studentId: number, studentName: string) => {
-    setStudentToDelete({ id: studentId, name: studentName })
+  const handleDeleteClick = (participantId: string, participantNome: string) => {
+    setStudentToDelete({ id: participantId, name: participantNome })
     setIsDeleteModalOpen(true)
   }
 
-  const handleCreateStudent = async (studentData: any) => {
-    console.log('Criar estudante:', studentData)
-    // Integração com Lumi SDK: await lumi.entities.Students.create(studentData)
+  const handleUpdateParticipant = async (participantId: string, participantData: any) => {
+    console.log('Atualizar estudante:', participantId, participantData)
   }
 
-  const handleUpdateStudent = async (studentId: number, studentData: any) => {
-    console.log('Atualizar estudante:', studentId, studentData)
-    // Integração com Lumi SDK: await lumi.entities.Students.update(studentId, studentData)
-  }
-
-  const handleDeleteStudent = async (studentId: number) => {
-    console.log('Excluir estudante:', studentId)
-    // Integração com Lumi SDK: await lumi.entities.Students.delete(studentId)
+  const handleDeleteParticipant = async (participantId: string) => {
+    console.log('Excluir estudante:', participantId)
   }
 
   return (
@@ -124,7 +116,7 @@ export default function StudentsClient({ students }: { students: Participants[] 
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total de Participantes</p>
-              <p className="text-2xl font-bold text-gray-900">{students.length}</p>
+              <p className="text-2xl font-bold text-gray-900">{participants.length}</p>
             </div>
           </div>
         </div>
@@ -137,7 +129,7 @@ export default function StudentsClient({ students }: { students: Participants[] 
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Participantes Ativos</p>
               <p className="text-2xl font-bold text-gray-900">
-                {students.filter((s) => s.status === 'active').length}
+                {participants.filter((p) => p.status === 'active').length}
               </p>
             </div>
           </div>
@@ -171,64 +163,64 @@ export default function StudentsClient({ students }: { students: Participants[] 
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredStudents.map((student) => (
-                <tr key={student.id} className="hover:bg-gray-50 transition-colors duration-200">
+              {filteredParticipants.map((participant) => (
+                <tr key={participant.id} className="hover:bg-gray-50 transition-colors duration-200">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="shrink-0 h-10 w-10">
                         <div className="h-10 w-10 rounded-full bg-[#61CE70] flex items-center justify-center">
                           <span className="text-sm font-medium text-white">
-                            {getInitials(student.nomeCompleto)}
+                            {getInitials(participant.nomeCompleto)}
                           </span>
                         </div>
                       </div>
                       <div className="ml-4">
                         <div className="text-base font-medium text-gray-900">
-                          {student.nomeCompleto}
+                          {participant.nomeCompleto}
                         </div>
                         <div className="text-sm text-gray-500">
-                          {student.idade} anos • {student.serie}
+                          {participant.idade} anos • {participant.serie}
                         </div>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-base text-gray-900">{student.escola}</div>
-                    <div className="text-sm text-gray-500">Turno: {student.turno}</div>
+                    <div className="text-base text-gray-900">{participant.escola}</div>
+                    <div className="text-sm text-gray-500">Turno: {participant.turno}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-base text-gray-900">{student.responsavel.nomeCompleto}</div>
-                    <div className="text-sm text-gray-500">{student.responsavel.telefone}</div>
+                    <div className="text-base text-gray-900">{participant.responsavel.nomeCompleto}</div>
+                    <div className="text-sm text-gray-500">{participant.responsavel.telefone}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
-                      className={`px-2 py-1 text-xs font-medium rounded-full ${student.status === 'active'
+                      className={`px-2 py-1 text-xs font-medium rounded-full ${participant.status === 'active'
                         ? 'bg-green-100 text-green-800'
                         : 'bg-red-100 text-red-800'
                         }`}
                     >
-                      {student.status === 'active' ? 'Ativo' : 'Inativo'}
+                      {participant.status === 'active' ? 'Ativo' : 'Inativo'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <div className="flex items-center">
                       <Clock className="w-4 h-4 mr-2" aria-hidden="true" />
-                      {new Date(student.createdAt).toLocaleDateString('pt-BR')}
+                      {new Date(participant.createdAt).toLocaleDateString('pt-BR')}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end space-x-2">
                       <button
-                        onClick={() => handleEditStudent(student)}
+                        onClick={() => handleEditParticipant(participant)}
                         className="p-2 text-[#61CE70] hover:bg-[#61CE70] hover:text-white rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#61CE70] focus:ring-offset-2"
-                        aria-label={`Editar ${student.nomeCompleto}`}
+                        aria-label={`Editar ${participant.nomeCompleto}`}
                       >
                         <Edit className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => handleDeleteClick(student.id, student.nomeCompleto)}
+                        onClick={() => handleDeleteClick(participant.id, participant.nomeCompleto)}
                         className="p-2 text-red-600 hover:bg-red-600 hover:text-white rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2"
-                        aria-label={`Excluir ${student.nomeCompleto}`}
+                        aria-label={`Excluir ${participant.nomeCompleto}`}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -240,7 +232,7 @@ export default function StudentsClient({ students }: { students: Participants[] 
           </table>
         </div>
 
-        {filteredStudents.length === 0 && (
+        {filteredParticipants.length === 0 && (
           <div className="p-12 text-center">
             <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhum estudante encontrado</h3>
             <p className="text-base text-gray-600">
@@ -251,25 +243,25 @@ export default function StudentsClient({ students }: { students: Participants[] 
       </div>
 
       {/* Modais */}
-      <EditStudentModal
+      <EditParticipantModal
         isOpen={isEditModalOpen}
         onClose={() => {
           setIsEditModalOpen(false)
-          setSelectedStudent(null)
+          setSelectedParticipant(null)
         }}
-        onSave={handleUpdateStudent}
-        participants={selectedStudent}
+        onSave={handleUpdateParticipant}
+        participants={selectedParticipant}
       />
 
-      <DeleteStudentModal
+      <DeleteParticipantModal
         isOpen={isDeleteModalOpen}
         onClose={() => {
           setIsDeleteModalOpen(false)
           setStudentToDelete(null)
         }}
-        onConfirm={handleDeleteStudent}
-        studentName={studentToDelete?.name || ''}
-        studentId={studentToDelete?.id || null}
+        onConfirm={handleDeleteParticipant}
+        participantName={studentToDelete?.name || ''}
+        participantId={studentToDelete?.id || null}
       />
     </div>
   )
