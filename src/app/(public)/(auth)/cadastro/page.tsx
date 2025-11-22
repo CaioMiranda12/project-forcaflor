@@ -1,6 +1,6 @@
 'use client'
 
-import { registerParticipant } from '@/features/auth/actions/registerParticipant'
+import { registerParticipant } from '@/features/participants/actions/registerParticipant'
 import { ParticipantFormData, useParticipantForm } from '@/features/participants/forms/participant-form'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
