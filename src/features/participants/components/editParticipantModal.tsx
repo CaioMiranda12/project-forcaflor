@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Modal } from '@/features/posts/components/layout/Modal'
-import { User, Mail, Phone, MapPin, FileText, GraduationCap, Users } from 'lucide-react'
+import { User, Mail, Phone, MapPin, GraduationCap, Users } from 'lucide-react'
 import { Participants } from '../types/participants'
 
 const editStudentSchema = z.object({
