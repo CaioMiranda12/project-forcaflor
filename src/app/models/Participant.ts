@@ -32,6 +32,7 @@ export interface IParticipant extends Document {
     cpf?: string;
     nis?: string;
   };
+  isActive: Boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -39,6 +40,11 @@ export interface IParticipant extends Document {
 const ParticipantSchema = new Schema<IParticipant>({
   nomeCompleto: { type: String, required: true },
   dataNascimento: { type: String, required: true },
+  isActive: {
+    type: Boolean,
+    default: true,
+    required: true
+  },
   idade: { type: Number },
   sexo: { type: String, enum: ["masculino", "feminino"] },
   endereco: String,
@@ -67,7 +73,7 @@ const ParticipantSchema = new Schema<IParticipant>({
     rg: String,
     cpf: String,
     nis: String
-  }
+  },
 }, { timestamps: true });
 
 const ParticipantModel: Model<IParticipant> = (mongoose.models.Participant as Model<IParticipant>) || mongoose.model<IParticipant>("Participant", ParticipantSchema);
