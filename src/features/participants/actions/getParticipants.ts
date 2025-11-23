@@ -2,6 +2,7 @@
 
 import Participant from "@/app/models/Participant";
 import { connectDatabase } from "@/lib/db";
+import { calcIdade } from "@/shared/utils/calcIdade";
 
 
 export async function getParticipants() {
@@ -10,12 +11,11 @@ export async function getParticipants() {
 
     const participants = await Participant.find().lean();
 
-    // retorna já formatado para o front
     return participants.map((s: any) => ({
       id: s._id.toString(),
       nomeCompleto: s.nomeCompleto,
       dataNascimento: s.dataNascimento,
-      idade: s.idade,
+      idade: calcIdade(s.dataNascimento),
       sexo: s.sexo,
       endereco: s.endereco,
       bairro: s.bairro,
