@@ -10,6 +10,7 @@ export async function updateParticipant(id: string, formData: EditParticipantFor
     await connectDatabase();
 
     const data = { ...formData }; // 👈 AGORA FUNCIONA
+    console.log(data)
 
     const auth = await verifyAuth();
     if (!auth.ok) return { success: false, message: auth.error };
@@ -19,19 +20,6 @@ export async function updateParticipant(id: string, formData: EditParticipantFor
 
     if (!isAdmin) {
       return { success: false, message: "Acesso negado." };
-    }
-
-    // Recalcular idade se necessário
-    if (data.dataNascimento) {
-      const nascimento = new Date(data.dataNascimento);
-      const hoje = new Date();
-      data.idade =
-        hoje.getFullYear() -
-        nascimento.getFullYear() -
-        (hoje <
-          new Date(hoje.getFullYear(), nascimento.getMonth(), nascimento.getDate())
-          ? 1
-          : 0);
     }
 
     const updated = await Participant.findByIdAndUpdate(id, data, {
