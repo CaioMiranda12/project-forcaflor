@@ -83,7 +83,6 @@ export function EditParticipantModal({
       reset({
         nomeCompleto: participants.nomeCompleto,
         dataNascimento: participants.dataNascimento,
-        idade: participants.idade,
         sexo: participants.sexo,
         endereco: participants.endereco,
         bairro: participants.bairro,
@@ -120,7 +119,8 @@ export function EditParticipantModal({
   // Calcular idade automaticamente
   useEffect(() => {
     if (dataNascimento) {
-      const birthDate = new Date(dataNascimento)
+      const [dia, mes, ano] = dataNascimento.split('/').map(Number)
+      const birthDate = new Date(ano, mes - 1, dia)
       const today = new Date()
       let age = today.getFullYear() - birthDate.getFullYear()
       const monthDiff = today.getMonth() - birthDate.getMonth()
