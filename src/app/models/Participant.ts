@@ -3,7 +3,6 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 export interface IParticipant extends Document {
   nomeCompleto: string;
   dataNascimento: string;
-  idade?: number;
   sexo?: "masculino" | "feminino";
   endereco?: string;
   bairro?: string;
@@ -45,7 +44,6 @@ const ParticipantSchema = new Schema<IParticipant>({
     default: true,
     required: true
   },
-  idade: { type: Number },
   sexo: { type: String, enum: ["masculino", "feminino"] },
   endereco: String,
   bairro: String,
