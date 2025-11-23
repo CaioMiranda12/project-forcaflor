@@ -5,6 +5,9 @@ import { Participants } from '../types/participants'
 import { EditParticipantModal } from './editParticipantModal'
 import { DeleteParticipantModal } from './deleteParticipantModal'
 import { convertYearToText } from '@/shared/utils/convertYearToText'
+import { updateParticipant } from '../actions/editParticipants'
+import { toast } from 'react-toastify'
+import { getParticipants } from '../actions/getParticipants'
 
 export default function ParticipantsClient({ participants }: { participants: Participants[] }) {
   const [searchTerm, setSearchTerm] = useState('')
@@ -52,7 +55,15 @@ export default function ParticipantsClient({ participants }: { participants: Par
   }
 
   const handleUpdateParticipant = async (participantId: string, participantData: any) => {
-    console.log('Atualizar participante:', participantId, participantData)
+    const result = await updateParticipant(participantId, participantData)
+
+    if (!result.success) {
+      toast.error('Erro ao atualizar participante')
+      return
+    }
+
+    toast.success('Participante atualizado com sucesso!')
+    await getParticipants();
   }
 
   const handleDeleteParticipant = async (participantId: string) => {
