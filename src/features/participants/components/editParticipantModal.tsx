@@ -9,7 +9,7 @@ import { Participants } from '../types/participants'
 
 const editParticipantSchema = z.object({
   nomeCompleto: z.string().min(3, 'Informe o nome completo'),
-  dataNascimento: z.string(),
+  dataNascimento: z.string().regex(/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d\d$/, "Formato inválido"),
   idade: z.number().min(0),
   sexo: z.enum(['masculino', 'feminino']),
   endereco: z.string().min(1, 'Informe o endereço completo'),
@@ -145,6 +145,42 @@ export function EditParticipantModal({
     }
   }
 
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, '');
+
+    if (value.length > 2 && value.length <= 4) {
+      value = `${value.slice(0, 2)}/${value.slice(2)}`;
+    } else if (value.length > 4) {
+      value = `${value.slice(0, 2)}/${value.slice(2, 4)}/${value.slice(4, 8)}`;
+    }
+
+    e.target.value = value;
+    setValue('dataNascimento', value); // <- useForm().setValue
+
+    // Calcula idade automaticamente
+    if (/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d\d$/.test(value)) {
+      const [dia, mes, ano] = value.split('/').map(Number);
+      const nascimento = new Date(ano, mes - 1, dia);
+      const hoje = new Date();
+
+      let idade = hoje.getFullYear() - nascimento.getFullYear();
+      const mesAtual = hoje.getMonth();
+      const mesNascimento = nascimento.getMonth();
+
+      if (
+        mesAtual < mesNascimento ||
+        (mesAtual === mesNascimento && hoje.getDate() < nascimento.getDate())
+      ) {
+        idade--;
+      }
+
+      setValue('idade', idade);
+    } else {
+      setValue('idade', 0);
+    }
+  };
+
+
   if (!participants) return null
 
   return (
@@ -186,8 +222,10 @@ export function EditParticipantModal({
                 />
                 <input
                   id="dataNascimento"
-                  type="date"
+                  type="text"
+                  maxLength={10}
                   {...register('dataNascimento')}
+                  onChange={handleDateChange}
                   className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base ${errors.dataNascimento ? 'border-red-500' : 'border-gray-300'
                     }`}
                 />
