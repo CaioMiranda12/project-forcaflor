@@ -10,7 +10,6 @@ export default function Cadastro() {
   const router = useRouter()
   const form = useParticipantForm();
   const [isLoading, setIsLoading] = useState(false)
-  const aceitouTermos = form.watch("aceitouTermos")
 
   async function onSubmit(data: ParticipantFormData) {
     try {
@@ -119,7 +118,6 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="number"
-                    {...form.register('idade')}
                     readOnly
                     className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
                     placeholder="Calculado automaticamente"
