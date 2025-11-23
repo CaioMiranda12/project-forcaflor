@@ -8,6 +8,7 @@ import { convertYearToText } from '@/shared/utils/convertYearToText'
 import { updateParticipant } from '../actions/editParticipants'
 import { toast } from 'react-toastify'
 import { getParticipants } from '../actions/getParticipants'
+import { deleteParticipant } from '../actions/deleteParticipant'
 
 export default function ParticipantsClient({ participants }: { participants: Participants[] }) {
   const [searchTerm, setSearchTerm] = useState('')
@@ -67,7 +68,18 @@ export default function ParticipantsClient({ participants }: { participants: Par
   }
 
   const handleDeleteParticipant = async (participantId: string) => {
-    console.log('Excluir participante:', participantId)
+    const res = await deleteParticipant(participantId)
+
+    if (!res.success) {
+      toast.error(res.message)
+      return
+    }
+
+    // Atualiza lista
+    const updatedParticipants = await getParticipants()
+    // setUserList(updatedParticipants)
+
+    toast.success(res.message)
   }
 
   return (
