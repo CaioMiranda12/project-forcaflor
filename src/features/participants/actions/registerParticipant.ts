@@ -8,17 +8,9 @@ export async function registerParticipant(formData: FormData) {
 
   const data = Object.fromEntries(formData.entries());
 
-  const nascimento = new Date(data.dataNascimento as string);
-  const hoje = new Date();
-  const idade =
-    hoje.getFullYear() -
-    nascimento.getFullYear() -
-    (hoje < new Date(hoje.getFullYear(), nascimento.getMonth(), nascimento.getDate()) ? 1 : 0);
-
   try {
     await Participant.create({
       ...data,
-      idade,
       isActive: true
     });
     return { success: true, message: "Usuário cadastrado com sucesso!" };
