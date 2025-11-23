@@ -50,7 +50,6 @@ export async function updateParticipant(id: string, formData: EditParticipantFor
         id: String(updated._id),
         nomeCompleto: updated.nomeCompleto,
         dataNascimento: updated.dataNascimento,
-        idade: updated.idade,
         sexo: updated.sexo,
         endereco: updated.endereco,
         bairro: updated.bairro,
