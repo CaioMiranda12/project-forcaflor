@@ -1,13 +1,13 @@
-
+'use client'
 import React, { useState, useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Modal } from '@/features/posts/components/layout/Modal'
-import { User, Mail, Phone, MapPin, GraduationCap, Users } from 'lucide-react'
+import { User, Mail, Phone, MapPin, GraduationCap, Users, FileText, Calendar } from 'lucide-react'
 import { Participants } from '../types/participants'
 
-const editStudentSchema = z.object({
+const editParticipantSchema = z.object({
   nomeCompleto: z.string().min(3, 'Informe o nome completo'),
   dataNascimento: z.string(),
   idade: z.number().min(0),
@@ -19,25 +19,39 @@ const editStudentSchema = z.object({
   cep: z.string().min(8, 'CEP inválido'),
   telefone: z.string().optional(),
   celular: z.string().min(8, 'Celular inválido'),
+  documento: z
+    .object({
+      rg: z.string().optional(),
+      cpf: z.string().optional(),
+      certidaoNascimento: z.string().optional(),
+    })
+    .refine((data) => data.rg || data.cpf || data.certidaoNascimento, {
+      message: 'Informe pelo menos um documento (RG, CPF ou Certidão)',
+    }),
   escola: z.string().min(1, 'Informe a escola'),
   serie: z.string().min(1, 'Informe o ano/série'),
   turno: z.string().min(1, 'Informe o turno'),
+  cartaoVacina: z.string().optional(),
   problemaSaude: z.boolean(),
   descricaoProblema: z.string().optional(),
   responsavel: z.object({
     nomeCompleto: z.string().min(3, 'Informe o nome completo'),
     email: z.string().email('Email inválido'),
     telefone: z.string().min(8, 'Telefone inválido'),
+    endereco: z.string().min(1, 'Informe o endereço completo'),
+    rg: z.string().min(1, 'Informe o RG'),
+    cpf: z.string().min(11, 'Informe o CPF'),
+    nis: z.string().optional(),
   }),
-  isActive: z.boolean()
+  isActive: z.boolean(),
 })
 
-export type EditStudentFormData = z.infer<typeof editStudentSchema>
+export type EditParticipantFormData = z.infer<typeof editParticipantSchema>
 
-interface EditStudentModalProps {
+interface EditParticipantModalProps {
   isOpen: boolean
   onClose: () => void
-  onSave: (participantId: string, participantData: EditStudentFormData) => void
+  onSave: (participantId: string, participantData: EditParticipantFormData) => void
   participants: Participants | null
 }
 
@@ -46,9 +60,8 @@ export function EditParticipantModal({
   onClose,
   onSave,
   participants,
-}: EditStudentModalProps) {
+}: EditParticipantModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
-
   const {
     register,
     handleSubmit,
@@ -56,8 +69,9 @@ export function EditParticipantModal({
     watch,
     reset,
     setValue,
-  } = useForm<EditStudentFormData>({
-    resolver: zodResolver(editStudentSchema),
+  } = useForm<EditParticipantFormData>({
+    resolver: zodResolver(editParticipantSchema),
+    defaultValues: {},
   })
 
   const problemaSaude = watch('problemaSaude')
@@ -65,6 +79,7 @@ export function EditParticipantModal({
 
   useEffect(() => {
     if (participants) {
+      setValue("isActive", participants.isActive);
       reset({
         nomeCompleto: participants.nomeCompleto,
         dataNascimento: participants.dataNascimento,
@@ -77,17 +92,27 @@ export function EditParticipantModal({
         cep: participants.cep,
         telefone: participants.telefone || '',
         celular: participants.celular,
+        documento: {
+          rg: participants.documento.rg || '',
+          cpf: participants.documento.cpf || '',
+          certidaoNascimento: participants.documento.certidaoNascimento || '',
+        },
         escola: participants.escola,
         serie: participants.serie,
         turno: participants.turno,
+        cartaoVacina: participants.cartaoVacina || '',
         problemaSaude: participants.problemaSaude,
         descricaoProblema: participants.descricaoProblema || '',
         responsavel: {
           nomeCompleto: participants.responsavel.nomeCompleto,
           email: participants.responsavel.email,
           telefone: participants.responsavel.telefone,
+          endereco: participants.responsavel.endereco,
+          rg: participants.responsavel.rg,
+          cpf: participants.responsavel.cpf,
+          nis: participants.responsavel.nis || '',
         },
-        isActive: participants.isActive,
+        // isActive: participants.isActive,
       })
     }
   }, [participants, reset])
@@ -106,7 +131,7 @@ export function EditParticipantModal({
     }
   }, [dataNascimento, setValue])
 
-  const onSubmit = async (data: EditStudentFormData) => {
+  const onSubmit = async (data: EditParticipantFormData) => {
     if (!participants) return
 
     setIsSubmitting(true)
@@ -151,6 +176,61 @@ export function EditParticipantModal({
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
+              <label htmlFor="dataNascimento" className="block text-sm font-medium text-gray-700 mb-2">
+                Data de Nascimento <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <Calendar
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+                  aria-hidden="true"
+                />
+                <input
+                  id="dataNascimento"
+                  type="date"
+                  {...register('dataNascimento')}
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base ${errors.dataNascimento ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                />
+              </div>
+              {errors.dataNascimento && (
+                <p className="mt-1 text-sm text-red-600">{errors.dataNascimento.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="sexo" className="block text-sm font-medium text-gray-700 mb-2">
+                Sexo <span className="text-red-500">*</span>
+              </label>
+              <select
+                id="sexo"
+                {...register('sexo')}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base bg-white cursor-pointer"
+              >
+                <option value="masculino">Masculino</option>
+                <option value="feminino">Feminino</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label htmlFor="telefone" className="block text-sm font-medium text-gray-700 mb-2">
+                Telefone
+              </label>
+              <div className="relative">
+                <Phone
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+                  aria-hidden="true"
+                />
+                <input
+                  id="telefone"
+                  {...register('telefone')}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base"
+                />
+              </div>
+            </div>
+
+            <div>
               <label htmlFor="celular" className="block text-sm font-medium text-gray-700 mb-2">
                 Celular <span className="text-red-500">*</span>
               </label>
@@ -172,15 +252,15 @@ export function EditParticipantModal({
             </div>
 
             <div>
-              <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="isActive" className="block text-sm font-medium text-gray-700 mb-2">
                 Status <span className="text-red-500">*</span>
               </label>
               <select
                 id="status"
                 {...register("isActive", {
-                  setValueAs: (val) => val === "true",
+                  setValueAs: (v) => v === "true",
                 })}
-                defaultValue={participants.isActive ? "true" : "false"}
+                value={watch("isActive") ? "true" : "false"}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base bg-white cursor-pointer"
               >
                 <option value="true">Ativo</option>
@@ -251,6 +331,84 @@ export function EditParticipantModal({
               {errors.estado && <p className="mt-1 text-sm text-red-600">{errors.estado.message}</p>}
             </div>
           </div>
+
+          <div>
+            <label htmlFor="cep" className="block text-sm font-medium text-gray-700 mb-2">
+              CEP <span className="text-red-500">*</span>
+            </label>
+            <input
+              id="cep"
+              {...register('cep')}
+              className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base ${errors.cep ? 'border-red-500' : 'border-gray-300'
+                }`}
+              placeholder="00000-000"
+            />
+            {errors.cep && <p className="mt-1 text-sm text-red-600">{errors.cep.message}</p>}
+          </div>
+
+          <div className="border-t pt-4 mt-4">
+            <h3 className="text-base font-semibold text-gray-900 mb-3">
+              Documentos (pelo menos um obrigatório)
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label htmlFor="documento.rg" className="block text-sm font-medium text-gray-700 mb-2">
+                  RG
+                </label>
+                <div className="relative">
+                  <FileText
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+                    aria-hidden="true"
+                  />
+                  <input
+                    id="documento.rg"
+                    {...register('documento.rg')}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="documento.cpf" className="block text-sm font-medium text-gray-700 mb-2">
+                  CPF
+                </label>
+                <div className="relative">
+                  <FileText
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+                    aria-hidden="true"
+                  />
+                  <input
+                    id="documento.cpf"
+                    {...register('documento.cpf')}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="documento.certidaoNascimento"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Certidão
+                </label>
+                <div className="relative">
+                  <FileText
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+                    aria-hidden="true"
+                  />
+                  <input
+                    id="documento.certidaoNascimento"
+                    {...register('documento.certidaoNascimento')}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base"
+                  />
+                </div>
+              </div>
+            </div>
+            {errors.documento && (
+              <p className="mt-1 text-sm text-red-600">{errors.documento.message}</p>
+            )}
+          </div>
         </div>
 
         {/* Educação */}
@@ -307,6 +465,17 @@ export function EditParticipantModal({
               </select>
               {errors.turno && <p className="mt-1 text-sm text-red-600">{errors.turno.message}</p>}
             </div>
+          </div>
+
+          <div>
+            <label htmlFor="cartaoVacina" className="block text-sm font-medium text-gray-700 mb-2">
+              Cartão de Vacina (Número)
+            </label>
+            <input
+              id="cartaoVacina"
+              {...register('cartaoVacina')}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base"
+            />
           </div>
 
           <div>
@@ -415,6 +584,88 @@ export function EditParticipantModal({
               {errors.responsavel?.telefone && (
                 <p className="mt-1 text-sm text-red-600">{errors.responsavel.telefone.message}</p>
               )}
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="responsavel.endereco"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Endereço <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <MapPin
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+                aria-hidden="true"
+              />
+              <input
+                id="responsavel.endereco"
+                {...register('responsavel.endereco')}
+                className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base ${errors.responsavel?.endereco ? 'border-red-500' : 'border-gray-300'
+                  }`}
+              />
+            </div>
+            {errors.responsavel?.endereco && (
+              <p className="mt-1 text-sm text-red-600">{errors.responsavel.endereco.message}</p>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label htmlFor="responsavel.rg" className="block text-sm font-medium text-gray-700 mb-2">
+                RG <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <FileText
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+                  aria-hidden="true"
+                />
+                <input
+                  id="responsavel.rg"
+                  {...register('responsavel.rg')}
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base ${errors.responsavel?.rg ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                />
+              </div>
+              {errors.responsavel?.rg && (
+                <p className="mt-1 text-sm text-red-600">{errors.responsavel.rg.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label
+                htmlFor="responsavel.cpf"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                CPF <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <FileText
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+                  aria-hidden="true"
+                />
+                <input
+                  id="responsavel.cpf"
+                  {...register('responsavel.cpf')}
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base ${errors.responsavel?.cpf ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                />
+              </div>
+              {errors.responsavel?.cpf && (
+                <p className="mt-1 text-sm text-red-600">{errors.responsavel.cpf.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="responsavel.nis" className="block text-sm font-medium text-gray-700 mb-2">
+                NIS
+              </label>
+              <input
+                id="responsavel.nis"
+                {...register('responsavel.nis')}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base"
+              />
             </div>
           </div>
         </div>
