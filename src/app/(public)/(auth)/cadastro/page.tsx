@@ -48,27 +48,7 @@ export default function Cadastro() {
 
     e.target.value = value
     form.setValue('dataNascimento', value)
-
-    // Se estiver completo, calcula idade
-    if (/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d\d$/.test(value)) {
-      const [dia, mes, ano] = value.split('/').map(Number)
-      const nascimento = new Date(ano, mes - 1, dia)
-      const hoje = new Date()
-      let idade = hoje.getFullYear() - nascimento.getFullYear()
-      const mesAtual = hoje.getMonth()
-      const mesNascimento = nascimento.getMonth()
-
-      if (mesAtual < mesNascimento || (mesAtual === mesNascimento && hoje.getDate() < nascimento.getDate())) {
-        idade--
-      }
-
-      form.setValue('idade', idade)
-    } else {
-      form.setValue('idade', 0)
-    }
   }
-
-
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
