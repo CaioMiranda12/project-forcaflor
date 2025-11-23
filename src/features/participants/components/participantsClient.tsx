@@ -18,13 +18,15 @@ export default function ParticipantsClient({ participants }: { participants: Par
   const [selectedParticipant, setSelectedParticipant] = useState<Participants | null>(null)
   const [studentToDelete, setStudentToDelete] = useState<{ id: string; name: string } | null>(null)
 
+  const [participantList, setParticipantList] = useState(participants);
+
   const statuses = [
     { value: 'all', label: 'Todos os status' },
     { value: 'active', label: 'Ativo' },
     { value: 'inactive', label: 'Inativo' },
   ]
 
-  const filteredParticipants = participants.filter((participant) => {
+  const filteredParticipants = participantList.filter((participant) => {
     const matchesSearch =
       participant.nomeCompleto.toLowerCase().includes(searchTerm.toLowerCase()) ||
       participant.escola.toLowerCase().includes(searchTerm.toLowerCase())
@@ -63,8 +65,10 @@ export default function ParticipantsClient({ participants }: { participants: Par
       return
     }
 
+    const updated = await getParticipants();
+    setParticipantList(updated);
+
     toast.success('Participante atualizado com sucesso!')
-    await getParticipants();
   }
 
   const handleDeleteParticipant = async (participantId: string) => {
@@ -75,9 +79,8 @@ export default function ParticipantsClient({ participants }: { participants: Par
       return
     }
 
-    // Atualiza lista
-    const updatedParticipants = await getParticipants()
-    // setUserList(updatedParticipants)
+    const updated = await getParticipants();
+    setParticipantList(updated);
 
     toast.success(res.message)
   }
