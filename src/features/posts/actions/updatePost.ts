@@ -4,6 +4,7 @@ import { connectDatabase } from "@/lib/db";
 import { Post } from "../models/Post";
 import { revalidatePath } from "next/cache";
 import { verifyAuth } from "@/lib/auth";
+import { uploadImage } from "@/lib/cloudinary";
 
 interface UpdatePostData {
   id: string;
@@ -29,11 +30,16 @@ export async function updatePost(data: UpdatePostData) {
     const user = auth.user;
     const isAdmin = user?.isAdmin === true;
 
-    const now = new Date();
-
     const existing = await Post.findById(data.id);
     if (!existing) {
       return { success: false, message: "Post não encontrado." };
+    }
+
+    // ✔ Se for file, sobe para cloudinary
+    let imageUrl = typeof data.image === "string" ? data.image : existing.image;
+
+    if (data.image instanceof File) {
+      imageUrl = await uploadImage(data.image);
     }
 
     let status = existing.status;
@@ -58,7 +64,7 @@ export async function updatePost(data: UpdatePostData) {
         content: data.content,
         category: data.categoryId,
         status,
-        image: data.image,
+        image: imageUrl,
         author: data.author,
         publishDate,
         featured: data.featured ?? false,

@@ -20,7 +20,7 @@ interface PostModalProps {
 
 export function PostModal({ isOpen, onClose, post, categories, onSave }: PostModalProps) {
   const { user } = useAuth();
-
+  console.log(post)
   const { register, handleSubmit, watch, formState: { errors, isSubmitting }, setValue, reset } = usePostForm(post || {})
 
   useEffect(() => {
@@ -53,7 +53,9 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
     }
   }, [post, reset, user?.name]);
 
-  const [imagePreview, setImagePreview] = useState<string>(post?.image || '')
+  const [imagePreview, setImagePreview] = useState<string>(post?.image || "");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null)
   const title = watch('title') || ''
   const excerpt = watch('excerpt') || ''
@@ -68,13 +70,8 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const result = event.target?.result as string;
-      setImagePreview(result);
-      setValue("image", result);
-    };
-    reader.readAsDataURL(file);
+    setSelectedFile(file);
+    setImagePreview(URL.createObjectURL(file));
   };
 
   const removeImage = () => {
@@ -84,14 +81,41 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
   };
 
   const onSubmit = async (data: PostFormData) => {
-    if (!user?.name) {
-      toast.error("Usuário não autenticado.");
+  if (!user?.name) {
+    toast.error("Usuário não autenticado.");
+    return;
+  }
+
+  let imageUrl = data.image;
+
+  // Se o usuário escolheu nova imagem → subir para Cloudinary
+  if (selectedFile) {
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    const uploadRes = await fetch("/api/upload", {
+      method: "POST",
+      body: formData
+    });
+
+    const uploadData = await uploadRes.json();
+
+    if (!uploadRes.ok) {
+      toast.error("Erro ao enviar imagem para o servidor.");
       return;
     }
 
-    // envia os dados limpos para o componente pai
-    onSave({ ...data, author: user.name, id: post?.id });
-  };
+    imageUrl = uploadData.url; // URL do Cloudinary
+  }
+
+  onSave({
+    ...data,
+    image: imageUrl,
+    author: user.name,
+    id: post?.id
+  });
+};
+
 
   return (
     <Modal

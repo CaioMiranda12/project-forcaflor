@@ -83,7 +83,6 @@ export function EditParticipantModal({
       reset({
         nomeCompleto: participants.nomeCompleto,
         dataNascimento: participants.dataNascimento,
-        idade: participants.idade,
         sexo: participants.sexo,
         endereco: participants.endereco,
         bairro: participants.bairro,
@@ -120,7 +119,8 @@ export function EditParticipantModal({
   // Calcular idade automaticamente
   useEffect(() => {
     if (dataNascimento) {
-      const birthDate = new Date(dataNascimento)
+      const [dia, mes, ano] = dataNascimento.split('/').map(Number)
+      const birthDate = new Date(ano, mes - 1, dia)
       const today = new Date()
       let age = today.getFullYear() - birthDate.getFullYear()
       const monthDiff = today.getMonth() - birthDate.getMonth()
@@ -474,15 +474,32 @@ export function EditParticipantModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="serie" className="block text-sm font-medium text-gray-700 mb-2">
-                Ano/Série <span className="text-red-500">*</span>
+                Série <span className="text-red-500">*</span>
               </label>
-              <input
+              <select
                 id="serie"
                 {...register('serie')}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base ${errors.serie ? 'border-red-500' : 'border-gray-300'
-                  }`}
-              />
-              {errors.serie && <p className="mt-1 text-sm text-red-600">{errors.serie.message}</p>}
+                className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg 
+                 focus:ring-2 focus:ring-primary focus:border-primary transition-colors cursor-pointer"
+                style={errors.serie && { border: '2px solid red' }}
+              >
+                <option value="">Selecione</option>
+                <option value="1ano">1º Ano</option>
+                <option value="2ano">2º Ano</option>
+                <option value="3ano">3º Ano</option>
+                <option value="4ano">4º Ano</option>
+                <option value="5ano">5º Ano</option>
+                <option value="6ano">6º Ano</option>
+                <option value="7ano">7º Ano</option>
+                <option value="8ano">8º Ano</option>
+                <option value="9ano">9º Ano</option>
+                <option value="1medio">1º Médio</option>
+                <option value="2medio">2º Médio</option>
+                <option value="3medio">3º Médio</option>
+              </select>
+              {errors.serie && (
+                <p className="mt-1 text-sm text-red-600">{errors.serie.message}</p>
+              )}
             </div>
 
             <div>

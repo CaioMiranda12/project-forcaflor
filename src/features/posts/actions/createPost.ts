@@ -4,13 +4,14 @@ import { connectDatabase } from "@/lib/db";
 import { Post } from "../models/Post";
 import { revalidatePath } from "next/cache";
 import { verifyAuth } from "@/lib/auth";
+import { uploadImage } from "@/lib/cloudinary";
 
 interface CreatePostData {
   title: string;
   excerpt: string;
   content: string;
   categoryId: string;
-  image?: string;
+  image?: string | File;
   status: "published" | "draft" | "scheduled";
   author: string;
   featured?: boolean;
@@ -23,6 +24,13 @@ export async function createPost(data: CreatePostData) {
 
     const auth = await verifyAuth();
     if (!auth.ok) return { success: false, message: auth.error };
+
+    // ✔ Se a imagem for File → faz upload
+    let imageUrl = typeof data.image === "string" ? data.image : undefined;
+
+    if (data.image instanceof File) {
+      imageUrl = await uploadImage(data.image);
+    }
 
     const now = new Date();
 
@@ -38,15 +46,14 @@ export async function createPost(data: CreatePostData) {
       excerpt: data.excerpt,
       content: data.content,
       category: data.categoryId,
-      image: data.image,
-      status: "draft",
+      image: imageUrl,
+      status: data.status,
       author: data.author,
       publishDate,
       featured: data.featured ?? false
     });
 
     const populatedPost = await newPost.populate("category", "label color");
-
 
     revalidatePath("/posts");
 
@@ -59,26 +66,23 @@ export async function createPost(data: CreatePostData) {
         excerpt: populatedPost.excerpt,
         content: populatedPost.content,
         status: populatedPost.status,
-        featured: populatedPost.featured,
         author: populatedPost.author,
+        featured: populatedPost.featured,
         publishDate: populatedPost.publishDate,
         createdAt: populatedPost.createdAt,
         updatedAt: populatedPost.updatedAt,
         image: populatedPost.image,
         category: populatedPost.category
           ? {
-            id: populatedPost.category._id.toString(),
-            label: populatedPost.category.label,
-            color: populatedPost.category.color,
-          }
+              id: populatedPost.category._id.toString(),
+              label: populatedPost.category.label,
+              color: populatedPost.category.color,
+            }
           : null,
       },
     };
   } catch (error) {
     console.error("❌ Erro ao criar post:", error);
-    return {
-      success: false,
-      message: "Erro ao criar post.",
-    };
+    return { success: false, message: "Erro ao criar post." };
   }
 }
