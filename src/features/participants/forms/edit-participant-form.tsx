@@ -13,7 +13,8 @@ const editParticipantSchema = z.object({
   estado: z.string().min(1, "Informe o estado"),
   cep: z.string().min(8, "CEP inválido"),
   telefone: z.string().optional(),
-  celular: z.string().min(8, "Celular inválido"),
+  celular: z.string()
+    .regex(/^\(\d{2}\)\s?9\d{4}-\d{4}$/, "Celular inválido"),
 
   documento: z.object({
     rg: z.string().optional(),
