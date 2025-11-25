@@ -17,7 +17,9 @@ const editParticipantSchema = z.object({
 
   documento: z.object({
     rg: z.string().optional(),
-    cpf: z.string().optional(),
+    cpf: z.string()
+      .regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "CPF inválido")
+      .optional(),
     certidaoNascimento: z.string().optional(),
   }).refine(data => data.rg || data.cpf || data.certidaoNascimento, {
     message: "Informe pelo menos um documento (RG, CPF ou Certidão)",
@@ -37,7 +39,8 @@ const editParticipantSchema = z.object({
     telefone: z.string().min(8, "Telefone inválido"),
     endereco: z.string().min(1, "Informe o endereço completo"),
     rg: z.string().min(1, "Informe o RG"),
-    cpf: z.string().min(11, "Informe o CPF"),
+    cpf: z.string()
+      .regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "CPF inválido"),
     nis: z.string().optional(),
   }),
 
