@@ -48,7 +48,7 @@ const participantSchema = z.object({
     telefone: z.string().min(8, 'Telefone inválido'),
     endereco: z.string().min(1, 'Informe o endereço completo'),
     rg: z.string().min(1, 'Informe o RG'),
-    cpf: z.string().min(11, 'Informe o CPF'),
+    cpf: z.string().min(11, 'Informe o CPF').max(14),
     nis: z.string().optional(),
   }),
 
