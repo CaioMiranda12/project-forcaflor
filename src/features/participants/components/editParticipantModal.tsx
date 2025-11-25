@@ -5,6 +5,7 @@ import { Modal } from '@/features/posts/components/layout/Modal'
 import { User, Mail, Phone, MapPin, GraduationCap, Users, FileText, Calendar } from 'lucide-react'
 import { Participants } from '../types/participants'
 import { EditParticipantFormData, useEditParticipantForm } from '../forms/edit-participant-form'
+import { formatCPF } from '@/shared/utils/formatCpf'
 interface EditParticipantModalProps {
   isOpen: boolean
   onClose: () => void
@@ -30,6 +31,9 @@ export function EditParticipantModal({
 
   const problemaSaude = watch('problemaSaude')
   const dataNascimento = watch('dataNascimento')
+
+  const cpfJovem = watch("documento.cpf");
+  const cpfResponsavel = watch("responsavel.cpf")
 
   useEffect(() => {
     if (isOpen && participants) {
@@ -368,7 +372,11 @@ export function EditParticipantModal({
                   />
                   <input
                     id="documento.cpf"
-                    {...register('documento.cpf')}
+                    value={cpfJovem}
+                    onChange={(e) => {
+                      const masked = formatCPF(e.target.value);
+                      setValue("documento.cpf", masked, { shouldValidate: true });
+                    }}
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base"
                   />
                 </div>
@@ -653,7 +661,11 @@ export function EditParticipantModal({
                 />
                 <input
                   id="responsavel.cpf"
-                  {...register('responsavel.cpf')}
+                  value={cpfResponsavel}
+                  onChange={(e) => {
+                    const masked = formatCPF(e.target.value);
+                    setValue("responsavel.cpf", masked);
+                  }}
                   className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base ${errors.responsavel?.cpf ? 'border-red-500' : 'border-gray-300'
                     }`}
                 />
