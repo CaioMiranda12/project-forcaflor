@@ -4,6 +4,7 @@ import { registerParticipant } from '@/features/participants/actions/registerPar
 import { ParticipantFormData, useParticipantForm } from '@/features/participants/forms/participant-form'
 import { formatCelular } from '@/shared/utils/formatCelular'
 import { formatCPF } from '@/shared/utils/formatCpf'
+import { formatTelefone } from '@/shared/utils/formatTelefone'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
@@ -269,7 +270,11 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="tel"
-                    {...form.register('telefone')}
+                    value={form.watch("telefone")}
+                    onChange={(e) => {
+                      const masked = formatTelefone(e.target.value);
+                      form.setValue("telefone", masked, { shouldValidate: true });
+                    }}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="(85) 3333-3333"
                   />
@@ -523,7 +528,11 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="tel"
-                    {...form.register('responsavel.telefone')}
+                    value={form.watch("responsavel.telefone")}
+                    onChange={(e) => {
+                      const masked = formatTelefone(e.target.value);
+                      form.setValue("responsavel.telefone", masked, { shouldValidate: true });
+                    }}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="(85) 99999-9999"
                     style={form.formState.errors.responsavel?.telefone && { border: '2px solid red' }}
