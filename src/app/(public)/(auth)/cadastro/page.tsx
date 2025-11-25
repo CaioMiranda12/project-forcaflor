@@ -2,6 +2,7 @@
 
 import { registerParticipant } from '@/features/participants/actions/registerParticipant'
 import { ParticipantFormData, useParticipantForm } from '@/features/participants/forms/participant-form'
+import { formatCPF } from '@/shared/utils/formatCpf'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { toast } from 'react-toastify'
@@ -36,6 +37,9 @@ export default function Cadastro() {
       setIsLoading(false)
     }
   }
+
+  const cpfJovem = form.watch("documento.cpf");
+  const cpfResponsavel = form.watch("responsavel.cpf")
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, '')
@@ -315,8 +319,11 @@ export default function Cadastro() {
                       </label>
                       <input
                         type="text"
-                        {...form.register('documento.cpf')}
-
+                        value={cpfJovem}
+                        onChange={(e) => {
+                          const masked = formatCPF(e.target.value);
+                          form.setValue("documento.cpf", masked);
+                        }}
                         className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                         placeholder="000.000.000-00"
                       />
@@ -558,7 +565,11 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="text"
-                    {...form.register('responsavel.cpf')}
+                    value={cpfResponsavel}
+                    onChange={(e) => {
+                      const masked = formatCPF(e.target.value);
+                      form.setValue("responsavel.cpf", masked);
+                    }}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="000.000.000-00"
                     style={form.formState.errors.responsavel?.cpf && { border: '2px solid red' }}
