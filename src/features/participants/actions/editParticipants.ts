@@ -3,7 +3,7 @@
 import Participant from "@/app/models/Participant";
 import { verifyAuth } from "@/lib/auth";
 import { connectDatabase } from "@/lib/db";
-import { EditParticipantFormData } from "../components/editParticipantModal";
+import { EditParticipantFormData } from "../forms/edit-participant-form";
 
 export async function updateParticipant(id: string, formData: EditParticipantFormData) {
   try {
