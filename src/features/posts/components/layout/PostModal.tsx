@@ -20,7 +20,6 @@ interface PostModalProps {
 
 export function PostModal({ isOpen, onClose, post, categories, onSave }: PostModalProps) {
   const { user } = useAuth();
-  console.log(post)
   const { register, handleSubmit, watch, formState: { errors, isSubmitting }, setValue, reset } = usePostForm(post || {})
 
   useEffect(() => {
