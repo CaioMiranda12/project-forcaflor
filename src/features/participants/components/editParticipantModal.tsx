@@ -6,6 +6,7 @@ import { User, Mail, Phone, MapPin, GraduationCap, Users, FileText, Calendar } f
 import { Participants } from '../types/participants'
 import { EditParticipantFormData, useEditParticipantForm } from '../forms/edit-participant-form'
 import { formatCPF } from '@/shared/utils/formatCpf'
+import { formatCelular } from '@/shared/utils/formatCelular'
 interface EditParticipantModalProps {
   isOpen: boolean
   onClose: () => void
@@ -234,7 +235,11 @@ export function EditParticipantModal({
                 />
                 <input
                   id="celular"
-                  {...register('celular')}
+                  value={watch("celular")}
+                  onChange={(e) => {
+                    const masked = formatCelular(e.target.value);
+                    setValue("celular", masked, { shouldValidate: true });
+                  }}
                   className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base ${errors.celular ? 'border-red-500' : 'border-gray-300'
                     }`}
                 />
