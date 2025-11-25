@@ -65,8 +65,8 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("A imagem deve ter no máximo 5MB");
+    if (file.size > 0.5 * 1024 * 1024) {
+      toast.error("A imagem deve ter no máximo 500KB");
       return;
     }
 
@@ -81,40 +81,40 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
   };
 
   const onSubmit = async (data: PostFormData) => {
-  if (!user?.name) {
-    toast.error("Usuário não autenticado.");
-    return;
-  }
-
-  let imageUrl = data.image;
-
-  // Se o usuário escolheu nova imagem → subir para Cloudinary
-  if (selectedFile) {
-    const formData = new FormData();
-    formData.append("file", selectedFile);
-
-    const uploadRes = await fetch("/api/upload", {
-      method: "POST",
-      body: formData
-    });
-
-    const uploadData = await uploadRes.json();
-
-    if (!uploadRes.ok) {
-      toast.error("Erro ao enviar imagem para o servidor.");
+    if (!user?.name) {
+      toast.error("Usuário não autenticado.");
       return;
     }
 
-    imageUrl = uploadData.url; // URL do Cloudinary
-  }
+    let imageUrl = data.image;
 
-  onSave({
-    ...data,
-    image: imageUrl,
-    author: user.name,
-    id: post?.id
-  });
-};
+    // Se o usuário escolheu nova imagem → subir para Cloudinary
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+
+      const uploadRes = await fetch("/api/upload", {
+        method: "POST",
+        body: formData
+      });
+
+      const uploadData = await uploadRes.json();
+
+      if (!uploadRes.ok) {
+        toast.error("Erro ao enviar imagem para o servidor.");
+        return;
+      }
+
+      imageUrl = uploadData.url; // URL do Cloudinary
+    }
+
+    onSave({
+      ...data,
+      image: imageUrl,
+      author: user.name,
+      id: post?.id
+    });
+  };
 
 
   return (
@@ -157,7 +157,7 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
                 Clique para fazer upload de uma imagem
               </p>
               <p className="text-sm text-gray-500">
-                PNG, JPG até 5MB
+                PNG, JPG até 500KB
               </p>
             </div>
           )}
@@ -276,18 +276,18 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
         {/* Status - apenas para editar */}
         {post && user?.isAdmin && (
           <div>
-          <label htmlFor="post-status" className="block text-base font-medium text-gray-700 mb-2">
-            Status
-          </label>
-          <select
-            {...register("status")}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] bg-white cursor-pointer"
-          >
-            <option value="draft">Rascunho</option>
-            <option value="published">Publicado</option>
-            <option value="scheduled">Agendado</option>
-          </select>
-        </div>
+            <label htmlFor="post-status" className="block text-base font-medium text-gray-700 mb-2">
+              Status
+            </label>
+            <select
+              {...register("status")}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] bg-white cursor-pointer"
+            >
+              <option value="draft">Rascunho</option>
+              <option value="published">Publicado</option>
+              <option value="scheduled">Agendado</option>
+            </select>
+          </div>
         )}
 
         {/* Botões */}
