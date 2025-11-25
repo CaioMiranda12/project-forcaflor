@@ -2,6 +2,7 @@
 
 import { registerParticipant } from '@/features/participants/actions/registerParticipant'
 import { ParticipantFormData, useParticipantForm } from '@/features/participants/forms/participant-form'
+import { formatCelular } from '@/shared/utils/formatCelular'
 import { formatCPF } from '@/shared/utils/formatCpf'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
@@ -283,7 +284,11 @@ export default function Cadastro() {
                   </label>
                   <input
                     type="tel"
-                    {...form.register('celular')}
+                    value={form.watch("celular")}
+                    onChange={(e) => {
+                      const masked = formatCelular(e.target.value);
+                      form.setValue("celular", masked, { shouldValidate: true });
+                    }}
                     className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                     placeholder="(85) 99999-9999"
                     style={form.formState.errors.celular && { border: '2px solid red' }}
