@@ -23,7 +23,10 @@ const participantSchema = z.object({
   cidade: z.string().min(1, 'Informe a cidade'),
   estado: z.string().min(1, 'Informe o estado'),
   cep: z.string().min(8, 'CEP inválido'),
-  telefone: z.string().optional(),
+  telefone: z.string().regex(
+    /^\(\d{2}\)\s?\d{4}-\d{4}$/,
+    "Telefone inválido"
+  ).or(z.literal("")).optional(),
   celular: z.string()
     .regex(/^\(\d{2}\)\s?9\d{4}-\d{4}$/, "Celular inválido"),
   documento: z.object({
@@ -48,7 +51,10 @@ const participantSchema = z.object({
   responsavel: z.object({
     nomeCompleto: z.string().min(3, 'Informe o nome completo'),
     email: z.email('Email inválido'),
-    telefone: z.string().min(8, 'Telefone inválido'),
+    telefone: z.string().regex(
+      /^\(\d{2}\)\s?\d{4}-\d{4}$/,
+      "Telefone inválido"
+    ),
     endereco: z.string().min(1, 'Informe o endereço completo'),
     rg: z.string().min(1, 'Informe o RG'),
     cpf: z.string()
