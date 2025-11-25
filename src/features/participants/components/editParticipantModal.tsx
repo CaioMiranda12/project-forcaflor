@@ -7,6 +7,7 @@ import { Participants } from '../types/participants'
 import { EditParticipantFormData, useEditParticipantForm } from '../forms/edit-participant-form'
 import { formatCPF } from '@/shared/utils/formatCpf'
 import { formatCelular } from '@/shared/utils/formatCelular'
+import { formatTelefone } from '@/shared/utils/formatTelefone'
 interface EditParticipantModalProps {
   isOpen: boolean
   onClose: () => void
@@ -218,7 +219,11 @@ export function EditParticipantModal({
                 />
                 <input
                   id="telefone"
-                  {...register('telefone')}
+                  value={watch("telefone")}
+                  onChange={(e) => {
+                    const masked = formatTelefone(e.target.value);
+                    setValue("telefone", masked, { shouldValidate: true });
+                  }}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base"
                 />
               </div>
@@ -595,7 +600,11 @@ export function EditParticipantModal({
                 />
                 <input
                   id="responsavel.telefone"
-                  {...register('responsavel.telefone')}
+                  value={watch("responsavel.telefone")}
+                  onChange={(e) => {
+                    const masked = formatTelefone(e.target.value);
+                    setValue("responsavel.telefone", masked, { shouldValidate: true });
+                  }}
                   className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base ${errors.responsavel?.telefone ? 'border-red-500' : 'border-gray-300'
                     }`}
                 />
