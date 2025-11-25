@@ -13,7 +13,7 @@ interface UpdatePostData {
   content: string;
   categoryId: string;
   status: "published" | "draft" | "scheduled";
-  image?: string;
+  image?: string | File;
   author: string;
   featured?: boolean;
   publishDate?: string | null;
