@@ -29,7 +29,7 @@ export default function Cadastro() {
 
       await registerParticipant(formData)
       toast.success('Cadastro realizado com sucesso!')
-      router.push('/login')
+      router.push('/')
     } catch {
       toast.error('Erro ao realizar cadastro. Tente novamente.')
     } finally {
