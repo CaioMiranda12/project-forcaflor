@@ -322,7 +322,7 @@ export default function Cadastro() {
                         value={cpfJovem}
                         onChange={(e) => {
                           const masked = formatCPF(e.target.value);
-                          form.setValue("documento.cpf", masked);
+                          form.setValue("documento.cpf", masked, { shouldValidate: true });
                         }}
                         className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
                         placeholder="000.000.000-00"
