@@ -1,4 +1,5 @@
 import mongoose, { Mongoose } from "mongoose";
+import { seedAdmin } from "./seedAdmin";
 
 const MONGO_URL = process.env.MONGO_URL as string;
 
@@ -22,8 +23,10 @@ export async function connectDatabase(): Promise<Mongoose> {
     console.log("🔌 Criando nova conexão com o MongoDB...");
 
     cached.promise = mongoose.connect(MONGO_URL)
-      .then((mongoose) => {
+      .then(async (mongoose) => {
         console.log("✅ Conectado ao MongoDB");
+
+        await seedAdmin();
         return mongoose;
       })
       .catch((error) => console.log(error));
