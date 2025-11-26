@@ -25,7 +25,13 @@ export function Sidebar({ setSidebarOpen, sidebarOpen, user }: SidebarProps) {
   }
 
 
-  const menuItems = !user ? publicLinks : privateLinks;
+  // const menuItems = !user ? publicLinks : privateLinks;
+  const menuItems = !user
+    ? publicLinks
+    : privateLinks.filter(item => {
+      if (item.adminOnly && !user.isAdmin) return false;
+      return true;
+    });
 
   return (
     <>
