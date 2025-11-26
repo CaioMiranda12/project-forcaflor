@@ -1,6 +1,5 @@
 'use client'
 import React, { useEffect } from 'react'
-import { z } from 'zod'
 import { Modal } from '@/features/posts/components/layout/Modal'
 import { User, Mail, Phone, MapPin, GraduationCap, Users, FileText, Calendar } from 'lucide-react'
 import { Participants } from '../types/participants'
@@ -71,25 +70,9 @@ export function EditParticipantModal({
           cpf: participants.responsavel.cpf,
           nis: participants.responsavel.nis || '',
         },
-        // isActive: participants.isActive,
       })
     }
   }, [participants, reset])
-
-  // Calcular idade automaticamente
-  useEffect(() => {
-    if (dataNascimento) {
-      const [dia, mes, ano] = dataNascimento.split('/').map(Number)
-      const birthDate = new Date(ano, mes - 1, dia)
-      const today = new Date()
-      let age = today.getFullYear() - birthDate.getFullYear()
-      const monthDiff = today.getMonth() - birthDate.getMonth()
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-        age--
-      }
-      setValue('idade', age)
-    }
-  }, [dataNascimento, setValue])
 
   const onSubmit = async (data: EditParticipantFormData) => {
     if (!participants) return
@@ -112,29 +95,7 @@ export function EditParticipantModal({
     }
 
     e.target.value = value;
-    setValue('dataNascimento', value); // <- useForm().setValue
-
-    // Calcula idade automaticamente
-    if (/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d\d$/.test(value)) {
-      const [dia, mes, ano] = value.split('/').map(Number);
-      const nascimento = new Date(ano, mes - 1, dia);
-      const hoje = new Date();
-
-      let idade = hoje.getFullYear() - nascimento.getFullYear();
-      const mesAtual = hoje.getMonth();
-      const mesNascimento = nascimento.getMonth();
-
-      if (
-        mesAtual < mesNascimento ||
-        (mesAtual === mesNascimento && hoje.getDate() < nascimento.getDate())
-      ) {
-        idade--;
-      }
-
-      setValue('idade', idade);
-    } else {
-      setValue('idade', 0);
-    }
+    setValue('dataNascimento', value);
   };
 
 
