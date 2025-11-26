@@ -225,7 +225,7 @@ export function EditParticipantModal({
                   setValueAs: (v) => v === "true",
                 })}
                 value={watch("isActive") ? "true" : "false"}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base bg-white cursor-pointer"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base bg-white cursor-pointer h-[50px]"
               >
                 <option value="true">Ativo</option>
                 <option value="false">Inativo</option>
@@ -285,13 +285,41 @@ export function EditParticipantModal({
               <label htmlFor="estado" className="block text-sm font-medium text-gray-700 mb-2">
                 Estado <span className="text-red-500">*</span>
               </label>
-              <input
+              <select
                 id="estado"
                 {...register('estado')}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#E31969] focus:border-[#E31969] text-base ${errors.estado ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                maxLength={2}
-              />
+                className="w-full bg-white px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors cursor-pointer h-[50px]"
+                style={errors.estado && { border: '2px solid red' }}
+              >
+                <option value="">Selecione</option>
+                <option value="CE">Ceará</option>
+                <option value="AC">Acre</option>
+                <option value="AL">Alagoas</option>
+                <option value="AP">Amapá</option>
+                <option value="AM">Amazonas</option>
+                <option value="BA">Bahia</option>
+                <option value="DF">Distrito Federal</option>
+                <option value="ES">Espírito Santo</option>
+                <option value="GO">Goiás</option>
+                <option value="MA">Maranhão</option>
+                <option value="MT">Mato Grosso</option>
+                <option value="MS">Mato Grosso do Sul</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="PA">Pará</option>
+                <option value="PB">Paraíba</option>
+                <option value="PR">Paraná</option>
+                <option value="PE">Pernambuco</option>
+                <option value="PI">Piauí</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="RN">Rio Grande do Norte</option>
+                <option value="RS">Rio Grande do Sul</option>
+                <option value="RO">Rondônia</option>
+                <option value="RR">Roraima</option>
+                <option value="SC">Santa Catarina</option>
+                <option value="SP">São Paulo</option>
+                <option value="SE">Sergipe</option>
+                <option value="TO">Tocantins</option>
+              </select>
               {errors.estado && <p className="mt-1 text-sm text-red-600">{errors.estado.message}</p>}
             </div>
           </div>
