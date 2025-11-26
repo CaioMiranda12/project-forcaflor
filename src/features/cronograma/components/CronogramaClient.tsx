@@ -103,27 +103,29 @@ export default function CronogramaClient({ activitiesList }: CronogramaClientPro
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-              {user ? 'Gerenciar Cronograma' : 'Cronograma de Atividades'}
-            </h1>
-            <p className="text-lg text-gray-600">
-              {user ? 'Crie, edite e organize as atividades da instituição.' : 'Confira as atividades programadas para a instituição.'}
-            </p>
+      {user?.isAdmin && (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+                {user ? 'Gerenciar Cronograma' : 'Cronograma de Atividades'}
+              </h1>
+              <p className="text-lg text-gray-600">
+                {user ? 'Crie, edite e organize as atividades da instituição.' : 'Confira as atividades programadas para a instituição.'}
+              </p>
+            </div>
+            {user && (
+              <button
+                onClick={handleNewClick}
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-[#E31969] text-white rounded-lg hover:bg-[#c01456] transition-colors cursor-pointer shadow-md"
+              >
+                <Plus className="w-5 h-5" />
+                Nova Atividade
+              </button>
+            )}
           </div>
-          {user && (
-            <button
-              onClick={handleNewClick}
-              className="flex items-center justify-center gap-2 px-6 py-3 bg-[#E31969] text-white rounded-lg hover:bg-[#c01456] transition-colors cursor-pointer shadow-md"
-            >
-              <Plus className="w-5 h-5" />
-              Nova Atividade
-            </button>
-          )}
         </div>
-      </div>
+      )}
 
       {/* Activities List */}
       <div className="space-y-6">
@@ -187,7 +189,7 @@ export default function CronogramaClient({ activitiesList }: CronogramaClientPro
                           </div>
                         </div>
 
-                        {user && (
+                        {user?.isAdmin && (
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => handleEditClick(activity)}
