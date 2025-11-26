@@ -10,7 +10,9 @@ export const privateLinks = [
   { path: '/', label: 'Início', icon: Home },
   { path: '/noticias', label: 'Notícias', icon: Newspaper },
   { path: '/cronograma', label: 'Cronograma', icon: Calendar },
-  { path: '/usuarios', label: 'Usuários', icon: Users },
-  { path: '/participantes', label: 'Participantes', icon: GraduationCap },
+
+  { path: '/usuarios', label: 'Usuários', icon: Users, adminOnly: true },
+  { path: '/participantes', label: 'Participantes', icon: GraduationCap, adminOnly: true },
+
   { path: '/posts', label: 'Posts', icon: FileText },
 ];
