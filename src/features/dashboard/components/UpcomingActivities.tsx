@@ -1,5 +1,5 @@
 import { ActivityType } from "@/features/cronograma/types/activityType"
-import { Clock, MapPin } from "lucide-react";
+import { Calendar, Clock, MapPin } from "lucide-react";
 import Link from "next/link";
 
 interface UpcomingActivitiesProps {
@@ -34,6 +34,10 @@ export function UpcomingActivities({ upcomingActivities }: UpcomingActivitiesPro
                   <div className="flex items-center text-sm text-gray-600">
                     <MapPin className="w-4 h-4 mr-2" aria-hidden="true" />
                     {activity.location}
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Calendar className="w-4 h-4 mr-2" aria-hidden="true" />
+                    {activity.dayOfWeek}
                   </div>
                 </div>
               </div>
