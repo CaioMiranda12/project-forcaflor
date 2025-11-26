@@ -179,3 +179,10 @@ body {
     animation-delay: 600ms;
   }
 }
+
+input,
+textarea,
+select {
+  color-scheme: light !important;
+  color: #1f2937;
+}
