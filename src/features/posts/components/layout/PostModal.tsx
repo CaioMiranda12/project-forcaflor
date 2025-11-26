@@ -284,7 +284,6 @@ export function PostModal({ isOpen, onClose, post, categories, onSave }: PostMod
             >
               <option value="draft">Rascunho</option>
               <option value="published">Publicado</option>
-              <option value="scheduled">Agendado</option>
             </select>
           </div>
         )}
