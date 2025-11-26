@@ -61,10 +61,10 @@ export default function Cadastro() {
         <div className="bg-white rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Cadastro - Escolinha de Futebol
+              Cadastro
             </h1>
             <p className="text-lg text-gray-600">
-              OSC Força Flor - Iniciação Esportiva
+              OSC Força Flor - Ficha de inscrição
             </p>
           </div>
 
