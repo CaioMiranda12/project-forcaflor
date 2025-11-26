@@ -9,8 +9,7 @@ export async function updateParticipant(id: string, formData: EditParticipantFor
   try {
     await connectDatabase();
 
-    const data = { ...formData }; // 👈 AGORA FUNCIONA
-    console.log(data)
+    const data = { ...formData };
 
     const auth = await verifyAuth();
     if (!auth.ok) return { success: false, message: auth.error };
