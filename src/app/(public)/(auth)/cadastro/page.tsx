@@ -143,7 +143,7 @@ export default function Cadastro() {
                         onChange={() => form.setValue('sexo', 'masculino')}
                         className="mr-2 w-4 h-4 text-primary focus:ring-primary"
                       />
-                      <span className="text-base">Masculino</span>
+                      <span className="text-base text-gray-800">Masculino</span>
                     </label>
                     <label className="flex items-center cursor-pointer">
                       <input
@@ -153,7 +153,7 @@ export default function Cadastro() {
                         onChange={() => form.setValue('sexo', 'feminino')}
                         className="mr-2 w-4 h-4 text-primary focus:ring-primary"
                       />
-                      <span className="text-base">Feminino</span>
+                      <span className="text-base text-gray-800">Feminino</span>
                     </label>
                   </div>
                 </div>
@@ -450,7 +450,7 @@ export default function Cadastro() {
                         onChange={() => form.setValue('problemaSaude', true)}
                         className="mr-2 w-4 h-4 text-primary focus:ring-primary"
                       />
-                      <span className="text-base">Sim</span>
+                      <span className="text-base text-gray-800">Sim</span>
                     </label>
                     <label className="flex items-center cursor-pointer">
                       <input
@@ -461,7 +461,7 @@ export default function Cadastro() {
                         onChange={() => form.setValue('problemaSaude', false)}
                         className="mr-2 w-4 h-4 text-primary focus:ring-primary"
                       />
-                      <span className="text-base">Não</span>
+                      <span className="text-base text-gray-800">Não</span>
                     </label>
                   </div>
 
